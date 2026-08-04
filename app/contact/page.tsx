@@ -1,7 +1,16 @@
-import Image from "next/image";
+import { Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { InquiryForm } from "./inquiry-form";
 
-export default function ContactPage() {
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ interest?: string }> | { interest?: string };
+}) {
+  const params = await searchParams;
+  const defaultInterest = params.interest || "";
+
   return (
     <>
       <section className="bg-limestone px-6 pt-20 pb-16 text-center md:px-16 md:pt-28 md:pb-20">
@@ -11,13 +20,13 @@ export default function ContactPage() {
           </h1>
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
-              href="/gatherings"
+              href="/contact?interest=gatherings#inquiry"
               className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg bg-olive px-8 font-display text-xs uppercase tracking-[0.2em] text-limestone transition hover:bg-olive/90"
             >
               Book Your Event
             </Link>
             <Link
-              href="/studio"
+              href="/contact?interest=studio#inquiry"
               className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg bg-olive px-8 font-display text-xs uppercase tracking-[0.2em] text-limestone transition hover:bg-olive/90"
             >
               Consulting
@@ -26,15 +35,21 @@ export default function ContactPage() {
         </div>
       </section>
 
+      <Suspense
+        fallback={
+          <section className="bg-limestone px-6 py-24 md:px-16">
+            <div className="mx-auto max-w-2xl">
+              <div className="h-96 animate-pulse rounded-2xl bg-secondary" />
+            </div>
+          </section>
+        }
+      >
+        <InquiryForm defaultInterest={defaultInterest} />
+      </Suspense>
+
       <section className="bg-limestone px-6 pb-16 md:px-16">
         <div className="mx-auto max-w-7xl">
-          <h2 className="font-display text-3xl text-ink md:text-4xl">
-            Let&apos;s talk possibilities
-          </h2>
-          <p className="mt-3 max-w-2xl font-body text-lg text-ink/70">
-            Reach out to us via the above forms and we will get back to you within 48 hours.
-          </p>
-          <div className="relative mt-10 aspect-[1084/610] overflow-hidden rounded-2xl bg-secondary">
+          <div className="relative aspect-[1084/610] overflow-hidden rounded-2xl bg-secondary">
             <Image
               src="/about-hero.jpg"
               alt="Contact"
