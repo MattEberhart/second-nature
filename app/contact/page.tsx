@@ -1,92 +1,73 @@
-"use client";
-
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function ContactPage() {
-  const [sent, setSent] = useState(false);
-
   return (
     <>
-      <section className="bg-ink px-6 pb-12 pt-32 text-center text-limestone md:pt-40">
-        <p className="font-display text-xs uppercase tracking-[0.3em] text-olive">
-          Contact
-        </p>
-        <h1 className="mt-4 font-display text-4xl md:text-5xl">
-          Let&apos;s make something memorable.
-        </h1>
+      <section className="bg-limestone px-6 pt-20 pb-16 text-center md:px-16 md:pt-28 md:pb-20">
+        <div className="mx-auto max-w-7xl">
+          <h1 className="font-display text-4xl uppercase tracking-[0.1em] text-ink md:text-6xl lg:text-7xl">
+            Contact Us
+          </h1>
+          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Link
+              href="/gatherings"
+              className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg bg-olive px-8 font-display text-xs uppercase tracking-[0.2em] text-limestone transition hover:bg-olive/90"
+            >
+              Book Your Event
+            </Link>
+            <Link
+              href="/studio"
+              className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg bg-olive px-8 font-display text-xs uppercase tracking-[0.2em] text-limestone transition hover:bg-olive/90"
+            >
+              Consulting
+            </Link>
+          </div>
+        </div>
       </section>
 
-      <section className="bg-limestone px-6 py-24">
-        <div className="mx-auto max-w-xl">
-          {sent ? (
-            <div className="text-center">
-              <h2 className="font-display text-2xl">Thank you for reaching out.</h2>
-              <p className="mt-4 font-body text-ink/70">
-                We&apos;ll be in touch soon.
-              </p>
+      <section className="bg-limestone px-6 pb-16 md:px-16">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="font-display text-3xl text-ink md:text-4xl">
+            Let&apos;s talk possibilities
+          </h2>
+          <p className="mt-3 max-w-2xl font-body text-lg text-ink/70">
+            Reach out to us via the above forms and we will get back to you within 48 hours.
+          </p>
+          <div className="relative mt-10 aspect-[1084/610] overflow-hidden rounded-2xl bg-secondary">
+            <Image
+              src="/about-hero.jpg"
+              alt="Contact"
+              fill
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-limestone px-6 pb-24 md:px-16">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-[256fr_732fr]">
+            <div className="relative aspect-[256/208] overflow-hidden rounded-2xl bg-secondary">
+              <Image
+                src="/event-rentals-hero.jpg"
+                alt=""
+                fill
+                sizes="(min-width: 768px) 25vw, 100vw"
+                className="object-cover"
+              />
             </div>
-          ) : (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                setSent(true);
-              }}
-              className="space-y-6"
-            >
-              <div className="grid gap-6 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input id="name" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" required />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="interest">What are you interested in?</Label>
-                <Select>
-                  <SelectTrigger id="interest" className="w-full">
-                    <SelectValue placeholder="Select..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="gatherings">Gatherings</SelectItem>
-                    <SelectItem value="studio">The Studio</SelectItem>
-                    <SelectItem value="both">Both</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="date">Event or launch date</Label>
-                <Input id="date" placeholder="Optional" />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="message">Tell us more</Label>
-                <Textarea id="message" rows={5} required />
-              </div>
-
-              <Button
-                type="submit"
-                className="h-12 w-full rounded-sm bg-ink font-display text-xs uppercase tracking-[0.25em] text-limestone hover:bg-ink/90"
-              >
-                Send Inquiry
-              </Button>
-            </form>
-          )}
+            <div className="relative aspect-[732/208] overflow-hidden rounded-2xl bg-secondary">
+              <Image
+                src="/consulting-hero.jpg"
+                alt=""
+                fill
+                sizes="(min-width: 768px) 75vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+          </div>
         </div>
       </section>
     </>

@@ -1,41 +1,31 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
 import { Logo } from "./logo";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "/gatherings", label: "Gatherings" },
   { href: "/studio", label: "Studio" },
-  { href: "/contact", label: "Contact" },
+  { href: "/gatherings", label: "Gatherings" },
+  { href: "/contact", label: "Contact Us" },
 ];
 
 export function Nav() {
   const pathname = usePathname();
-  const isHome = pathname === "/";
-  const [open, setOpen] = useState(false);
 
   return (
-    <header
-      className={cn(
-        "top-0 z-50 w-full",
-        isHome
-          ? "absolute text-limestone"
-          : "sticky bg-limestone/90 backdrop-blur text-ink"
-      )}
-    >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-        <Logo />
-        <nav className="hidden items-center gap-8 md:flex">
+    <header className="sticky top-0 z-50 bg-limestone/95 text-ink backdrop-blur">
+      <div className="mx-auto flex h-auto min-h-[120px] max-w-7xl items-start justify-between px-6 py-4 md:min-h-[220px] md:items-center md:px-16 md:py-2">
+        <Logo className="h-[69px] w-[69px] md:h-[200px] md:w-[200px]" />
+
+        <nav className="flex flex-col items-end gap-1 pt-2 md:flex-row md:items-center md:gap-10 md:pt-0">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                "font-display text-xs uppercase tracking-[0.2em] transition-colors hover:text-olive",
+                "font-display text-sm uppercase tracking-[0.15em] transition-colors hover:text-olive md:text-xs md:tracking-[0.2em]",
                 pathname === link.href && "text-olive"
               )}
             >
@@ -43,37 +33,7 @@ export function Nav() {
             </Link>
           ))}
         </nav>
-        <button
-          className="md:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Toggle menu"
-        >
-          {open ? (
-            <X className="h-6 w-6" />
-          ) : (
-            <Menu className="h-6 w-6" />
-          )}
-        </button>
       </div>
-      {open && (
-        <div className="absolute left-0 top-full w-full bg-limestone text-ink shadow md:hidden">
-          <nav className="flex flex-col items-center gap-6 py-8">
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className={cn(
-                  "font-display text-sm uppercase tracking-[0.2em] transition-colors hover:text-olive",
-                  pathname === link.href && "text-olive"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      )}
     </header>
   );
 }
