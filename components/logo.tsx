@@ -6,16 +6,16 @@ export function Logo({ className }: { className?: string }) {
   return (
     <Link
       href="/"
-      className={cn("inline-block focus:outline-none", className)}
+      className="inline-block focus:outline-none"
       aria-label="Second Nature Creative Studio home"
     >
-      <div className="relative h-20 w-60 md:h-24 md:w-80">
+      <div className={cn("relative", className)}>
         <Image
           src="/logo.png"
           alt="Second Nature Creative Studio"
           fill
           className="object-contain"
-          sizes="(max-width: 768px) 176px, 224px"
+          sizes="(max-width: 768px) 69px, 200px"
           priority
         />
       </div>
