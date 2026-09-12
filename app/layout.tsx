@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import { Outfit, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 
-const outfit = Outfit({
+const leJourSerif = localFont({
+  src: "./fonts/le-jour-serif.woff2",
   variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
+  weight: "400",
+  style: "normal",
   display: "swap",
 });
 
@@ -31,7 +33,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${inter.variable} h-full antialiased`}
+      className={`${leJourSerif.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <Nav />
