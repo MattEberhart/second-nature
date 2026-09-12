@@ -306,14 +306,14 @@ export function EstimateBuilder({
 
   return (
     <div className="min-h-screen bg-limestone text-ink">
-      <section className="border-b border-ink/10 px-6 py-10 md:px-16 md:py-12">
+      <section className="border-b border-ink/10 px-4 py-8 sm:px-6 sm:py-10 md:px-16 md:py-12">
         <div className="mx-auto max-w-7xl">
           <p className="font-body text-xs uppercase tracking-[0.22em] text-fig">
             Event rentals · Charlotte, NC
           </p>
           <div className="mt-3 grid gap-6 lg:grid-cols-[1fr_340px] lg:items-end">
             <div>
-              <h1 className="max-w-4xl font-display text-5xl leading-[0.98] md:text-6xl">
+              <h1 className="max-w-4xl font-display text-4xl leading-[0.98] sm:text-5xl md:text-6xl">
                 Build Your Estimate
               </h1>
               <p className="mt-4 max-w-2xl font-body text-base leading-7 text-ink/70">
@@ -332,7 +332,7 @@ export function EstimateBuilder({
               </p>
               <Link
                 href="/consultation"
-                className="mt-4 inline-flex text-xs uppercase tracking-[0.18em] text-fig underline underline-offset-4"
+                className="mt-4 inline-flex text-[11px] uppercase tracking-[0.14em] text-fig underline underline-offset-4 sm:text-xs sm:tracking-[0.18em]"
               >
                 Schedule a free consultation
               </Link>
@@ -359,10 +359,56 @@ export function EstimateBuilder({
       ) : null}
 
       {stage === "shop" ? (
-        <section className="px-6 py-10 md:px-16 md:py-14">
+        <section className="overflow-hidden px-4 py-8 sm:px-6 sm:py-10 md:px-16 md:py-14">
           <div className="mx-auto grid max-w-7xl gap-8 xl:grid-cols-[minmax(0,1fr)_300px]">
-            <div>
-              <div className="flex gap-2 overflow-x-auto pb-3">
+            <div className="min-w-0">
+              <div className="grid grid-cols-2 gap-3 sm:hidden">
+                <label className="min-w-0">
+                  <span className="mb-2 block text-[10px] uppercase tracking-[0.16em] text-ink/50">
+                    Category
+                  </span>
+                  <select
+                    aria-label="Filter by category"
+                    value={activeCategory}
+                    onChange={(event) =>
+                      setActiveCategory(
+                        event.target.value as
+                          | "all"
+                          | CatalogProduct["category"],
+                      )
+                    }
+                    className="h-11 w-full min-w-0 rounded-lg border border-ink/15 bg-card px-3 text-sm text-ink"
+                  >
+                    <option value="all">Everything</option>
+                    {Object.entries(categoryLabels).map(([key, label]) => (
+                      <option key={key} value={key}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="min-w-0">
+                  <span className="mb-2 block text-[10px] uppercase tracking-[0.16em] text-ink/50">
+                    Collection
+                  </span>
+                  <select
+                    aria-label="Filter by collection level"
+                    value={tier}
+                    onChange={(event) => setTier(event.target.value)}
+                    className="h-11 w-full min-w-0 rounded-lg border border-ink/15 bg-card px-3 text-sm text-ink"
+                  >
+                    <option value="all">All levels</option>
+                    {["Essential", "Premium", "Luxe", "Signature"].map(
+                      (value) => (
+                        <option key={value} value={value}>
+                          {value}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+              </div>
+              <div className="hidden gap-2 overflow-x-auto pb-3 sm:flex">
                 <FilterButton
                   active={activeCategory === "all"}
                   onClick={() => setActiveCategory("all")}
@@ -381,7 +427,7 @@ export function EstimateBuilder({
                   </FilterButton>
                 ))}
               </div>
-              <div className="mt-4 flex flex-wrap items-center gap-2">
+              <div className="mt-4 hidden flex-wrap items-center gap-2 sm:flex">
                 <span className="mr-2 text-xs uppercase tracking-[0.18em] text-ink/50">
                   Collection level
                 </span>
@@ -398,7 +444,7 @@ export function EstimateBuilder({
                   ),
                 )}
               </div>
-              <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-6 grid min-w-0 gap-5 sm:mt-7 sm:grid-cols-2 lg:grid-cols-3">
                 {filtered.map((product) => (
                   <ProductCard key={product.id} product={product} add={add} />
                 ))}
@@ -453,7 +499,7 @@ export function EstimateBuilder({
 
       {cartRows.length && stage === "shop" ? (
         <button
-          className="fixed inset-x-4 bottom-4 z-50 flex items-center justify-between rounded-xl bg-fig px-5 py-4 text-limestone shadow-2xl xl:hidden"
+          className="fixed inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-50 flex items-center justify-between rounded-xl bg-fig px-5 py-4 text-limestone shadow-2xl xl:hidden"
           onClick={() => setDrawerOpen(true)}
         >
           <span className="flex items-center gap-2 text-sm">
@@ -469,7 +515,7 @@ export function EstimateBuilder({
           onClick={() => setDrawerOpen(false)}
         >
           <div
-            className="absolute inset-x-0 bottom-0 rounded-t-3xl bg-limestone p-6"
+            className="absolute inset-x-0 bottom-0 max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-t-3xl bg-limestone p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -525,7 +571,7 @@ function ProductCard({
     ...product.variants.map((item) => item.unitPriceCents),
   );
   return (
-    <article className="overflow-hidden rounded-xl border border-ink/10 bg-card">
+    <article className="min-w-0 overflow-hidden rounded-xl border border-ink/10 bg-card">
       <div
         className="relative aspect-[16/9] overflow-hidden"
         style={{ backgroundColor: product.accent }}
@@ -545,8 +591,8 @@ function ProductCard({
         </div>
       </div>
       <div className="p-4">
-        <div className="flex items-start justify-between gap-3">
-          <div>
+        <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+          <div className="min-w-0">
             <h2 className="font-display text-xl leading-tight">
               {product.publicName}
             </h2>
@@ -554,7 +600,7 @@ function ProductCard({
               {product.material}
             </p>
           </div>
-          <p className="whitespace-nowrap font-display text-base">
+          <p className="whitespace-nowrap text-right font-display text-base">
             {product.pricePrefix || "From"} {formatMoney(lowest)}
           </p>
         </div>
@@ -579,8 +625,8 @@ function ProductCard({
             </option>
           ))}
         </select>
-        <div className="mt-3 flex gap-2">
-          <div className="flex h-10 items-center rounded-lg border bg-limestone">
+        <div className="mt-3 flex min-w-0 gap-2">
+          <div className="flex h-10 shrink-0 items-center rounded-lg border bg-limestone">
             <button
               type="button"
               className="h-full px-2.5"
@@ -614,7 +660,7 @@ function ProductCard({
             </button>
           </div>
           <Button
-            className="h-10 min-w-0 flex-1 bg-olive px-2 text-[11px] uppercase tracking-[0.12em]"
+            className="h-10 min-w-0 flex-1 overflow-hidden bg-olive px-2 text-[10px] uppercase tracking-[0.08em] sm:text-[11px] sm:tracking-[0.12em]"
             onClick={() => add(variant.id, quantity)}
           >
             Add · {formatMoney(variant.unitPriceCents * quantity)}
