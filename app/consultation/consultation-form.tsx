@@ -1,0 +1,58 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { CalendarDays, Check, Video } from "lucide-react";
+import type { AvailabilitySlot } from "@/lib/estimator/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+
+export function ConsultationForm() {
+  const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
+  const [slotStart, setSlotStart] = useState("");
+  const [details, setDetails] = useState({ name: "", email: "", eventDate: "", dateUndecided: false, venueName: "", notes: "" });
+  const [busy, setBusy] = useState(true);
+  const [error, setError] = useState("");
+  const [confirmation, setConfirmation] = useState<{ appointmentLabel: string; meetUrl: string | null } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/availability").then(async (response) => {
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error);
+      setSlots(payload.slots);
+    }).catch((reason) => setError(reason.message || "Availability could not be loaded."))
+      .finally(() => setBusy(false));
+  }, []);
+
+  const days = useMemo(() => {
+    const grouped = new Map<string, AvailabilitySlot[]>();
+    for (const slot of slots) {
+      const key = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(slot.start));
+      grouped.set(key, [...(grouped.get(key) || []), slot]);
+    }
+    return [...grouped.entries()].slice(0, 8);
+  }, [slots]);
+
+  async function submit(event: React.FormEvent) {
+    event.preventDefault();
+    if (!slotStart) { setError("Choose a consultation time."); return; }
+    setBusy(true); setError("");
+    try {
+      const response = await fetch("/api/consultations/schedule", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...details, slotStart }) });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error);
+      setConfirmation(payload);
+    } catch (reason) { setError(reason instanceof Error ? reason.message : "The consultation could not be booked."); }
+    finally { setBusy(false); }
+  }
+
+  if (confirmation) return <section className="flex min-h-[70vh] items-center bg-limestone px-6 py-20 text-center"><div className="mx-auto max-w-2xl"><div className="mx-auto flex size-16 items-center justify-center rounded-full bg-fig text-limestone"><Check /></div><p className="mt-7 text-xs uppercase tracking-[0.2em] text-fig">Consultation confirmed</p><h1 className="mt-3 font-display text-5xl">Lydia can’t wait to meet you.</h1><p className="mt-5 text-lg text-ink/65">A Google Meet invitation is on its way to your inbox.</p><div className="mt-8 rounded-2xl bg-card p-6 font-display text-2xl">{confirmation.appointmentLabel}</div>{confirmation.meetUrl ? <a href={confirmation.meetUrl} className="mt-7 inline-flex h-12 items-center rounded-lg bg-fig px-7 text-xs uppercase tracking-[0.17em] text-limestone">Join Google Meet</a> : null}</div></section>;
+
+  return <div className="min-h-screen bg-limestone px-6 py-14 text-ink md:px-16 md:py-20"><div className="mx-auto max-w-6xl"><div className="grid gap-8 lg:grid-cols-[1fr_330px] lg:items-end"><div><p className="text-xs uppercase tracking-[0.2em] text-fig">Complimentary · 30 minutes</p><h1 className="mt-4 max-w-3xl font-display text-5xl leading-none md:text-7xl">Schedule a Free Consultation</h1><p className="mt-5 max-w-2xl text-lg leading-8 text-ink/65">Meet Lydia on Google Meet, share what you’re imagining, and leave with a clearer path forward.</p></div><div className="rounded-2xl bg-secondary p-6"><Video className="size-5 text-fig" /><p className="mt-3 font-display text-xl">Rather explore first?</p><Link href="/gatherings/estimate" className="mt-3 inline-block text-xs uppercase tracking-[0.17em] text-fig underline underline-offset-4">Build your estimate</Link></div></div>
+    {error ? <div className="mt-7 rounded-xl bg-terracotta/15 p-4 text-sm">{error}</div> : null}
+    <form onSubmit={submit} className="mt-12 grid gap-12 lg:grid-cols-[420px_1fr]"><div className="space-y-5 rounded-2xl bg-card p-6 md:p-8"><CalendarDays className="size-5 text-fig" /><h2 className="font-display text-3xl">Tell Lydia a little</h2><div><Label>Name</Label><Input required className="mt-2" value={details.name} onChange={(e) => setDetails({ ...details, name: e.target.value })} /></div><div><Label>Email</Label><Input required type="email" className="mt-2" value={details.email} onChange={(e) => setDetails({ ...details, email: e.target.value })} /></div><div><Label>Event date</Label><Input required={!details.dateUndecided} disabled={details.dateUndecided} type="date" className="mt-2" value={details.eventDate} onChange={(e) => setDetails({ ...details, eventDate: e.target.value })} /><label className="mt-2 flex gap-2 text-xs text-ink/60"><input type="checkbox" checked={details.dateUndecided} onChange={(e) => setDetails({ ...details, dateUndecided: e.target.checked, eventDate: e.target.checked ? "" : details.eventDate })} /> Not sure yet</label></div><div><Label>Venue name</Label><Input placeholder="Optional" className="mt-2" value={details.venueName} onChange={(e) => setDetails({ ...details, venueName: e.target.value })} /></div><div><Label>Anything Lydia should know?</Label><Textarea rows={5} className="mt-2" value={details.notes} onChange={(e) => setDetails({ ...details, notes: e.target.value })} /></div></div><div><h2 className="font-display text-3xl">Choose a time</h2>{busy && !slots.length ? <p className="mt-5 text-sm text-ink/55">Finding Lydia’s open times…</p> : <div className="mt-6 space-y-6">{days.map(([date, dateSlots]) => <div key={date}><h3 className="font-display text-xl">{new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", weekday: "long", month: "long", day: "numeric" }).format(new Date(dateSlots[0].start))}</h3><div className="mt-3 flex flex-wrap gap-2">{dateSlots.map((slot) => <button type="button" key={slot.start} onClick={() => setSlotStart(slot.start)} className={cn("rounded-full border px-4 py-2 text-sm", slotStart === slot.start ? "border-fig bg-fig text-limestone" : "border-ink/15")}>{new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", hour: "numeric", minute: "2-digit" }).format(new Date(slot.start))}</button>)}</div></div>)}</div>}<Button disabled={busy || !slotStart} className="mt-8 h-12 bg-fig px-8 text-xs uppercase tracking-[0.17em]">{busy ? "Booking…" : "Book my Google Meet"}</Button><p className="mt-4 text-xs leading-5 text-ink/50">Lydia’s exact calendar details stay private. You’ll receive a Google Meet invitation at the email above.</p></div></form>
+  </div></div>;
+}

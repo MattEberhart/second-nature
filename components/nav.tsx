@@ -15,18 +15,18 @@ export function Nav() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 bg-limestone/95 text-ink backdrop-blur">
-      <div className="mx-auto flex h-auto min-h-[120px] max-w-7xl items-start justify-between px-6 py-4 md:min-h-[220px] md:items-center md:px-16 md:py-2">
-        <Logo className="h-[69px] w-[69px] md:h-[200px] md:w-[200px]" />
+    <header className="relative z-50 border-b border-ink/5 bg-limestone text-ink">
+      <div className="mx-auto flex min-h-[88px] max-w-7xl items-center justify-between px-6 py-3 md:min-h-[112px] md:px-16">
+        <Logo className="h-[64px] w-[64px] md:h-[96px] md:w-[96px]" />
 
-        <nav className="flex flex-col items-end gap-1 pt-2 md:flex-row md:items-center md:gap-10 md:pt-0">
+        <nav className="flex flex-col items-end gap-1 md:flex-row md:items-center md:gap-10">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
                 "font-display text-sm uppercase tracking-[0.15em] transition-colors hover:text-olive md:text-xs md:tracking-[0.2em]",
-                pathname === link.href && "text-olive"
+                pathname === link.href && "text-olive",
               )}
             >
               {link.label}
