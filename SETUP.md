@@ -12,10 +12,12 @@ The dedicated `second-nature` project (`yrincjetscfhcjtuwlkl`) is already live i
 been loaded, and its public and server-only credentials are installed in every
 Vercel environment. The existing Supabase projects were not modified.
 
-Once Lydia's Workspace address exists, set both `ADMIN_EMAIL` and `LYDIA_EMAIL` in
-Vercel. `ADMIN_EMAIL` controls dashboard access; `LYDIA_EMAIL` receives estimate
-and appointment notifications. The generated `APP_ENCRYPTION_KEY` is already
-installed in Vercel.
+Set `ADMIN_EMAILS` in Vercel to a comma-separated list of Google accounts that may
+open the dashboard. Those addresses can be regular Gmail or Workspace accounts.
+Set `CALENDAR_OWNER_EMAIL` to Lydia's Workspace account only; this is the sole
+account allowed to connect the booking calendar. `LYDIA_EMAIL` independently
+controls estimate and appointment notifications. The generated
+`APP_ENCRYPTION_KEY` is already installed in Vercel.
 
 The free Supabase plan can pause after inactivity. It is suitable for development;
 review the production plan before relying on it for uninterrupted lead capture.
@@ -39,9 +41,11 @@ review the production plan before relying on it for uninterrupted lead capture.
 9. In the business account, subscribe to that shared calendar. Copy its calendar
    ID/email into **Busy calendar IDs** in `/admin`, alongside `primary` and the
    consultations calendar ID.
-10. Sign into `/admin` with Lydia's approved Workspace account. The consent screen
-    asks only for sign-in, calendar availability, event creation, and calendar-list
-    access. The resulting refresh token is encrypted before it is stored.
+10. Sign into `/admin` with Lydia's approved Workspace account, then select
+    **Connect calendar**. Ordinary admin sign-in requests identity only. The
+    calendar-owner-only connection separately asks for calendar availability,
+    event creation, and calendar-list access. Its refresh token is encrypted
+    before it is stored.
 
 Appointments are created on the consultations calendar with a unique Google Meet
 link. The requester's email is added as an attendee, so Google sends the calendar

@@ -9,14 +9,6 @@ export async function GET(request: Request) {
       provider: "google",
       options: {
         redirectTo: `${origin}/auth/callback?next=/admin`,
-        scopes: [
-          "openid",
-          "email",
-          "https://www.googleapis.com/auth/calendar.events",
-          "https://www.googleapis.com/auth/calendar.freebusy",
-          "https://www.googleapis.com/auth/calendar.calendarlist.readonly",
-        ].join(" "),
-        queryParams: { access_type: "offline", prompt: "consent" },
       },
     });
     if (error || !data.url) throw error || new Error("Google sign-in is unavailable.");
