@@ -7,10 +7,10 @@ export function Footer() {
         <Logo className="h-12 w-32 md:h-14 md:w-40" />
         <div className="text-center font-body text-sm md:text-right">
           <a
-            href="mailto:hello@secondnaturestudio.com"
+            href="mailto:hello@secondnaturecreative.com"
             className="transition-colors hover:text-olive"
           >
-            hello@secondnaturestudio.com
+            hello@secondnaturecreative.com
           </a>
           <p className="mt-1">
             © {new Date().getFullYear()} Second Nature Creative Studio · Based in Charlotte, NC

@@ -11,7 +11,7 @@ function client() {
 }
 
 function sender() {
-  return process.env.RESEND_FROM_EMAIL || "Second Nature <hello@secondnaturestudio.com>";
+  return process.env.RESEND_FROM_EMAIL || "Second Nature <hello@secondnaturecreative.com>";
 }
 
 export async function sendResumeEstimate(input: { id: string; name: string; email: string; resumeUrl: string }) {
