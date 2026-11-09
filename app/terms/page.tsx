@@ -1,127 +1,190 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { LegalPage } from "@/components/legal-page";
 
 export const metadata: Metadata = {
-  title: "Creative Consulting Services Agreement | Second Nature Creative Studio",
+  title: "Terms of Service | Second Nature Creative Studio",
   description:
-    "Project services, intellectual property assignment, payment terms, and scope management for Second Nature Creative LLC.",
+    "Terms governing public website use, inquiries, and reservation holds for Second Nature Creative LLC.",
 };
 
 const sections = [
   {
-    heading: "1. Services and Scope of Work",
+    heading: "Acceptance of These Terms",
     paragraphs: [
-      "Company provides creative direction, branding, graphic design, email marketing, social media consulting, event planning, and styling services. The specific services, deliverables, milestones, and project timelines for each engagement shall be set forth in an attached, mutually signed Project Scope. Only services specifically enumerated in an active, approved Project Scope are included.",
+      "Welcome to Second Nature Creative LLC (\"Second Nature,\" \"Company,\" \"we,\" \"our,\" or \"us\"). These Terms of Service govern access to and use of our website, including browsing rental inventory, requesting reservations, scheduling consultations, submitting inquiries, and accessing information about our products and services.",
+      "By accessing or using the website, you agree to comply with these Terms to the extent permitted by law. Where affirmative acceptance is required, you will be asked to acknowledge the Terms through an appropriate electronic process. If you do not agree, discontinue use.",
     ],
   },
   {
-    heading: "2. Retainer, Payment Schedule, and Invoicing",
+    heading: "Our Services",
     paragraphs: [
-      <><strong>Initial Retainer:</strong> A non-refundable booking retainer of fifty percent (50%) of the total project fee is required upon contract signing. Work will not commence, and production calendar slots will not be reserved, until this retainer is received and processed.</>,
-      <><strong>Completion Balance:</strong> The remaining fifty percent (50%) balance of the project fee, plus any approved out-of-scope billable hours or incurred expenses, is strictly due upon project completion prior to the release, transfer, or deployment of any final digital assets or working files.</>,
-      <><strong>Late Invoices & Work Stoppage:</strong> Invoices are due upon receipt or as specified in the Project Scope. If payment remains outstanding for forty-eight (48) hours following written notice, Company reserves the right to immediately suspend all active production and withhold deliverable handoffs until accounts are brought current.</>,
+      "Second Nature Creative LLC provides event rentals, décor, tabletop and specialty inventory, event planning, and styling. We also selectively offer tertiary creative and digital services, including graphic design, branding, creative direction, event strategy, email marketing, social media, and related consulting. We operate primarily in Charlotte, North Carolina, and may serve South Carolina, Virginia, Alabama, and other locations at our discretion.",
     ],
   },
   {
-    heading: "3. Change Orders and Out-of-Scope Work",
+    heading: "Eligibility",
     paragraphs: [
-      "Any requests for deliverables, design iterations, consultations, or project scope expansions not explicitly detailed in the approved Project Scope will be treated as out-of-scope work. Out-of-scope services will be billed at Company’s standard hourly consulting rate of $100.00 per hour, or under a separately approved written change order quote. Company is under no obligation to undertake out-of-scope work until written authorization is provided by Client.",
+      "Individuals entering contracts or placing reservations must be at least 18 years of age and legally capable of entering binding agreements. Adults may book services for events involving minors; the contracting adult remains responsible. Our website is not directed to children under 13.",
     ],
   },
   {
-    heading: "4. Revisions and Feedback Windows",
+    heading: "Website Information and Availability",
     paragraphs: [
-      <><strong>Included Revisions:</strong> Unless expressly modified in the Project Scope, all creative deliverables include up to two (2) rounds of consolidated revisions. A revision round consists of minor adjustments, font/color tweaks, layout balancing, and copy updates within the originally agreed concept.</>,
-      <><strong>Subsequent Revisions:</strong> Any additional revision rounds beyond the two included rounds, or requests that require completely new creative concepts or structural overhauls after concept approval, will be billed at the standard rate of $100.00 per hour.</>,
-      <><strong>Review Window:</strong> Client shall review submitted drafts and provide complete, consolidated written feedback within five (5) business days of delivery. If Client fails to provide feedback within five (5) business days, the submitted draft shall be deemed accepted and approved, and Company may proceed to the next milestone.</>,
+      "We make reasonable efforts to present accurate descriptions, photographs, pricing, inventory, and service information, but content may contain errors or change. Display of an item or service on the website does not guarantee availability for any specific date. We reserve the right to correct pricing or typographical errors and update offerings at any time.",
     ],
   },
   {
-    heading: "5. Client Delays, Inactivity, and Project Pauses",
-    paragraphs: [
-      <><strong>Cooperation:</strong> Timely completion depends on prompt receipt of Client assets (logos, copy, imagery), administrative credentials, and milestone sign-offs.</>,
-      <><strong>Inactivity Pause:</strong> If Client fails to communicate, supply requested assets, or provide necessary approvals for a continuous period of fourteen (14) calendar days, the project will automatically be placed on administrative “Paused” status, and Company will release reserved production calendar dates to other clients.</>,
-      <><strong>Restart Fee:</strong> To reactivate a paused project and re-enter Company’s active production queue, Client must pay a non-negotiable Project Restart Fee of $250.00 and agree to an updated timeline based on Company’s current workflow capacity.</>,
+    heading: "Inquiries, Soft Holds, and Quotations",
+    items: [
+      <><strong>Inquiry Process & Soft Holds:</strong> Submitting a rental hold request or inquiry via our website forms does not create a confirmed booking or guarantee inventory availability. Inquiries are logged and evaluated in order of electronic submission timestamp. A soft hold allows us to review incoming requests chronologically to verify if the requested inventory is available for your event date.</>,
+      <><strong>Price Validity vs. Inventory Availability:</strong> Unless stated otherwise in writing, quotations provided are valid for seven (7) calendar days from the date sent, meaning the quoted pricing will be honored during that window. However, honoring a price quote does not guarantee that inventory remains available. Inventory is not locked or removed from availability until a formal Event Rental Agreement is signed and the required booking deposit is received. We reserve the right to decline inquiries or notify customers of unavailability at any time.</>,
     ],
   },
   {
-    heading: "6. Subcontractors, Assistants, and Production Team",
-    paragraphs: [
-      "Company reserves full operational discretion to utilize internal assistants, vetted junior designers, copywriters, and independent subcontractors to execute project deliverables without requiring separate written permission from Client. Company retains sole responsibility for creative direction, quality assurance, final deliverable standards, and strict enforcement of confidentiality obligations across all personnel and contractors.",
+    heading: "When a Rental Booking Becomes Binding",
+    paragraphs: ["A rental booking becomes legally binding only when:"],
+    items: [
+      "Second Nature confirms event requirements, logistics, and inventory availability in writing;",
+      "The customer reviews, accepts, and electronically signs our formal Event Rental Agreement;",
+      "The required initial booking deposit is paid and processed; and",
+      "Second Nature issues an official written confirmation.",
     ],
   },
   {
-    heading: "7. Intellectual Property, Working Files, and Transfer of Ownership",
+    heading: "Inquiries Are Not Bookings",
     paragraphs: [
-      <><strong>Full Ownership Upon Final Payment:</strong> Upon full settlement of all project invoices, retainers, and approved additional hourly charges, Company grants and assigns to Client full ownership and title to all final deliverables, including all proprietary working and raw source files created specifically for the project (e.g., editable vector files, Photoshop .PSD files, Illustrator .AI files, InDesign documents, and raw assets).</>,
-      <><strong>Withholding for Nonpayment:</strong> Final file exports, full source files, and delegated account ownership will not be delivered, released, or assigned until the final invoice balance is paid in full.</>,
-      <><strong>Preliminary Concepts & Background Tools:</strong> Company retains ownership of preliminary concepts, drafts, and proposals not selected by Client, as well as general operational templates, proprietary workflows, and pre-existing design systems.</>,
+      "An inquiry, soft hold, estimate, unsigned proposal, or unaccepted quotation alone does not constitute a booking.",
     ],
   },
   {
-    heading: "8. Software, Advertising Budgets, and Third-Party Costs",
+    heading: "Rental Payments",
     paragraphs: [
-      <><strong>External Tool & Software Licenses:</strong> Where specialized third-party tools, paid plugins, custom font licenses, stock photography licenses, or platform subscriptions (e.g., specific email marketing software, domain hosting, or CRM licenses) are required specifically for Client’s project, the direct cost of such tools shall be billed to and paid by Client upon prior written authorization.</>,
-      <><strong>Advertising Spend (Direct Card Attachment):</strong> For any social media advertising, Meta Ads, or Google Ads campaigns managed by Company, Client must directly link their own corporate credit or debit card to the respective platform’s advertising billing manager. Company will never front, advance, invoice, or manage client ad spend through Company financial accounts.</>,
+      "Unless specified otherwise in writing within your confirmed booking documentation:",
+    ],
+    items: [
+      <><strong>Booking Deposit:</strong> Rentals require a non-refundable booking deposit of fifty percent (50%) of the total agreed rental price at the time of contract signing to secure your event date and inventory.</>,
+      <><strong>Final Balance Due Date:</strong> The remaining balance of the rental fee, along with any applicable delivery charges, refundable security deposits, and taxes, is due fourteen (14) calendar days prior to the scheduled delivery/event date. Bookings made within 14 days of an event require payment in full upon contract signing.</>,
+      <><strong>Accepted Payment Methods:</strong> Payments may be processed via Stripe (credit/debit card) or check where approved in writing. Checks are subject to collection; dishonored or bounced checks do not constitute settled payment and may result in immediate cancellation of your hold or booking.</>,
     ],
   },
   {
-    heading: "9. Marketing Performance and Platform Disclaimers",
+    heading: "Creative and Digital Services",
     paragraphs: [
-      "Digital marketing, social media campaigns, and event turnouts are subject to changing consumer behavior, third-party platform algorithms, and market variables beyond Company’s control. While Company performs all services with professional skill and diligence, no specific revenue, return on ad spend (ROAS), sales conversions, engagement figures, or web traffic levels are guaranteed. Company is not liable for account interruptions, algorithmic demotions, or policy actions imposed by third-party platforms (e.g., Meta, Google, TikTok, or email service providers).",
+      "Creative direction, branding, graphic design, email marketing, and social media consulting are offered strictly as auxiliary, secondary services at our sole discretion.",
+    ],
+    items: [
+      <><strong>No Obligation to Accept Work:</strong> Submitting an inquiry or project brief through the website does not obligate Second Nature to accept, quote, or perform marketing or creative work. All creative and marketing projects are subject to an internal review process, client vetting, and schedule capacity. We reserve the complete right to decline any creative or marketing request without liability.</>,
+      <><strong>Separate Agreement Required:</strong> If accepted, creative and consulting projects are governed by a separate, customized Creative Consulting Services Agreement and Scope of Work (SOW).</>,
+      <><strong>Third-Party Platforms:</strong> For marketing projects, we do not control and are not responsible or liable for third-party platforms (e.g., Meta, Google, Klaviyo, Mailchimp), including account suspensions, delivery deliverability, or algorithmic changes outside our direct control.</>,
     ],
   },
   {
-    heading: "10. Portfolio and Marketing Attribution",
+    heading: "Relationship to Transaction Agreements",
     paragraphs: [
-      "Unless an express non-disclosure agreement or embargo window is agreed upon in the Project Scope, Company reserves the non-exclusive right to display completed designs, branding collateral, creative concepts, and case study overviews on Company’s website, portfolio, and marketing channels for self-promotional purposes.",
+      "These Website Terms of Service govern general website use and inquiry submissions.",
+      "Transaction-specific terms are governed by:",
+    ],
+    items: [
+      "The signed Event Rental Agreement (for decor, inventory, setup, and equipment rentals).",
+      "The signed Creative Consulting Services Agreement / SOW (for marketing, design, and consulting).",
+      "In the event of any direct conflict between these general website Terms and a signed transaction agreement, the terms of the signed transaction agreement shall control.",
     ],
   },
   {
-    heading: "11. Termination and Project Cancellation",
-    paragraphs: [
-      <><strong>Termination by Client:</strong> Client may terminate this Agreement at any time upon written notice. Upon receipt of termination notice: (a) the initial fifty percent (50%) retainer remains strictly non-refundable; and (b) Client will be billed for all work performed up to the date of cancellation at Company’s standard rate of $100.00 per hour, or based on the proportion of milestone deliverables completed.</>,
-      <><strong>File Withholding:</strong> No final working files, design deliverables, or project assets will be released or assigned until all outstanding hours, expenses, and invoices are paid and cleared.</>,
-      <><strong>Termination by Company:</strong> Company may terminate this Agreement upon written notice if Client fails to cure an invoice delinquency, engages in abusive conduct toward personnel, or remains unresponsive past thirty (30) days.</>,
+    heading: "Acceptable Use",
+    paragraphs: ["You agree not to:"],
+    items: [
+      "Submit false, misleading, fraudulent, or impersonated contact or event information;",
+      "Use the website or forms for any unlawful, harassing, or unauthorized commercial purpose;",
+      "Attempt unauthorized access to our systems, servers, or connected databases;",
+      "Introduce viruses, malware, bots, or other technologically harmful material;",
+      "Scrape, harvest, copy, or index inventory descriptions, photography, pricing formulas, or website content without express written consent;",
+      "Interfere with or disrupt the normal operation and security of the website.",
     ],
   },
   {
-    heading: "12. Limitation of Liability and Indemnification",
+    heading: "Enforcement",
     paragraphs: [
-      "Client agrees to indemnify, defend, and hold harmless Second Nature Creative LLC and its contractors from any liabilities, claims, losses, or legal costs arising out of copyright infringement for materials provided by Client, client-directed advertising claims, or third-party disputes. To the fullest extent permitted by law, Company’s maximum cumulative liability under this Agreement shall not exceed the total fees paid by Client under the applicable Project Scope.",
+      "Violations may result in immediate blocking of your IP address, cancellation of pending inquiries, and pursuit of legal remedies where appropriate.",
     ],
   },
   {
-    heading: "13. Governing Law and Dispute Resolution",
+    heading: "Professional Conduct",
     paragraphs: [
-      "This Agreement shall be governed by and construed in accordance with the laws of the State of North Carolina. Any legal disputes arising out of this Agreement shall be submitted to the exclusive jurisdiction of the state or federal courts located in Mecklenburg County, North Carolina.",
+      "We value professional, respectful interactions. Intimidation, threats, harassment, discrimination, or abusive communication directed toward our staff, delivery crew, contractors, or fellow vendors will not be tolerated. We reserve the right to immediately decline inquiries, cease communications, or terminate agreements in accordance with contract terms in the event of abusive conduct.",
     ],
   },
   {
-    heading: "14. Entire Agreement and Amendments",
+    heading: "Intellectual Property",
     paragraphs: [
-      "This Agreement and the attached Project Scope constitute the complete agreement between the parties concerning consulting services, superseding all prior oral or written discussions. Any modifications must be executed in writing and signed by authorized representatives of both parties.",
+      "All original website text, styling arrangements, photographs, graphics, logos, branding, website design, and curated catalog imagery are the proprietary intellectual property of Second Nature Creative LLC and are protected by applicable copyright, trademark, and trade dress laws. No license or right is granted to download, copy, distribute, or commercially exploit our media without our express prior written permission.",
     ],
   },
   {
-    heading: "Execution & Signatures",
+    heading: "Materials You Submit",
     paragraphs: [
-      <><strong>SECOND NATURE CREATIVE LLC</strong><br /><br />Authorized Signature: ___________________________<br /><br />Printed Name: _________________________________<br /><br />Title: ________________________________________<br /><br />Date: _________________________________________</>,
-      <><strong>CLIENT</strong><br /><br />Signature: ____________________________________<br /><br />Printed Legal Name: ____________________________<br /><br />Title / Company: ______________________________<br /><br />Date: _________________________________________</>,
+      "By submitting mood boards, event floor plans, logos, imagery, or reference materials through our website or inquiry forms, you represent that you hold the necessary rights to share them. You grant us a limited, non-exclusive license to review and use those materials solely for evaluating, quoting, and planning your requested services. We will not use proprietary client materials for external marketing without prior consent.",
     ],
   },
   {
-    heading: "Schedule A: Project Scope Template",
+    heading: "Event Photography and Portfolio Use",
     paragraphs: [
-      <><strong>Project Name:</strong><br />[ENTER PROJECT TITLE]</>,
-      <><strong>Project Description & Objectives:</strong><br />[SUMMARY OF CAMPAIGN / DESIGN GOALS]</>,
-      <><strong>Agreed Deliverables:</strong><br />[ITEMIZED DELIVERABLES, E.G., 1 LOGO SUITE, 6 SOCIAL GRAPHICS, 1 EMAIL TEMPLATE]</>,
-      <><strong>Total Project Fee:</strong><br />$[AMOUNT] USD</>,
-      <><strong>Payment Milestones:</strong><br />50% Retainer ($[AMOUNT]) due upon signing; 50% Balance ($[AMOUNT]) due prior to final file release.</>,
-      <><strong>Estimated Production Timeline:</strong><br />[START DATE] to [COMPLETION DATE]</>,
-      <><strong>Included Revisions:</strong><br />2 consolidated rounds per deliverable (5-day feedback window; additional rounds at $100/hr).</>,
-      <><strong>Client Materials Required:</strong><br />[BRAND GUIDELINES, RAW IMAGES, AD ACCOUNT ACCESS, COPY]</>,
-      <><strong>Project Scope Approval:</strong><br />Client Initials: ________ Company Initials: ________ Date: ________</>,
+      "Second Nature reserves the right to photograph our inventory, styling, tabletop concepts, and completed on-site setups at event venues for documentation, marketing, social media, and portfolio use. We make reasonable efforts not to publish sensitive client information or identifiable minors without proper authorization. Specific exclusivity or embargo requests must be agreed upon in your separate Event Rental Agreement.",
+    ],
+  },
+  {
+    heading: "Third-Party Services",
+    paragraphs: [
+      "Our website integrates third-party tools, payment processors (e.g., Stripe), scheduling tools, and form embeds. We are not responsible for the independent uptime, functionality, or privacy policies of these third-party platforms. Your interactions with third-party providers are subject to their respective terms and privacy policies.",
+    ],
+  },
+  {
+    heading: "Privacy and Communications",
+    paragraphs: [
+      <>Personal details submitted through our site are handled in accordance with our <Link className="underline underline-offset-4 hover:text-olive-dark" href="/privacy">Privacy Policy</Link>. Inquiring through our forms does not automatically opt you into promotional email blasts without your consent. Transactional and administrative communications regarding your quotes, bookings, and invoices may still be sent to the email provided as necessary to conduct business.</>,
+    ],
+  },
+  {
+    heading: "Website Disclaimer",
+    paragraphs: [
+      "This website and its contents are provided on an \"as is\" and \"as available\" basis. While we strive to maintain accurate information and continuous uptime, we do not warrant that site functions will be uninterrupted, error-free, or free of technical bugs. Nonwaivable consumer statutory rights remain unaffected.",
+    ],
+  },
+  {
+    heading: "Limitation of Liability",
+    paragraphs: [
+      "To the maximum extent permitted by applicable law, Second Nature Creative LLC, its officers, employees, and agents shall not be liable for any indirect, incidental, consequential, or punitive damages resulting from:",
+    ],
+    items: [
+      "Temporary website downtime or technical failure of inquiry submission forms;",
+      "Customer reliance on outdated or erroneous website descriptions/pricing prior to a signed contract;",
+      "Delays or failures resulting from causes beyond our reasonable control (force majeure).",
+    ],
+  },
+  {
+    heading: "Liability for Website Use",
+    paragraphs: [
+      "Our total liability related to website usage shall be limited to the fullest extent permitted by North Carolina law. Operational liabilities for contracted events and rentals are governed exclusively by the executed Event Rental Agreement.",
+    ],
+  },
+  {
+    heading: "Governing Law and Venue",
+    paragraphs: [
+      "These Terms are governed by and construed in accordance with the laws of the State of North Carolina, without regard to conflict of law principles. Any legal disputes arising out of the use of this website shall be resolved in the state or federal courts located in Mecklenburg County, North Carolina.",
+    ],
+  },
+  {
+    heading: "Severability",
+    paragraphs: [
+      "If any provision of these Terms is found to be invalid, illegal, or unenforceable by a court of competent jurisdiction, that provision shall be modified to the minimum extent necessary to make it enforceable, and all remaining provisions shall continue in full legal effect.",
+    ],
+  },
+  {
+    heading: "Contact Us",
+    paragraphs: [
+      <>For questions, notices, or inquiries regarding these Terms of Service, contact us electronically at:<br /><br />Second Nature Creative LLC<br />Charlotte, North Carolina, United States<br />Telephone: <a className="underline underline-offset-4 hover:text-olive-dark" href="tel:+12569750182">256-975-0182</a><br />Email: <a className="underline underline-offset-4 hover:text-olive-dark" href="mailto:hello@secondnaturecreative.com">hello@secondnaturecreative.com</a></>,
+      "Official business mailing address available upon request for formal contractual and legal notices.",
     ],
   },
 ];
@@ -129,23 +192,13 @@ const sections = [
 export default function TermsPage() {
   return (
     <LegalPage
-      title="Creative Consulting Services Agreement"
-      description="Project services, intellectual property assignment, payment terms, and scope management"
+      title="Terms of Service"
+      description="Public website use, inquiries, and reservation holds"
       details={[
-        { label: "Agreement Date", value: "[DATE]" },
-        { label: "Project Scope Reference", value: "[REFERENCE]" },
-        { label: "Client Full Legal Name", value: "[CLIENT FULL LEGAL NAME]" },
-        { label: "Project Name", value: "[PROJECT NAME]" },
+        { label: "Effective Date", value: "November 6, 2026" },
+        { label: "Last Updated", value: "November 6, 2026" },
       ]}
-      sections={[
-        {
-          heading: "Agreement",
-          paragraphs: [
-            "This Creative Consulting Services Agreement (\"Agreement\") is entered into by and between Second Nature Creative LLC (\"Company,\" \"we,\" \"our,\" or \"us\") and the client identified above (\"Client\" or \"you\").",
-          ],
-        },
-        ...sections,
-      ]}
+      sections={sections}
     />
   );
 }
