@@ -35,7 +35,8 @@ export default function StudioPage() {
               priority
             />
           </div>
-          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {/* Source photos are only 200×275; keep them near native size so they stay sharp. */}
+          <div className="mx-auto mt-6 grid max-w-[496px] grid-cols-2 gap-4">
             {gallery.map((img) => (
               <div
                 key={img.src + img.alt}
@@ -45,7 +46,7 @@ export default function StudioPage() {
                   src={img.src}
                   alt={img.alt}
                   fill
-                  sizes="(min-width: 640px) 50vw, 100vw"
+                  sizes="240px"
                   className="object-cover"
                 />
               </div>
