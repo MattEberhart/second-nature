@@ -7,6 +7,22 @@ import type { AvailabilitySlot } from "./types";
 
 type BusyPeriod = { start: string; end: string };
 
+export const SLOT_TAKEN_MESSAGE = "That time was just taken. Please choose another.";
+
+/** Thrown when an appointment insert hits unique (starts_at, ends_at). */
+export class SlotTakenError extends Error {
+  status = 409;
+
+  constructor() {
+    super(SLOT_TAKEN_MESSAGE);
+  }
+}
+
+/** Postgres unique_violation on the appointment time slot. */
+export function isSlotConflict(error: { code?: string; message?: string } | null) {
+  return error?.code === "23505" && (error.message ?? "").includes("starts_at");
+}
+
 function partsInZone(date: Date, timeZone: string) {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone,

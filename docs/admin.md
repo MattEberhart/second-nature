@@ -20,10 +20,11 @@ OAuth errors arrive as `?error=` and are shown in a banner.
 
 ## CRM model
 
-Every public submission upserts a `contacts` row by normalized email (name/phone are
-overwritten with the latest submission) and appends to `contact_activities`. Lydia moves
+Every public submission upserts a `contacts` row by normalized email and appends to `contact_activities`. Lydia moves
 contacts through `new → contacted → qualified → booked → closed` manually; nothing
-changes status automatically.
+changes status automatically. Name always follows the latest submission; phone follows it
+only when the form supplied one. Search (`?q=`) runs in SQL (`ilike` on name, email,
+phone; gaps between words match anything).
 
 ## Inventory & collections — `app/admin/catalog-manager.tsx`
 
@@ -34,7 +35,7 @@ Two modes:
   optional image, price in dollars → cents, active). Saving an existing item sends the
   full variant list; variants omitted are **deleted**.
 - **Collections**: name, slug, description, header image, gallery images (≤ 20, with alt
-  text), active, and members — whole products or individual variants. Public pages:
+  text), active, and members — whole products or individual variants. Saves are atomic. Public pages:
   `/gatherings/collections` and `/gatherings/collections/[slug]`, where the estimate
   builder is limited to the collection's products/variants.
 
@@ -51,5 +52,5 @@ not exposed by the inventory form or the public catalog.
   (`primary`, the consultations calendar id, and Lydia's shared personal free/busy calendar).
 - Delivery: base fee, per round-trip mile, full-service starting fee.
 - Calendar connection: shows the connected account; **Connect calendar** is only offered to
-  `CALENDAR_OWNER_EMAIL`. Weekly hours (Mon–Thu 10–4, Fri 10–2 ET) are not editable in the
-  UI and are reset to those defaults on every settings save.
+  `CALENDAR_OWNER_EMAIL`. Weekly hours (default Mon–Thu 10–4, Fri 10–2 ET) and the time
+  zone are not editable in the UI; saving settings preserves whatever is stored.

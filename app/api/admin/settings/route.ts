@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { requireAdmin } from "@/lib/admin-auth";
-import { setSetting } from "@/lib/estimator/settings";
+import { defaultAvailability, setSetting } from "@/lib/estimator/settings";
+import { getAdminSupabase } from "@/lib/supabase/admin";
 
 const schema = z.object({
   availability: z.object({
@@ -21,11 +22,17 @@ export async function PATCH(request: Request) {
   try {
     await requireAdmin();
     const parsed = schema.parse(await request.json());
-    const availability = {
-      timeZone: "America/New_York",
-      weekly: { "1": [["10:00", "16:00"]], "2": [["10:00", "16:00"]], "3": [["10:00", "16:00"]], "4": [["10:00", "16:00"]], "5": [["10:00", "14:00"]] },
-      ...parsed.availability,
-    };
+    // The dashboard edits only some availability fields; keep the stored weekly
+    // hours and time zone instead of resetting them to the defaults.
+    // Read directly (not getSetting) so a failed read errors out rather than
+    // silently writing the defaults back.
+    const { data: stored, error: readError } = await getAdminSupabase()
+      .from("app_settings")
+      .select("value")
+      .eq("key", "availability")
+      .maybeSingle();
+    if (readError) throw readError;
+    const availability = { ...defaultAvailability, ...(stored?.value ?? {}), ...parsed.availability };
     await Promise.all([setSetting("availability", availability), setSetting("delivery", parsed.delivery)]);
     return Response.json({ ok: true });
   } catch (error) {

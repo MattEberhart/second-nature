@@ -1,5 +1,5 @@
 import { consultationSchema } from "@/lib/estimator/validation";
-import { listAvailability, createCalendarMeeting } from "@/lib/estimator/calendar";
+import { listAvailability, createCalendarMeeting, isSlotConflict, SLOT_TAKEN_MESSAGE, SlotTakenError } from "@/lib/estimator/calendar";
 import { sendAppointmentEmails } from "@/lib/estimator/email";
 import { getAdminSupabase, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { recordSubmissionConsent } from "@/lib/consent";
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   let appointmentId: string | null = null;
   try {
     const slot = (await listAvailability()).find((candidate) => candidate.start === parsed.data.slotStart);
-    if (!slot) return Response.json({ error: "That time was just taken. Please choose another." }, { status: 409 });
+    if (!slot) return Response.json({ error: SLOT_TAKEN_MESSAGE }, { status: 409 });
     const supabase = getAdminSupabase();
     const contactId = await upsertContact({
       name: parsed.data.name,
@@ -47,6 +47,7 @@ export async function POST(request: Request) {
       ends_at: slot.end,
       status: "pending",
     }).select("id").single();
+    if (isSlotConflict(error)) throw new SlotTakenError();
     if (error || !appointment) throw error || new Error("Could not reserve that time.");
     appointmentId = appointment.id;
     await recordSubmissionConsent(request, {
@@ -94,6 +95,6 @@ export async function POST(request: Request) {
     return Response.json({ appointmentLabel: label, meetUrl: meeting.meetUrl });
   } catch (error) {
     if (appointmentId) await getAdminSupabase().from("appointments").delete().eq("id", appointmentId);
-    return Response.json({ error: error instanceof Error ? error.message : "The consultation could not be booked." }, { status: 500 });
+    return Response.json({ error: error instanceof Error ? error.message : "The consultation could not be booked." }, { status: error instanceof SlotTakenError ? error.status : 500 });
   }
 }

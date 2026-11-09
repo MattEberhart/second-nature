@@ -47,7 +47,7 @@ const saveDetailsSchema = detailsBaseSchema.partial().extend({
 
 export const saveEstimateSchema = z.object({
   cart: cartSchema,
-  details: saveDetailsSchema,
+  details: saveDetailsSchema.and(consentSchema),
   resumeToken: z.string().min(20).max(200).optional(),
 });
 

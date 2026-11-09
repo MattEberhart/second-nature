@@ -59,12 +59,19 @@ type Stage = "shop" | "review" | "schedule" | "confirmed";
 
 export function EstimateBuilder({
   products,
+  catalog,
   resumeToken,
   heading = "Build Your Estimate",
   eyebrow = "Event rentals · Charlotte, NC",
   intro = "Explore the pieces that speak to you. We’ll keep a running starting estimate—no account, no pressure, and no inventory reserved just yet.",
 }: {
+  /** Products shown in the shop grid (a collection page passes only its own). */
   products: CatalogProduct[];
+  /**
+   * Full public catalog, used to price and show cart lines added elsewhere.
+   * Pass it on collection pages; omit it when `products` is already the full catalog.
+   */
+  catalog?: CatalogProduct[];
   resumeToken?: string;
   heading?: string;
   eyebrow?: string;
@@ -134,27 +141,44 @@ export function EstimateBuilder({
   const variantMap = useMemo(
     () =>
       new Map(
-        products.flatMap((product) =>
+        (catalog ?? products).flatMap((product) =>
           product.variants.map(
             (variant) => [variant.id, { product, variant }] as const,
           ),
         ),
       ),
-    [products],
+    [catalog, products],
   );
-  const cartRows = cart.flatMap((line) => {
-    const match = variantMap.get(line.variantId);
-    return match
-      ? [
-          {
-            ...line,
-            ...match,
-            lineTotal: match.variant.unitPriceCents * line.quantity,
-          },
-        ]
-      : [];
-  });
+  // On a collection page, lines from elsewhere stay in the (shared) cart and are
+  // shown separately so the on-screen total matches what will be booked.
+  const collectionVariantIds = useMemo(
+    () =>
+      catalog
+        ? new Set(products.flatMap((product) => product.variants.map((variant) => variant.id)))
+        : null,
+    [catalog, products],
+  );
+  const cartRows = cart
+    .flatMap((line) => {
+      const match = variantMap.get(line.variantId);
+      return match
+        ? [
+            {
+              ...line,
+              ...match,
+              lineTotal: match.variant.unitPriceCents * line.quantity,
+              inCollection: collectionVariantIds?.has(line.variantId) ?? true,
+            },
+          ]
+        : [];
+    })
+    .sort((a, b) => Number(b.inCollection) - Number(a.inCollection));
   const subtotal = cartRows.reduce((sum, row) => sum + row.lineTotal, 0);
+  const collectionSubtotal = collectionVariantIds
+    ? cartRows
+        .filter((row) => row.inCollection)
+        .reduce((sum, row) => sum + row.lineTotal, 0)
+    : undefined;
   const total =
     subtotal +
     (delivery?.deliveryFeeCents || 0) +
@@ -521,6 +545,7 @@ export function EstimateBuilder({
             <CartPanel
               rows={cartRows}
               subtotal={subtotal}
+              collectionSubtotal={collectionSubtotal}
               changeQuantity={changeQuantity}
               setQuantity={setLineQuantity}
               onReview={() => setStage("review")}
@@ -592,6 +617,7 @@ export function EstimateBuilder({
               mobile
               rows={cartRows}
               subtotal={subtotal}
+              collectionSubtotal={collectionSubtotal}
               changeQuantity={changeQuantity}
               setQuantity={setLineQuantity}
               onReview={() => {
@@ -756,10 +782,12 @@ type CartRow = CartLine & {
   product: CatalogProduct;
   variant: CatalogProduct["variants"][number];
   lineTotal: number;
+  inCollection: boolean;
 };
 function CartPanel({
   rows,
   subtotal,
+  collectionSubtotal,
   changeQuantity,
   setQuantity,
   onReview,
@@ -769,6 +797,8 @@ function CartPanel({
 }: {
   rows: CartRow[];
   subtotal: number;
+  /** Set on collection pages: subtotal of lines that belong to this collection. */
+  collectionSubtotal?: number;
   changeQuantity: (id: string, amount: number) => void;
   setQuantity: (id: string, quantity: number) => void;
   onReview: () => void;
@@ -797,8 +827,15 @@ function CartPanel({
       ) : (
         <>
           <div className="mt-5 max-h-[45vh] space-y-4 overflow-y-auto pr-1">
-            {rows.map((row) => (
+            {rows.map((row, index) => (
               <div key={row.variantId} className="border-b border-ink/10 pb-4">
+                {collectionSubtotal !== undefined &&
+                !row.inCollection &&
+                (index === 0 || rows[index - 1].inCollection) ? (
+                  <p className="mb-3 text-[11px] uppercase tracking-[0.16em] text-ink/45">
+                    Also in your estimate
+                  </p>
+                ) : null}
                 <div className="flex justify-between gap-3">
                   <div>
                     <p className="font-display text-base">
@@ -844,9 +881,25 @@ function CartPanel({
               </div>
             ))}
           </div>
+          {collectionSubtotal !== undefined &&
+          collectionSubtotal !== subtotal ? (
+            <div className="mt-5 space-y-1 text-xs text-ink/60">
+              <div className="flex justify-between">
+                <span>This collection</span>
+                <span>{formatMoney(collectionSubtotal)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Other pieces</span>
+                <span>{formatMoney(subtotal - collectionSubtotal)}</span>
+              </div>
+            </div>
+          ) : null}
           <div className="mt-5 flex items-end justify-between">
             <span className="text-xs uppercase tracking-[0.16em] text-ink/55">
-              Starting subtotal
+              {collectionSubtotal !== undefined &&
+              collectionSubtotal !== subtotal
+                ? "Estimate subtotal"
+                : "Starting subtotal"}
             </span>
             <span className="font-display text-2xl">
               {formatMoney(subtotal)}
@@ -936,9 +989,26 @@ function SaveModal({
               className="mt-2"
             />
           </div>
+          <div className="space-y-3 border-t border-ink/10 pt-4">
+            <ConsentCheckbox
+              required
+              checked={details.communicationsConsent}
+              onChange={(checked) =>
+                setDetails({ ...details, communicationsConsent: checked })
+              }
+              text={COMMUNICATIONS_CONSENT_TEXT}
+            />
+            <ConsentCheckbox
+              checked={details.marketingConsent}
+              onChange={(checked) =>
+                setDetails({ ...details, marketingConsent: checked })
+              }
+              text={MARKETING_CONSENT_TEXT}
+            />
+          </div>
         </div>
         <Button
-          disabled={busy}
+          disabled={busy || !details.communicationsConsent}
           className="mt-6 h-12 w-full bg-olive text-xs uppercase tracking-[0.17em]"
         >
           {busy ? "Saving…" : "Email my private link"}

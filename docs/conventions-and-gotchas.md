@@ -32,30 +32,29 @@
 
 ## Known sharp edges / TODO candidates
 
-These were observed on 2026-11-09; confirm before fixing.
+Open (confirm before fixing):
 
-1. **Settings save clobbers weekly hours** — `PATCH /api/admin/settings` hard-codes
-   `weekly` and `timeZone`, so any custom hours written directly to `app_settings` are lost.
-2. **Collection update isn't atomic** — members/images are deleted then reinserted in
-   separate calls; a failure mid-way leaves an emptied collection.
-3. **Inventory PATCH deletes omitted variants**, which cascades to collection members that
-   referenced them.
-4. **`/api/delivery/estimate` is unauthenticated and not rate-limited** but calls the paid
-   Google Routes API. A quota + budget alert is the only guard (per SETUP.md).
-5. **`/api/estimates/save` rate-limits after parsing** (other routes limit first), and the
-   save flow records no consent.
-6. **Shared localStorage cart across pages** — the cart key is the same on
-   `/gatherings/estimate` and collection pages. On a collection page, lines for products
-   outside that collection are hidden from the cart UI but still submitted and priced.
-7. **CRM upsert overwrites name/phone** with whatever the latest submission says.
-8. **Customers search** filters the latest 250 contacts in memory, not in SQL.
-9. **Availability race** — the slot is re-checked at booking time, and
-   `unique (starts_at, ends_at)` on `appointments` backs it up; a conflicting insert
-   surfaces as a 500 rather than a friendly 409.
-10. **Supabase free plan** can pause the project after inactivity, which would take down
-    lead capture.
-11. Root `README.md` was create-next-app boilerplate (replaced 2026-11-09); unused
-    template SVGs remain in `public/`.
+1. **Supabase free plan** can pause the project after inactivity (accepted for now;
+   upgrade before relying on uninterrupted lead capture).
+2. Unused create-next-app SVGs remain in `public/`.
+
+By design:
+
+- The localStorage cart is shared between `/gatherings/estimate` and collection pages —
+  they are two ways to shop one estimate. Collection pages pass the full `catalog` to
+  `EstimateBuilder`, so lines from elsewhere appear under "Also in your estimate" with a
+  "This collection / Other pieces / Estimate subtotal" breakdown.
+- Saving an item replaces its full option list; options Lydia removes are deleted (and drop
+  out of collections via cascade). Estimate snapshots are unaffected.
+- CRM contacts take the latest submission's name, and its phone when one is provided.
+
+Fixed 2026-11-09: settings save no longer resets weekly hours/time zone; collection saves
+are a single transaction (`save_curated_collection`); `/api/delivery/estimate` is rate
+limited (20 / 15 min); estimate save rate-limits first and records consent; a save without
+a phone no longer erases the contact's phone; `priceCart()` skips cart lines whose option was
+removed or deactivated (400 only if nothing is left); customer search runs in SQL; a double-booking
+race returns 409 "That time was just taken."; production migration history reconciled with the repo
+(`supabase db push` is safe again).
 
 ## Handy commands
 

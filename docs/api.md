@@ -10,10 +10,10 @@ and `await context.params`.
 | --- | --- | --- | --- |
 | `GET /api/catalog` | `app/api/catalog/route.ts` | — | `{ products: CatalogProduct[] }` (public fields only) |
 | `GET /api/availability` | `app/api/availability/route.ts` | — | `force-dynamic`; `{ slots: {start,end}[] }` ISO UTC |
-| `POST /api/delivery/estimate` | `app/api/delivery/estimate/route.ts` | — | Body `{address, fulfillment: "delivery"\|"full-service"}` → `DeliveryEstimate`; 422 on routing failure. ⚠ Unauthenticated and un-rate-limited calls to a paid Google API |
+| `POST /api/delivery/estimate` | `app/api/delivery/estimate/route.ts` | `delivery-estimate` 20/15m (when Supabase is configured) | Body `{address, fulfillment: "delivery"\|"full-service"}` → `DeliveryEstimate`; 422 on routing failure. Each call hits the paid Google Routes API |
 | `POST /api/contact` | `app/api/contact/route.ts` | `contact-inquiry` 6/15m | Honeypot `website`; emails via `after()` |
-| `POST /api/consultations/schedule` | `app/api/consultations/schedule/route.ts` | `consultation-booking` 6/15m | Body = `consultationSchema`; returns `{appointmentLabel, meetUrl}`; 409 if slot taken |
-| `POST /api/estimates/save` | `app/api/estimates/save/route.ts` | `estimate-save` 10/15m | Body `{cart, details (name+email required), resumeToken?}` → `{id, resumeToken, resumeUrl, emailSent, warning?}` |
+| `POST /api/consultations/schedule` | `app/api/consultations/schedule/route.ts` | `consultation-booking` 6/15m | Body = `consultationSchema`; returns `{appointmentLabel, meetUrl}`; 409 if slot taken (including a simultaneous-booking unique violation) |
+| `POST /api/estimates/save` | `app/api/estimates/save/route.ts` | `estimate-save` 10/15m | Body `{cart, details, resumeToken?}` — details need name, email, `communicationsConsent: true` and `marketingConsent`; records consent → `{id, resumeToken, resumeUrl, emailSent, warning?}` |
 | `GET /api/estimates/resume/[token]` | `app/api/estimates/resume/[token]/route.ts` | — | Token length 20–200; returns `{cart, details}` |
 | `POST /api/estimates/schedule` | `app/api/estimates/schedule/route.ts` | `estimate-booking` 6/15m | Body = `scheduleSchema`; returns `{appointmentId, appointmentLabel, meetUrl, resumeToken, totalCents, warning?}` |
 
@@ -30,14 +30,14 @@ and `await context.params`.
 
 | Method & path | Body / effect |
 | --- | --- |
-| `PATCH /api/admin/settings` | `{availability:{durationMinutes,bufferMinutes,minimumNoticeHours,bookingHorizonDays,busyCalendarIds}, delivery:{baseFeeCents,roundTripPerMileCents,fullServiceStartingFeeCents}}`. ⚠ Overwrites `weekly` hours and `timeZone` with hard-coded defaults |
+| `PATCH /api/admin/settings` | `{availability:{durationMinutes,bufferMinutes,minimumNoticeHours,bookingHorizonDays,busyCalendarIds}, delivery:{baseFeeCents,roundTripPerMileCents,fullServiceStartingFeeCents}}`. Merged over the stored availability, so `weekly` hours and `timeZone` are preserved |
 | `PATCH /api/admin/catalog/[id]` | `{active}` toggle on a product (legacy) |
 | `POST /api/admin/catalog/seed` | Upsert `launchCatalog` + private metadata |
 | `POST /api/admin/inventory` | `inventoryItemSchema` → new product id `slug-xxxxxxxx`, variants inserted; 201 `{id}` |
 | `PATCH /api/admin/inventory/[id]` | Full replace: update product, upsert variants, **delete variants not in the payload** |
 | `DELETE /api/admin/inventory/[id]` | Deletes product (variants + collection members cascade; estimate snapshots survive) |
-| `POST /api/admin/collections` | `curatedCollectionSchema` → 201 `{id}` |
-| `PATCH /api/admin/collections/[id]` | Update + delete-and-reinsert members/images (not transactional) |
+| `POST /api/admin/collections` | `curatedCollectionSchema` → 201 `{id}` (same RPC) |
+| `PATCH /api/admin/collections/[id]` | Full replace of the collection, members and images in one transaction (`save_curated_collection` RPC) |
 | `DELETE /api/admin/collections/[id]` | Cascade delete |
 | `PATCH /api/admin/customers/[id]` | `{status}` → contact status + activity |
 | `POST /api/admin/customers/[id]/notes` | `{body}` → note + activity |

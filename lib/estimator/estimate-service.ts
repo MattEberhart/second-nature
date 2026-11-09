@@ -5,6 +5,14 @@ import { createOpaqueToken, hashToken } from "@/lib/security";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import { recordContactActivity, upsertContact } from "@/lib/crm";
 
+export class EmptyCartError extends Error {
+  status = 400;
+
+  constructor() {
+    super("The pieces in your estimate are no longer available. Please add new selections.");
+  }
+}
+
 export async function priceCart(cart: CartLine[]) {
   const catalog = await getPublicCatalog();
   const variants = new Map(
@@ -13,10 +21,13 @@ export async function priceCart(cart: CartLine[]) {
     ),
   );
 
-  const items = cart.map((line) => {
+  // Carts live in the browser and in saved estimates, so they can outlast an
+  // option Lydia has since removed or deactivated. The builder already hides
+  // those lines, so skip them here too instead of rejecting the whole request.
+  const items = cart.flatMap((line) => {
     const match = variants.get(line.variantId);
-    if (!match) throw new Error(`Unknown catalog item: ${line.variantId}`);
-    return {
+    if (!match) return [];
+    return [{
       productId: match.product.id,
       variantId: match.variant.id,
       publicName: match.product.publicName,
@@ -24,8 +35,11 @@ export async function priceCart(cart: CartLine[]) {
       unitPriceCents: match.variant.unitPriceCents,
       quantity: line.quantity,
       lineTotalCents: match.variant.unitPriceCents * line.quantity,
-    };
+    }];
   });
+  if (!items.length) {
+    throw new EmptyCartError();
+  }
 
   return {
     items,

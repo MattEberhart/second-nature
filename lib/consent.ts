@@ -6,8 +6,16 @@ import { COMMUNICATIONS_CONSENT_TEXT, MARKETING_CONSENT_TEXT } from "@/lib/conse
 export const CONSENT_DISCLOSURE_VERSION = "2026-11-09";
 
 type ConsentSubject = {
-  source: "contact-form" | "consultation-form" | "estimate-consultation-form";
-  subjectType: "contact-inquiry" | "consultation" | "estimate-consultation";
+  source:
+    | "contact-form"
+    | "consultation-form"
+    | "estimate-consultation-form"
+    | "estimate-save-form";
+  subjectType:
+    | "contact-inquiry"
+    | "consultation"
+    | "estimate-consultation"
+    | "estimate-save";
   subjectId: string;
   name: string;
   email: string;

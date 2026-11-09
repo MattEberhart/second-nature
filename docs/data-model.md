@@ -66,6 +66,7 @@ customer fields, `event_date`, `venue_name`, `notes`, `starts_at`, `ends_at`,
 ### Compliance & ops
 
 **`consent_events`** — append-only; see [flows.md §8](flows.md#8-consent-capture).
+`subject_type`: `contact-inquiry | consultation | estimate-consultation | estimate-save | unsubscribe`.
 View **`current_email_marketing_preferences`** (`security_invoker`) = latest
 `email-marketing` event per lower(email).
 
@@ -82,6 +83,7 @@ View **`current_email_marketing_preferences`** (`security_invoker`) = latest
 | --- | --- |
 | `claim_submission_attempt(scope, request_key, limit=8, window_seconds=900) → boolean` | Takes a per-key advisory xact lock, prunes expired attempts, returns `false` if at the limit, else records an attempt. Called by `enforceSubmissionRateLimit`. |
 | `save_estimate_with_items(existing_id, record jsonb, items jsonb) → uuid` | Inserts or updates an estimate and replaces all its items in one transaction. On update, a null `status` keeps the existing status. |
+| `save_curated_collection(id, collection jsonb, members jsonb, images jsonb) → uuid` | Creates (`id` null) or updates a collection and replaces its ordered members and gallery images in one transaction. Array order becomes `sort_order`. Called via `lib/estimator/collections.ts`. |
 
 ## Migration log
 
@@ -96,9 +98,18 @@ Apply in filename order (Supabase CLI or SQL editor).
 | `20261109171410_index_collection_member_variant.sql` | Extra member index |
 | `20261109172159_customer_relationships_and_safe_submissions.sql` | CRM tables, contact_id backfill by email, email-status columns, `submission_attempts`, both RPCs |
 | `20261109174400_harden_submission_rate_limit.sql` | Rate limiter: advisory lock + pruning |
+| `20261109190000_atomic_collection_save_and_estimate_save_consent.sql` | `save_curated_collection` RPC; allows `consent_events.subject_type = 'estimate-save'`. Applied to production 2026-11-09 and recorded with `migration repair`. |
 
-All migrations listed above are committed. The 2026-11-09 migrations were also applied
-to the production Supabase project during implementation.
+**Applying migrations.** Production's migration history matches the repo version-for-version
+(reconciled 2026-11-09 with `supabase migration repair`). Keep it that way:
+
+1. Create the file in `supabase/migrations/` first (`supabase migration new <name>`).
+2. Apply it with `supabase db push --linked` (check with `--dry-run` first).
+3. Don't apply migrations through a tool that stamps its own version (e.g. an MCP
+   `apply_migration`) — that's what caused the earlier mismatch. If one is applied that way,
+   rename the local file to the recorded version, or `migration repair` the history.
+
+All migrations listed above are applied to the production Supabase project.
 
 ## Seeding the catalog
 

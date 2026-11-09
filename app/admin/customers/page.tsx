@@ -14,23 +14,25 @@ export default async function CustomersPage({
   const user = await getAdminUser();
   if (!user) redirect("/admin");
   const { q = "" } = await searchParams;
-  const { data, error } = await getAdminSupabase()
+  // Strip characters that are special in PostgREST filters / LIKE patterns, and
+  // let any gap between words match anything (PostgREST "*" = SQL "%"), so
+  // "(704) 555" finds "(704) 555-1234" and "jane doe" finds "Jane  Doe".
+  const needle = q.replace(/[,()"\\%_*.:]/g, " ").trim().split(/\s+/).filter(Boolean).join("*");
+  let query = getAdminSupabase()
     .from("contacts")
     .select(
       "id,name,email,phone,status,first_source,last_activity_at,contact_inquiries(count),estimates(count),appointments(count)",
     )
     .order("last_activity_at", { ascending: false })
     .limit(250);
+  if (needle) {
+    query = query.or(
+      `name.ilike.*${needle}*,email.ilike.*${needle}*,phone.ilike.*${needle}*`,
+    );
+  }
+  const { data, error } = await query;
   if (error) throw error;
-
-  const needle = q.trim().toLowerCase();
-  const contacts = (data ?? []).filter((contact) =>
-    needle
-      ? [contact.name, contact.email, contact.phone || ""].some((value) =>
-          value.toLowerCase().includes(needle),
-        )
-      : true,
-  );
+  const contacts = data ?? [];
 
   return (
     <main className="min-h-screen bg-limestone px-6 py-12 text-ink md:px-16">

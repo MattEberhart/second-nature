@@ -1,7 +1,7 @@
 import { scheduleSchema } from "@/lib/estimator/validation";
 import { calculateDelivery } from "@/lib/estimator/delivery";
-import { listAvailability, createCalendarMeeting } from "@/lib/estimator/calendar";
-import { saveEstimate } from "@/lib/estimator/estimate-service";
+import { listAvailability, createCalendarMeeting, isSlotConflict, SLOT_TAKEN_MESSAGE, SlotTakenError } from "@/lib/estimator/calendar";
+import { EmptyCartError, saveEstimate } from "@/lib/estimator/estimate-service";
 import { sendAppointmentEmails } from "@/lib/estimator/email";
 import { getAdminSupabase, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { recordSubmissionConsent } from "@/lib/consent";
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
   try {
     const available = await listAvailability();
     const slot = available.find((candidate) => candidate.start === parsed.data.slotStart);
-    if (!slot) return Response.json({ error: "That time was just taken. Please choose another." }, { status: 409 });
+    if (!slot) return Response.json({ error: SLOT_TAKEN_MESSAGE }, { status: 409 });
 
     const delivery = await calculateDelivery(parsed.data.details.venueAddress, parsed.data.details.fulfillment);
     const estimate = await saveEstimate({
@@ -77,6 +77,7 @@ export async function POST(request: Request) {
       })
       .select("id")
       .single();
+    if (isSlotConflict(appointmentError)) throw new SlotTakenError();
     if (appointmentError || !appointment) throw appointmentError || new Error("Could not reserve that time.");
     appointmentId = appointment.id;
     await recordSubmissionConsent(request, {
@@ -157,6 +158,6 @@ export async function POST(request: Request) {
         .eq("id", estimateId)
         .eq("status", "awaiting-scheduling");
     }
-    return Response.json({ error: error instanceof Error ? error.message : "The consultation could not be booked." }, { status: 500 });
+    return Response.json({ error: error instanceof Error ? error.message : "The consultation could not be booked." }, { status: error instanceof SlotTakenError || error instanceof EmptyCartError ? error.status : 500 });
   }
 }

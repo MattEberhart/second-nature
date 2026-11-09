@@ -38,7 +38,8 @@ Server:
 - **Re-runs `listAvailability()`** and requires the exact `slotStart` to still be free → 409
   "That time was just taken" otherwise.
 - Upsert contact (`consultation`), insert `appointments` with `status: "pending"`.
-  The `unique (starts_at, ends_at)` constraint is the last line of defence against double booking.
+  The `unique (starts_at, ends_at)` constraint is the last line of defence against double
+  booking; a violation becomes `SlotTakenError` → 409 "That time was just taken."
 - Record consent (`consultation-form`).
 - `createCalendarMeeting()` → event on `GOOGLE_BOOKING_CALENDAR_ID` with a Meet link, the
   customer as attendee, `sendUpdates=all` (Google sends the invite). Event id is a
@@ -59,9 +60,11 @@ Client stages: `shop → review → schedule → confirmed`.
 - **Shop**: filter by category and tier, pick a variant + quantity, add to cart (max 10,000
   per line). Cart persists in `localStorage["second-nature-estimate-v1"]`; the last resume
   token in `localStorage["second-nature-estimate-token-v1"]`.
-- **Save for later** (modal, any stage): `POST /api/estimates/save` → server prices the
-  cart, upserts the contact, saves via the `save_estimate_with_items` RPC (status `draft`),
-  emails a private link `/estimate/{token}`. If email fails the response includes the URL
+- **Save for later** (modal, any stage): name, email, required communications consent,
+  optional marketing consent → `POST /api/estimates/save` (rate limit `estimate-save`
+  10/15m) → server prices the cart, upserts the contact, saves via the
+  `save_estimate_with_items` RPC (status `draft`), records consent (`estimate-save-form` /
+  `estimate-save`), emails a private link `/estimate/{token}`. If email fails the response includes the URL
   and a warning so the user can copy it.
 - **Review**: event details (date or "Not sure yet", guest count, venue, address,
   fulfillment, notes, consent). On continue the client calls
@@ -81,6 +84,9 @@ Client stages: `shop → review → schedule → confirmed`.
 7. Activity `appointment-booked`; send customer confirmation (itemised quote + resume link)
    and owner notification. Email failure → `warning` in the response, booking stands.
 8. On failure: delete appointment; estimate rolled back to `draft` only if still `awaiting-scheduling`.
+
+Stale lines: `priceCart()` silently skips cart lines whose variant is no longer active (the
+builder already hides them); if none remain it throws `EmptyCartError` → 400.
 
 ### Resume — `/estimate/[token]`
 
@@ -133,5 +139,4 @@ and `email-marketing` (`granted` or `declined`). Stored evidence: exact disclosu
 HMAC'd IP, user agent, referrer. The view `current_email_marketing_preferences` gives the
 latest marketing state per email. If you change checkbox copy, bump the version.
 
-Note: the estimate **save** flow does not capture consent; only booking flows and the
-contact form do.
+All four forms capture consent: contact, consultation, estimate save, estimate booking.

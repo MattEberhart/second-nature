@@ -29,12 +29,15 @@ export async function upsertContact(input: {
   if (lookupError) throw lookupError;
 
   if (existing) {
+    // Latest submission wins for name/phone, but a form without a phone field
+    // (e.g. saving an estimate) must not erase a phone captured earlier.
+    const phone = input.phone?.trim();
     const { data, error } = await supabase
       .from("contacts")
       .update({
         name: input.name.trim(),
         email: input.email.trim(),
-        phone: input.phone?.trim() || null,
+        ...(phone ? { phone } : {}),
         last_activity_at: now,
         updated_at: now,
       })

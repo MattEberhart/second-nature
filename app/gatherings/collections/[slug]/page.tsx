@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { EstimateBuilder } from "@/components/estimate/estimate-builder";
-import { getPublicCollection } from "@/lib/estimator/data";
+import { getPublicCatalog, getPublicCollection } from "@/lib/estimator/data";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CollectionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const collection = await getPublicCollection(slug);
+  const [collection, catalog] = await Promise.all([getPublicCollection(slug), getPublicCatalog()]);
   if (!collection) notFound();
   const gallery = collection.images.length ? collection.images : collection.headerImagePath ? [{ id: "header", imagePath: collection.headerImagePath, altText: "" }] : [];
   return (
@@ -27,7 +27,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
           ))}
         </div>
       </section>
-      <EstimateBuilder products={collection.products} heading={collection.name} eyebrow="Lydia’s curated collection" intro={collection.description} />
+      <EstimateBuilder products={collection.products} catalog={catalog} heading={collection.name} eyebrow="Lydia’s curated collection" intro={collection.description} />
     </div>
   );
 }
