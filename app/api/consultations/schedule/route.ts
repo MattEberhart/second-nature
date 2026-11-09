@@ -3,9 +3,25 @@ import { listAvailability, createCalendarMeeting } from "@/lib/estimator/calenda
 import { sendAppointmentEmails } from "@/lib/estimator/email";
 import { getAdminSupabase, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { recordSubmissionConsent } from "@/lib/consent";
+import { recordContactActivity, upsertContact } from "@/lib/crm";
+import {
+  enforceSubmissionRateLimit,
+  SubmissionRateLimitError,
+} from "@/lib/submission-security";
 
 export async function POST(request: Request) {
   if (!isSupabaseConfigured()) return Response.json({ error: "Scheduling is not configured yet." }, { status: 503 });
+  try {
+    await enforceSubmissionRateLimit(request, "consultation-booking", {
+      limit: 6,
+      windowSeconds: 900,
+    });
+  } catch (error) {
+    return Response.json(
+      { error: error instanceof Error ? error.message : "Please try again later." },
+      { status: error instanceof SubmissionRateLimitError ? error.status : 500 },
+    );
+  }
   const parsed = consultationSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return Response.json({ error: parsed.error.issues[0]?.message || "Complete your details." }, { status: 400 });
   let appointmentId: string | null = null;
@@ -13,7 +29,14 @@ export async function POST(request: Request) {
     const slot = (await listAvailability()).find((candidate) => candidate.start === parsed.data.slotStart);
     if (!slot) return Response.json({ error: "That time was just taken. Please choose another." }, { status: 409 });
     const supabase = getAdminSupabase();
+    const contactId = await upsertContact({
+      name: parsed.data.name,
+      email: parsed.data.email,
+      phone: parsed.data.phone,
+      source: "consultation",
+    });
     const { data: appointment, error } = await supabase.from("appointments").insert({
+      contact_id: contactId,
       customer_name: parsed.data.name,
       customer_email: parsed.data.email.toLowerCase(),
       customer_phone: parsed.data.phone,
@@ -60,6 +83,14 @@ export async function POST(request: Request) {
         appointmentId: appointmentId!,
       });
     } catch { /* Google already sent the calendar invitation. */ }
+    await recordContactActivity({
+      contactId,
+      activityType: "appointment-booked",
+      summary: "Free consultation booked",
+      subjectType: "appointment",
+      subjectId: appointmentId!,
+      metadata: { startsAt: slot.start },
+    }).catch(() => undefined);
     return Response.json({ appointmentLabel: label, meetUrl: meeting.meetUrl });
   } catch (error) {
     if (appointmentId) await getAdminSupabase().from("appointments").delete().eq("id", appointmentId);

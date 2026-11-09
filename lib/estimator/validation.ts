@@ -39,9 +39,15 @@ export const detailsSchema = detailsBaseSchema.superRefine((details, ctx) => {
   }
 });
 
+const saveDetailsSchema = detailsBaseSchema.partial().extend({
+  name: detailsBaseSchema.shape.name,
+  email: detailsBaseSchema.shape.email,
+  phone: z.string().trim().max(40).optional(),
+});
+
 export const saveEstimateSchema = z.object({
   cart: cartSchema,
-  details: detailsBaseSchema.partial().and(detailsBaseSchema.pick({ name: true, email: true })),
+  details: saveDetailsSchema,
   resumeToken: z.string().min(20).max(200).optional(),
 });
 

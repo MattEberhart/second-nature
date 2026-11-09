@@ -5,6 +5,11 @@ import { saveEstimate } from "@/lib/estimator/estimate-service";
 import { sendAppointmentEmails } from "@/lib/estimator/email";
 import { getAdminSupabase, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { recordSubmissionConsent } from "@/lib/consent";
+import { recordContactActivity } from "@/lib/crm";
+import {
+  enforceSubmissionRateLimit,
+  SubmissionRateLimitError,
+} from "@/lib/submission-security";
 
 function appointmentLabel(start: string) {
   return new Intl.DateTimeFormat("en-US", {
@@ -20,12 +25,24 @@ function appointmentLabel(start: string) {
 
 export async function POST(request: Request) {
   if (!isSupabaseConfigured()) return Response.json({ error: "Scheduling is not configured yet." }, { status: 503 });
+  try {
+    await enforceSubmissionRateLimit(request, "estimate-booking", {
+      limit: 6,
+      windowSeconds: 900,
+    });
+  } catch (error) {
+    return Response.json(
+      { error: error instanceof Error ? error.message : "Please try again later." },
+      { status: error instanceof SubmissionRateLimitError ? error.status : 500 },
+    );
+  }
   const parsed = scheduleSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success || parsed.data.cart.length === 0) {
     return Response.json({ error: parsed.error?.issues[0]?.message || "Complete the estimate details." }, { status: 400 });
   }
 
   let appointmentId: string | null = null;
+  let estimateId: string | null = null;
   try {
     const available = await listAvailability();
     const slot = available.find((candidate) => candidate.start === parsed.data.slotStart);
@@ -40,12 +57,14 @@ export async function POST(request: Request) {
       fullServiceFeeCents: delivery.fullServiceFeeCents,
       status: "awaiting-scheduling",
     });
+    estimateId = estimate.id;
 
     const supabase = getAdminSupabase();
     const { data: appointment, error: appointmentError } = await supabase
       .from("appointments")
       .insert({
         estimate_id: estimate.id,
+        contact_id: estimate.contactId,
         customer_name: parsed.data.details.name,
         customer_email: parsed.data.details.email.toLowerCase(),
         customer_phone: parsed.data.details.phone,
@@ -86,6 +105,14 @@ export async function POST(request: Request) {
       status: "confirmed",
     }).eq("id", appointmentId);
     await supabase.from("estimates").update({ status: "scheduled", updated_at: new Date().toISOString() }).eq("id", estimate.id);
+    await recordContactActivity({
+      contactId: estimate.contactId,
+      activityType: "appointment-booked",
+      summary: "Estimate review booked",
+      subjectType: "appointment",
+      subjectId: appointmentId!,
+      metadata: { estimateId: estimate.id, startsAt: slot.start },
+    }).catch(() => undefined);
 
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || new URL(request.url).origin;
     const label = appointmentLabel(slot.start);
@@ -123,6 +150,13 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     if (appointmentId) await getAdminSupabase().from("appointments").delete().eq("id", appointmentId);
+    if (estimateId) {
+      await getAdminSupabase()
+        .from("estimates")
+        .update({ status: "draft", updated_at: new Date().toISOString() })
+        .eq("id", estimateId)
+        .eq("status", "awaiting-scheduling");
+    }
     return Response.json({ error: error instanceof Error ? error.message : "The consultation could not be booked." }, { status: 500 });
   }
 }

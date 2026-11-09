@@ -13,7 +13,7 @@ type Interest = "gatherings" | "studio" | "both" | "";
 export function InquiryForm({ defaultInterest }: { defaultInterest: string }) {
   const initialInterest: Interest = ["gatherings", "studio", "both"].includes(defaultInterest) ? (defaultInterest as Interest) : "";
   const [interest, setInterest] = useState<Interest>(initialInterest);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", eventDate: "", message: "", communicationsConsent: false, marketingConsent: false });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", eventDate: "", message: "", website: "", communicationsConsent: false, marketingConsent: false });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
@@ -42,6 +42,10 @@ export function InquiryForm({ defaultInterest }: { defaultInterest: string }) {
           <p className="mt-3 font-body text-lg text-ink/70">Fill out the form below and we will get back to you within 48 hours.</p>
           {error ? <p role="alert" className="mt-6 rounded-xl bg-terracotta/15 p-4 text-sm text-ink">{error}</p> : null}
           <form onSubmit={submit} className="mt-8 space-y-6">
+            <div className="absolute -left-[10000px] top-auto size-px overflow-hidden" aria-hidden="true">
+              <Label htmlFor="website">Website</Label>
+              <Input id="website" tabIndex={-1} autoComplete="off" value={form.website} onChange={(event) => setForm({ ...form, website: event.target.value })} />
+            </div>
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2"><Label htmlFor="name">Name</Label><Input id="name" autoComplete="name" required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} /></div>
               <div className="space-y-2"><Label htmlFor="email">Email</Label><Input id="email" type="email" autoComplete="email" required value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} /></div>

@@ -23,7 +23,7 @@ export function EmailShell({
   children: ReactNode;
 }) {
   return (
-    <Html>
+    <Html lang="en">
       <Head />
       <Preview>{preview}</Preview>
       <Body style={body}>

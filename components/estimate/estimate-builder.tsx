@@ -60,9 +60,15 @@ type Stage = "shop" | "review" | "schedule" | "confirmed";
 export function EstimateBuilder({
   products,
   resumeToken,
+  heading = "Build Your Estimate",
+  eyebrow = "Event rentals · Charlotte, NC",
+  intro = "Explore the pieces that speak to you. We’ll keep a running starting estimate—no account, no pressure, and no inventory reserved just yet.",
 }: {
   products: CatalogProduct[];
   resumeToken?: string;
+  heading?: string;
+  eyebrow?: string;
+  intro?: string;
 }) {
   const [cart, setCart] = useState<CartLine[]>([]);
   const [details, setDetails] = useState<EstimateDetails>(emptyDetails);
@@ -76,6 +82,7 @@ export function EstimateBuilder({
   const [savedToken, setSavedToken] = useState(resumeToken || "");
   const [storageReady, setStorageReady] = useState(false);
   const [notice, setNotice] = useState("");
+  const [resumeFallbackUrl, setResumeFallbackUrl] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(Boolean(resumeToken));
   const [delivery, setDelivery] = useState<DeliveryEstimate | null>(null);
@@ -212,7 +219,13 @@ export function EstimateBuilder({
       setSavedToken(payload.resumeToken);
       window.localStorage.setItem(TOKEN_KEY, payload.resumeToken);
       setSaveOpen(false);
-      setNotice("Saved. Check your inbox for a private link.");
+      if (payload.emailSent) {
+        setResumeFallbackUrl("");
+        setNotice("Saved. Check your inbox for a private link.");
+      } else {
+        setResumeFallbackUrl(payload.resumeUrl);
+        setNotice("Your estimate is saved.");
+      }
     } catch (reason) {
       setError(
         reason instanceof Error
@@ -313,17 +326,15 @@ export function EstimateBuilder({
       <section className="border-b border-ink/10 px-4 py-8 sm:px-6 sm:py-10 md:px-16 md:py-12">
         <div className="mx-auto max-w-7xl">
           <p className="font-body text-xs uppercase tracking-[0.22em] text-fig">
-            Event rentals · Charlotte, NC
+            {eyebrow}
           </p>
           <div className="mt-3 grid gap-6 lg:grid-cols-[1fr_340px] lg:items-end">
             <div>
               <h1 className="max-w-4xl font-display text-4xl leading-[0.98] sm:text-5xl md:text-6xl">
-                Build Your Estimate
+                {heading}
               </h1>
               <p className="mt-4 max-w-2xl font-body text-base leading-7 text-ink/70">
-                Explore the pieces that speak to you. We’ll keep a running
-                starting estimate—no account, no pressure, and no inventory
-                reserved just yet.
+                {intro}
               </p>
             </div>
             <div className="rounded-2xl bg-secondary p-5">
@@ -361,11 +372,59 @@ export function EstimateBuilder({
           </button>
         </div>
       ) : null}
+      {resumeFallbackUrl ? (
+        <div className="mx-auto mt-6 flex max-w-7xl flex-col gap-3 rounded-xl bg-olive/15 px-5 py-4 text-sm text-ink sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-medium">Your estimate is saved.</p>
+            <p className="mt-1 text-ink/65">
+              The email could not be sent, so keep this private link.
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <a
+              href={resumeFallbackUrl}
+              className="text-xs font-medium uppercase tracking-[0.12em] text-fig underline underline-offset-4"
+            >
+              Open link
+            </a>
+            <button
+              type="button"
+              className="rounded-lg bg-fig px-4 py-2 text-xs uppercase tracking-[0.12em] text-limestone"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(resumeFallbackUrl);
+                  setNotice("Private link copied.");
+                } catch {
+                  setNotice("Open the private link, then copy it from your browser.");
+                }
+              }}
+            >
+              Copy private link
+            </button>
+            <button
+              type="button"
+              onClick={() => setResumeFallbackUrl("")}
+              aria-label="Dismiss saved estimate link"
+            >
+              <X className="size-4" />
+            </button>
+          </div>
+        </div>
+      ) : null}
 
       {stage === "shop" ? (
         <section className="overflow-hidden px-4 py-8 sm:px-6 sm:py-10 md:px-16 md:py-14">
           <div className="mx-auto grid max-w-7xl gap-8 xl:grid-cols-[minmax(0,1fr)_300px]">
             <div className="min-w-0">
+              <div className="mb-6 flex flex-col justify-between gap-3 rounded-2xl bg-secondary p-5 sm:flex-row sm:items-center">
+                <div>
+                  <p className="font-display text-xl">Want a little direction?</p>
+                  <p className="mt-1 text-sm text-ink/60">Start with one of Lydia’s precurated looks.</p>
+                </div>
+                <Link href="/gatherings/collections" className="inline-flex h-10 shrink-0 items-center justify-center rounded-lg bg-fig px-5 text-xs uppercase tracking-[0.14em] text-limestone">
+                  Shop By Collections
+                </Link>
+              </div>
               <div className="grid grid-cols-2 gap-3 sm:hidden">
                 <label className="min-w-0">
                   <span className="mb-2 block text-[10px] uppercase tracking-[0.16em] text-ink/50">
@@ -393,10 +452,10 @@ export function EstimateBuilder({
                 </label>
                 <label className="min-w-0">
                   <span className="mb-2 block text-[10px] uppercase tracking-[0.16em] text-ink/50">
-                    Collection
+                    Price level
                   </span>
                   <select
-                    aria-label="Filter by collection level"
+                    aria-label="Filter by price level"
                     value={tier}
                     onChange={(event) => setTier(event.target.value)}
                     className="h-11 w-full min-w-0 rounded-lg border border-ink/15 bg-card px-3 text-sm text-ink"
@@ -433,7 +492,7 @@ export function EstimateBuilder({
               </div>
               <div className="mt-4 hidden flex-wrap items-center gap-2 sm:flex">
                 <span className="mr-2 text-xs uppercase tracking-[0.18em] text-ink/50">
-                  Collection level
+                  Price level
                 </span>
                 {["all", "Essential", "Premium", "Luxe", "Signature"].map(
                   (value) => (
@@ -575,6 +634,7 @@ function ProductCard({
   const lowest = Math.min(
     ...product.variants.map((item) => item.unitPriceCents),
   );
+  const selectedImage = variant?.imagePath || product.imagePath;
   return (
     <article className="min-w-0 overflow-hidden rounded-xl border border-ink/10 bg-card">
       <div
@@ -582,7 +642,7 @@ function ProductCard({
         style={{ backgroundColor: product.accent }}
       >
         <Image
-          src={product.imagePath}
+          src={selectedImage}
           alt="Representative styling placeholder"
           fill
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
@@ -590,9 +650,6 @@ function ProductCard({
         />
         <div className="absolute left-4 top-4 rounded-full bg-limestone/90 px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] text-ink">
           {product.tier}
-        </div>
-        <div className="absolute bottom-3 right-3 rounded bg-ink/70 px-2 py-1 text-[10px] text-limestone">
-          Representative image
         </div>
       </div>
       <div className="p-4">
@@ -612,24 +669,16 @@ function ProductCard({
         <p className="mt-3 line-clamp-2 min-h-10 text-sm leading-5 text-ink/65">
           {product.description}
         </p>
-        <Label
-          htmlFor={`${product.id}-variant`}
-          className="mt-4 block text-xs uppercase tracking-[0.15em]"
-        >
-          Style
-        </Label>
-        <select
-          id={`${product.id}-variant`}
-          value={variantId}
-          onChange={(e) => setVariantId(e.target.value)}
-          className="mt-2 h-10 w-full rounded-lg border bg-limestone px-3 text-sm"
-        >
-          {product.variants.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.label} · {formatMoney(item.unitPriceCents)} each
-            </option>
-          ))}
-        </select>
+        {product.variants.length > 1 || product.variants[0]?.label !== "Standard" ? (
+          <>
+            <Label htmlFor={`${product.id}-variant`} className="mt-4 block text-xs uppercase tracking-[0.15em]">Option</Label>
+            <select id={`${product.id}-variant`} value={variantId} onChange={(e) => setVariantId(e.target.value)} className="mt-2 h-10 w-full rounded-lg border bg-limestone px-3 text-sm">
+              {product.variants.map((item) => (
+                <option key={item.id} value={item.id}>{item.label} · {formatMoney(item.unitPriceCents)} each</option>
+              ))}
+            </select>
+          </>
+        ) : null}
         <div className="mt-3 flex min-w-0 gap-2">
           <div className="flex h-10 shrink-0 items-center rounded-lg border bg-limestone">
             <button

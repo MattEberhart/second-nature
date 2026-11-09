@@ -1,7 +1,11 @@
 import { saveEstimateSchema } from "@/lib/estimator/validation";
 import { saveEstimate } from "@/lib/estimator/estimate-service";
 import { sendResumeEstimate } from "@/lib/estimator/email";
-import { isSupabaseConfigured } from "@/lib/supabase/admin";
+import { getAdminSupabase, isSupabaseConfigured } from "@/lib/supabase/admin";
+import {
+  enforceSubmissionRateLimit,
+  SubmissionRateLimitError,
+} from "@/lib/submission-security";
 
 export async function POST(request: Request) {
   if (!isSupabaseConfigured()) {
@@ -13,6 +17,10 @@ export async function POST(request: Request) {
   }
 
   try {
+    await enforceSubmissionRateLimit(request, "estimate-save", {
+      limit: 10,
+      windowSeconds: 900,
+    });
     const saved = await saveEstimate({
       cart: parsed.data.cart,
       details: parsed.data.details,
@@ -20,17 +28,45 @@ export async function POST(request: Request) {
     });
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || new URL(request.url).origin;
     const resumeUrl = `${baseUrl}/estimate/${saved.resumeToken}`;
-    await sendResumeEstimate({
+    let emailSent = false;
+    let warning: string | undefined;
+    try {
+      await sendResumeEstimate({
+        id: saved.id,
+        name: parsed.data.details.name,
+        email: parsed.data.details.email,
+        resumeUrl,
+      });
+      emailSent = true;
+      await getAdminSupabase()
+        .from("estimates")
+        .update({
+          resume_email_status: "sent",
+          resume_email_error: null,
+          last_resume_email_at: new Date().toISOString(),
+        })
+        .eq("id", saved.id);
+    } catch (emailError) {
+      const message =
+        emailError instanceof Error ? emailError.message : "Email delivery failed.";
+      warning =
+        "Your estimate is saved, but the email could not be sent. Keep the private link below.";
+      await getAdminSupabase()
+        .from("estimates")
+        .update({ resume_email_status: "failed", resume_email_error: message })
+        .eq("id", saved.id);
+    }
+    return Response.json({
       id: saved.id,
-      name: parsed.data.details.name,
-      email: parsed.data.details.email,
+      resumeToken: saved.resumeToken,
       resumeUrl,
+      emailSent,
+      warning,
     });
-    return Response.json({ id: saved.id, resumeToken: saved.resumeToken, resumeUrl });
   } catch (error) {
     return Response.json(
       { error: error instanceof Error ? error.message : "Your estimate could not be saved." },
-      { status: 500 },
+      { status: error instanceof SubmissionRateLimitError ? error.status : 500 },
     );
   }
 }

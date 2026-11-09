@@ -3,6 +3,7 @@ import type { CartLine, EstimateDetails } from "./types";
 import { getPublicCatalog } from "./data";
 import { createOpaqueToken, hashToken } from "@/lib/security";
 import { getAdminSupabase } from "@/lib/supabase/admin";
+import { recordContactActivity, upsertContact } from "@/lib/crm";
 
 export async function priceCart(cart: CartLine[]) {
   const catalog = await getPublicCatalog();
@@ -49,6 +50,12 @@ export async function saveEstimate(options: SaveOptions) {
   const deliveryFeeCents = options.deliveryFeeCents ?? 0;
   const fullServiceFeeCents = options.fullServiceFeeCents ?? 0;
   const totalCents = priced.subtotalCents + deliveryFeeCents + fullServiceFeeCents;
+  const contactId = await upsertContact({
+    name: options.details.name,
+    email: options.details.email,
+    phone: options.details.phone,
+    source: "estimate",
+  });
 
   let existingId: string | null = null;
   if (options.resumeToken) {
@@ -65,6 +72,7 @@ export async function saveEstimate(options: SaveOptions) {
     : null;
   const record = {
     resume_token_hash: tokenHash,
+    contact_id: contactId,
     customer_name: options.details.name,
     customer_email: options.details.email.toLowerCase(),
     customer_phone: options.details.phone || null,
@@ -86,31 +94,36 @@ export async function saveEstimate(options: SaveOptions) {
     updated_at: new Date().toISOString(),
   };
 
-  const query = existingId
-    ? supabase.from("estimates").update(record).eq("id", existingId).select("id").single()
-    : supabase.from("estimates").insert(record).select("id").single();
-  const { data, error } = await query;
-  if (error || !data) throw error || new Error("Could not save estimate.");
-
-  await supabase.from("estimate_items").delete().eq("estimate_id", data.id);
-  if (priced.items.length) {
-    const { error: itemError } = await supabase.from("estimate_items").insert(
-      priced.items.map((item) => ({
-        estimate_id: data.id,
+  const { data: savedId, error } = await supabase.rpc(
+    "save_estimate_with_items",
+    {
+      p_existing_id: existingId,
+      p_record: record,
+      p_items: priced.items.map((item) => ({
         product_id: item.productId,
         variant_id: item.variantId,
-        public_name_snapshot: item.publicName,
-        variant_label_snapshot: item.variantLabel,
-        unit_price_cents_snapshot: item.unitPriceCents,
+        public_name: item.publicName,
+        variant_label: item.variantLabel,
+        unit_price_cents: item.unitPriceCents,
         quantity: item.quantity,
         line_total_cents: item.lineTotalCents,
       })),
-    );
-    if (itemError) throw itemError;
-  }
+    },
+  );
+  if (error || !savedId) throw error || new Error("Could not save estimate.");
+
+  await recordContactActivity({
+    contactId,
+    activityType: existingId ? "estimate-updated" : "estimate-created",
+    summary: existingId ? "Estimate updated" : "Estimate saved",
+    subjectType: "estimate",
+    subjectId: savedId as string,
+    metadata: { totalCents, status: options.status || "draft" },
+  }).catch(() => undefined);
 
   return {
-    id: data.id as string,
+    id: savedId as string,
+    contactId,
     resumeToken,
     ...priced,
     deliveryFeeCents,
