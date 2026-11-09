@@ -67,6 +67,7 @@ export async function saveEstimate(options: SaveOptions) {
     resume_token_hash: tokenHash,
     customer_name: options.details.name,
     customer_email: options.details.email.toLowerCase(),
+    customer_phone: options.details.phone || null,
     event_date:
       options.details.dateUndecided || !options.details.eventDate
         ? null

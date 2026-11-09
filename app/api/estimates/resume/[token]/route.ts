@@ -16,6 +16,7 @@ export async function GET(_request: Request, context: RouteContext<"/api/estimat
       details: {
         name: estimate.customer_name,
         email: estimate.customer_email,
+        phone: estimate.customer_phone || "",
         eventDate: estimate.event_date || "",
         dateUndecided: estimate.date_undecided,
         guestCount: estimate.guest_count ? String(estimate.guest_count) : "",

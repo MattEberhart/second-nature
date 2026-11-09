@@ -2,6 +2,7 @@ import { consultationSchema } from "@/lib/estimator/validation";
 import { listAvailability, createCalendarMeeting } from "@/lib/estimator/calendar";
 import { sendAppointmentEmails } from "@/lib/estimator/email";
 import { getAdminSupabase, isSupabaseConfigured } from "@/lib/supabase/admin";
+import { recordSubmissionConsent } from "@/lib/consent";
 
 export async function POST(request: Request) {
   if (!isSupabaseConfigured()) return Response.json({ error: "Scheduling is not configured yet." }, { status: 503 });
@@ -15,6 +16,7 @@ export async function POST(request: Request) {
     const { data: appointment, error } = await supabase.from("appointments").insert({
       customer_name: parsed.data.name,
       customer_email: parsed.data.email.toLowerCase(),
+      customer_phone: parsed.data.phone,
       event_date: parsed.data.dateUndecided ? null : parsed.data.eventDate || null,
       venue_name: parsed.data.venueName || null,
       notes: parsed.data.notes || null,
@@ -24,6 +26,16 @@ export async function POST(request: Request) {
     }).select("id").single();
     if (error || !appointment) throw error || new Error("Could not reserve that time.");
     appointmentId = appointment.id;
+    await recordSubmissionConsent(request, {
+      source: "consultation-form",
+      subjectType: "consultation",
+      subjectId: appointmentId!,
+      name: parsed.data.name,
+      email: parsed.data.email,
+      phone: parsed.data.phone,
+      communicationsConsent: parsed.data.communicationsConsent,
+      marketingConsent: parsed.data.marketingConsent,
+    });
     const meeting = await createCalendarMeeting({
       appointmentId: appointmentId!,
       customerName: parsed.data.name,

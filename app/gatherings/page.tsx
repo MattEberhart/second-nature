@@ -9,7 +9,7 @@ export default function GatheringsPage() {
           <h1 className="font-display text-4xl uppercase tracking-[0.1em] text-ink md:text-6xl lg:text-7xl">
             Event Rentals
           </h1>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col items-center justify-center gap-3">
             <Link
               href="/gatherings/estimate"
               className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg bg-fig px-8 font-display text-xs uppercase tracking-[0.2em] text-limestone transition hover:bg-fig/90"
@@ -49,35 +49,21 @@ export default function GatheringsPage() {
         </div>
       </section>
 
-      <section className="bg-limestone px-6 pb-16 md:px-16">
-        <div className="mx-auto max-w-7xl">
-          <div className="relative aspect-[1084/610] overflow-hidden rounded-2xl bg-secondary">
-            <Image
-              src="/event-rentals-hero.jpg"
-              alt="Event rentals"
-              fill
-              sizes="100vw"
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </section>
-
       <section className="bg-limestone px-6 pb-24 md:px-16">
         <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-[256fr_732fr]">
-            <div className="relative aspect-[256/208] overflow-hidden rounded-2xl bg-secondary">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            <div className="relative aspect-[732/348] overflow-hidden rounded-2xl bg-secondary">
               <Image
-                src="/about-hero.jpg"
+                src="/event-rentals-1.png"
                 alt=""
                 fill
                 sizes="(min-width: 768px) 25vw, 100vw"
                 className="object-cover"
               />
             </div>
-            <div className="relative aspect-[732/208] overflow-hidden rounded-2xl bg-secondary">
+            <div className="relative aspect-[732/348] overflow-hidden rounded-2xl bg-secondary">
               <Image
-                src="/consulting-hero.jpg"
+                src="/event-rentals-2.png"
                 alt=""
                 fill
                 sizes="(min-width: 768px) 75vw, 100vw"

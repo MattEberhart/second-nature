@@ -37,6 +37,7 @@ export type FulfillmentType = "pickup" | "delivery" | "full-service";
 export type EstimateDetails = {
   name: string;
   email: string;
+  phone: string;
   eventDate: string;
   dateUndecided: boolean;
   guestCount: string;
@@ -44,6 +45,8 @@ export type EstimateDetails = {
   venueAddress: string;
   fulfillment: FulfillmentType;
   notes: string;
+  communicationsConsent: boolean;
+  marketingConsent: boolean;
 };
 
 export type DeliveryEstimate = {

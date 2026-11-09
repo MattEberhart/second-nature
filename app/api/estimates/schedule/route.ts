@@ -4,6 +4,7 @@ import { listAvailability, createCalendarMeeting } from "@/lib/estimator/calenda
 import { saveEstimate } from "@/lib/estimator/estimate-service";
 import { sendAppointmentEmails } from "@/lib/estimator/email";
 import { getAdminSupabase, isSupabaseConfigured } from "@/lib/supabase/admin";
+import { recordSubmissionConsent } from "@/lib/consent";
 
 function appointmentLabel(start: string) {
   return new Intl.DateTimeFormat("en-US", {
@@ -47,6 +48,7 @@ export async function POST(request: Request) {
         estimate_id: estimate.id,
         customer_name: parsed.data.details.name,
         customer_email: parsed.data.details.email.toLowerCase(),
+        customer_phone: parsed.data.details.phone,
         event_date: parsed.data.details.dateUndecided ? null : parsed.data.details.eventDate,
         venue_name: parsed.data.details.venueName || null,
         notes: parsed.data.details.notes || null,
@@ -58,6 +60,16 @@ export async function POST(request: Request) {
       .single();
     if (appointmentError || !appointment) throw appointmentError || new Error("Could not reserve that time.");
     appointmentId = appointment.id;
+    await recordSubmissionConsent(request, {
+      source: "estimate-consultation-form",
+      subjectType: "estimate-consultation",
+      subjectId: appointmentId!,
+      name: parsed.data.details.name,
+      email: parsed.data.details.email,
+      phone: parsed.data.details.phone,
+      communicationsConsent: parsed.data.details.communicationsConsent,
+      marketingConsent: parsed.data.details.marketingConsent,
+    });
 
     const meeting = await createCalendarMeeting({
       appointmentId: appointmentId!,

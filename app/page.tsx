@@ -9,7 +9,7 @@ export default function HomePage() {
           <Link href="/about" className="group block">
             <div className="relative aspect-[388/348] overflow-hidden rounded-2xl bg-secondary">
               <Image
-                src="/about-hero.jpg"
+                src="/about-us.png"
                 alt="About Us"
                 fill
                 sizes="(min-width: 768px) 33vw, 100vw"
@@ -26,7 +26,7 @@ export default function HomePage() {
           <Link href="/gatherings" className="group block">
             <div className="relative aspect-[732/348] overflow-hidden rounded-2xl bg-secondary">
               <Image
-                src="/event-rentals-hero.jpg"
+                src="/event-rentals-1.png"
                 alt="Event Rentals"
                 fill
                 sizes="(min-width: 768px) 67vw, 100vw"
@@ -41,9 +41,9 @@ export default function HomePage() {
           </Link>
 
           <Link href="/studio" className="group block md:col-span-2">
-            <div className="relative aspect-[1152/348] overflow-hidden rounded-2xl bg-secondary">
+            <div className="relative aspect-[1152/448] overflow-hidden rounded-2xl bg-secondary">
               <Image
-                src="/consulting-hero.jpg"
+                src="/home-consulting.png"
                 alt="Creative & Digital Consulting"
                 fill
                 sizes="100vw"

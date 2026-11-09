@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Logo } from "./logo";
 
 export function Footer() {
@@ -15,6 +16,23 @@ export function Footer() {
           <p className="mt-1">
             © {new Date().getFullYear()} Second Nature Creative Studio · Based in Charlotte, NC
           </p>
+          <nav
+            aria-label="Legal"
+            className="mt-3 flex items-center justify-center gap-4 md:justify-end"
+          >
+            <Link
+              href="/terms"
+              className="underline-offset-4 transition-colors hover:text-olive hover:underline"
+            >
+              Terms &amp; Services
+            </Link>
+            <Link
+              href="/privacy"
+              className="underline-offset-4 transition-colors hover:text-olive hover:underline"
+            >
+              Privacy Policy
+            </Link>
+          </nav>
         </div>
       </div>
     </footer>

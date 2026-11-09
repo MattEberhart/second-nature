@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { COMMUNICATIONS_CONSENT_TEXT, MARKETING_CONSENT_TEXT } from "@/lib/consent-copy";
 
 const CART_KEY = "second-nature-estimate-v1";
 const TOKEN_KEY = "second-nature-estimate-token-v1";
@@ -42,6 +43,7 @@ const categoryLabels: Record<CatalogProduct["category"], string> = {
 const emptyDetails: EstimateDetails = {
   name: "",
   email: "",
+  phone: "",
   eventDate: "",
   dateUndecided: false,
   guestCount: "",
@@ -49,6 +51,8 @@ const emptyDetails: EstimateDetails = {
   venueAddress: "",
   fulfillment: "pickup",
   notes: "",
+  communicationsConsent: false,
+  marketingConsent: false,
 };
 
 type Stage = "shop" | "review" | "schedule" | "confirmed";
@@ -487,6 +491,7 @@ export function EstimateBuilder({
           selected={slotStart}
           setSelected={setSlotStart}
           details={details}
+          setDetails={setDetails}
           rows={cartRows}
           subtotal={subtotal}
           delivery={delivery}
@@ -958,6 +963,17 @@ function Review({
                 }
               />
             </Field>
+            <Field label="Phone">
+              <Input
+                required
+                type="tel"
+                autoComplete="tel"
+                value={details.phone}
+                onChange={(e) =>
+                  setDetails({ ...details, phone: e.target.value })
+                }
+              />
+            </Field>
             <Field label="Event date">
               <Input
                 disabled={details.dateUndecided}
@@ -1124,6 +1140,7 @@ function Schedule({
   selected,
   setSelected,
   details,
+  setDetails,
   rows,
   subtotal,
   delivery,
@@ -1136,6 +1153,7 @@ function Schedule({
   selected: string;
   setSelected: (s: string) => void;
   details: EstimateDetails;
+  setDetails: (d: EstimateDetails) => void;
   rows: CartRow[];
   subtotal: number;
   delivery: DeliveryEstimate | null;
@@ -1265,8 +1283,28 @@ function Schedule({
             Your selections are a starting point and aren’t reserved just yet.
             Lydia will confirm availability and final pricing with you.
           </p>
+          <div className="mt-5 space-y-4 border-t border-ink/10 pt-5">
+            <ConsentCheckbox
+              required
+              checked={details.communicationsConsent}
+              onChange={(checked) =>
+                setDetails({ ...details, communicationsConsent: checked })
+              }
+              text={COMMUNICATIONS_CONSENT_TEXT}
+            />
+            <ConsentCheckbox
+              checked={details.marketingConsent}
+              onChange={(checked) =>
+                setDetails({ ...details, marketingConsent: checked })
+              }
+              text={MARKETING_CONSENT_TEXT}
+            />
+            <p className="text-[11px] leading-5 text-ink/45">
+              Marketing consent is optional and can be withdrawn at any time.
+            </p>
+          </div>
           <Button
-            disabled={busy || !selected}
+            disabled={busy || !selected || !details.communicationsConsent}
             onClick={onBook}
             className="mt-5 h-12 w-full bg-fig text-xs uppercase tracking-[0.16em]"
           >
@@ -1278,6 +1316,31 @@ function Schedule({
         </aside>
       </div>
     </section>
+  );
+}
+
+function ConsentCheckbox({
+  checked,
+  onChange,
+  text,
+  required = false,
+}: {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  text: string;
+  required?: boolean;
+}) {
+  return (
+    <label className="flex items-start gap-3 text-xs leading-5 text-ink/70">
+      <input
+        type="checkbox"
+        required={required}
+        checked={checked}
+        onChange={(event) => onChange(event.target.checked)}
+        className="mt-0.5 size-4 shrink-0 accent-fig"
+      />
+      <span>{text}{required ? " *" : ""}</span>
+    </label>
   );
 }
 

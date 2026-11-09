@@ -6,9 +6,10 @@ import { Logo } from "./logo";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "/studio", label: "Studio" },
+  { href: "/contact", label: "Contact" },
+  { href: "/about", label: "About" },
   { href: "/gatherings", label: "Gatherings" },
-  { href: "/contact", label: "Contact Us" },
+  { href: "/studio", label: "Studio" },
 ];
 
 export function Nav() {
@@ -16,8 +17,8 @@ export function Nav() {
 
   return (
     <header className="relative z-50 border-b border-ink/5 bg-limestone text-ink">
-      <div className="mx-auto flex min-h-[88px] max-w-7xl items-center justify-between px-6 py-3 md:min-h-[112px] md:px-16">
-        <Logo className="h-[64px] w-[64px] md:h-[96px] md:w-[96px]" />
+      <div className="mx-auto flex min-h-[104px] max-w-7xl items-center justify-between px-6 py-3 md:min-h-[144px] md:px-16">
+        <Logo className="h-[80px] w-[80px] md:h-[128px] md:w-[128px]" />
 
         <nav className="flex flex-col items-end gap-1 md:flex-row md:items-center md:gap-10">
           {links.map((link) => (

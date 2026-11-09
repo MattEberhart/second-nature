@@ -2,10 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 const gallery = [
-  { src: "/about-hero.jpg", alt: "Creative direction" },
-  { src: "/event-rentals-hero.jpg", alt: "Rental styling" },
-  { src: "/consulting-hero.jpg", alt: "Digital consulting" },
-  { src: "/about-hero.jpg", alt: "Brand storytelling" },
+  { src: "/studio-1.png", alt: "" },
+  { src: "/studio-2.png", alt: "" },
 ];
 
 export default function StudioPage() {
@@ -27,7 +25,17 @@ export default function StudioPage() {
 
       <section className="bg-limestone px-6 pb-16 md:px-16">
         <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="relative aspect-[1152/448] overflow-hidden rounded-2xl bg-secondary">
+            <Image
+              src="/consulting-main.png"
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover"
+              priority
+            />
+          </div>
+          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {gallery.map((img) => (
               <div
                 key={img.src + img.alt}
@@ -37,7 +45,7 @@ export default function StudioPage() {
                   src={img.src}
                   alt={img.alt}
                   fill
-                  sizes="(min-width: 768px) 25vw, 50vw"
+                  sizes="(min-width: 640px) 50vw, 100vw"
                   className="object-cover"
                 />
               </div>
