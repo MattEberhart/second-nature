@@ -28,7 +28,7 @@ export default function AboutPage() {
           <div className="relative aspect-[388/348] overflow-hidden rounded-2xl bg-secondary">
             <Image
               src="/about-us.png"
-              alt="Lydia, founder of Second Nature Creative Studio"
+              alt="The founder of Second Nature Creative Studio"
               fill
               sizes="(min-width: 1024px) 40vw, 100vw"
               className="object-cover"

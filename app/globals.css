@@ -127,6 +127,9 @@
   --color-limestone: #F4F1EA;
   --color-denim: #4F6174;
   --color-ink: #28241D;
+  --color-deep-olive: #4F5438;
+  --color-aged-brass: #A8894F;
+  --color-aegean: #5F7480;
 }
 
 @layer base {

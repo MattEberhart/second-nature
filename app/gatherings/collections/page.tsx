@@ -5,7 +5,7 @@ import { getPublicCollections } from "@/lib/estimator/data";
 
 export const metadata: Metadata = {
   title: "Shop Curated Collections | Second Nature",
-  description: "Explore Lydia’s precurated event-rental collections, then build a personalized estimate.",
+  description: "Explore our precurated event-rental collections, then build a personalized estimate.",
 };
 
 export default async function CollectionsPage() {
@@ -13,7 +13,7 @@ export default async function CollectionsPage() {
   return (
     <div className="min-h-screen bg-limestone text-ink">
       <section className="px-6 py-20 text-center md:px-16 md:py-28">
-        <p className="text-xs uppercase tracking-[0.22em] text-fig">Lydia’s edit</p>
+        <p className="text-xs uppercase tracking-[0.22em] text-fig">The Second Nature edit</p>
         <h1 className="mt-4 font-display text-5xl md:text-7xl">Shop By Collections</h1>
         <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-ink/65">Begin with a mood, a palette, or a point of view. Every collection is hand selected, and every piece can still be mixed into your own estimate.</p>
       </section>
@@ -31,7 +31,7 @@ export default async function CollectionsPage() {
               </div>
             </Link>
           ))}
-          {!collections.length ? <p className="col-span-full rounded-2xl bg-card p-10 text-center text-ink/60">Lydia’s first curated collection is coming soon.</p> : null}
+          {!collections.length ? <p className="col-span-full rounded-2xl bg-card p-10 text-center text-ink/60">Our first curated collection is coming soon.</p> : null}
         </div>
       </section>
     </div>

@@ -1,6 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
 
+const steps = [
+  {
+    title: "Explore our Inventory",
+    body: "Discover vintage treasures, timeless essentials, and unexpected details to make your table your own.",
+  },
+  {
+    title: "Build Your Estimate or Schedule a Consultation",
+    body: "Choose your pieces, select quantities, and see estimated pricing instantly—no inquiry required.",
+  },
+  {
+    title: "We’ll Confirm the Details",
+    body: "Submit your estimate, and we’ll confirm availability and help finalize your rentals.",
+  },
+];
+
 export default function GatheringsPage() {
   return (
     <>
@@ -24,7 +39,7 @@ export default function GatheringsPage() {
             </Link>
             <Link
               href="/consultation"
-              className="inline-flex h-12 items-center justify-center whitespace-nowrap px-8 font-display text-xs uppercase tracking-[0.2em] text-fig underline underline-offset-4"
+              className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg bg-deep-olive px-8 font-display text-xs uppercase tracking-[0.2em] text-limestone transition hover:bg-deep-olive/90"
             >
               Free Consultation
             </Link>
@@ -34,24 +49,16 @@ export default function GatheringsPage() {
 
       <section className="bg-limestone px-6 pb-24 md:px-16">
         <div className="mx-auto max-w-7xl">
-          <h2 className="font-display text-3xl text-ink md:text-4xl">Gather your ideas first</h2>
-          <div className="mt-10 space-y-8 font-body text-lg text-ink/80">
-            <p>
-              <strong className="text-ink">Customer Pickup</strong>
-              <br />
-              Thoughtfully selected linens, tabletop pieces, and décor, with pickup in the Wesley Heights area of Charlotte.
-            </p>
-            <p>
-              <strong className="text-ink">Delivered Rentals</strong>
-              <br />
-              Curated rentals delivered to your venue, with an estimated delivery fee based on round-trip distance.
-            </p>
-            <p>
-              <strong className="text-ink">Full-Service Rentals</strong>
-              <br />
-              Curated rentals with delivery, tabletop setup, styling, and post-event pickup.
-            </p>
-          </div>
+          <h2 className="font-display text-3xl uppercase tracking-[0.1em] text-ink md:text-4xl">How It Works</h2>
+          <ol className="mt-10 space-y-8 font-body text-lg text-ink/80">
+            {steps.map((step) => (
+              <li key={step.title}>
+                <strong className="text-ink">{step.title}</strong>
+                <br />
+                {step.body}
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
@@ -78,6 +85,17 @@ export default function GatheringsPage() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="bg-limestone px-6 pb-24 md:px-16">
+        <figure className="mx-auto max-w-3xl text-center">
+          <blockquote className="font-display text-2xl leading-snug text-ink md:text-3xl">
+            “Her ideas are not only thoughtful, but also beautifully brought to life.”
+          </blockquote>
+          <figcaption className="mt-5 font-body text-xs uppercase tracking-[0.2em] text-ink/60">
+            Lisa M.
+          </figcaption>
+        </figure>
       </section>
     </>
   );

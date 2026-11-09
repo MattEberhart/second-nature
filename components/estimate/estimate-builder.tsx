@@ -23,6 +23,7 @@ import type {
 } from "@/lib/estimator/types";
 import { formatMoney } from "@/lib/estimator/money";
 import { cn } from "@/lib/utils";
+import { SlotPicker } from "@/components/booking/slot-picker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -354,24 +355,24 @@ export function EstimateBuilder({
           </p>
           <div className="mt-3 grid gap-6 lg:grid-cols-[1fr_340px] lg:items-end">
             <div>
-              <h1 className="max-w-4xl font-display text-4xl leading-[0.98] sm:text-5xl md:text-6xl">
+              <h1 className="max-w-4xl font-display text-4xl leading-[0.98] text-aegean sm:text-5xl md:text-6xl">
                 {heading}
               </h1>
               <p className="mt-4 max-w-2xl font-body text-base leading-7 text-ink/70">
                 {intro}
               </p>
             </div>
-            <div className="rounded-2xl bg-secondary p-5">
-              <p className="font-display text-xl">
+            <div className="rounded-2xl bg-aged-brass p-5 text-white">
+              <p className="font-display text-xl font-bold">
                 Prefer to start with a conversation?
               </p>
-              <p className="mt-2 text-sm leading-6 text-ink/65">
-                Book a complimentary Google Meet and tell Lydia what you’re
+              <p className="mt-2 text-sm leading-6 text-white/90">
+                Book a complimentary Google Meet and tell us what you’re
                 imagining.
               </p>
               <Link
                 href="/consultation"
-                className="mt-4 inline-flex text-[11px] uppercase tracking-[0.14em] text-fig underline underline-offset-4 sm:text-xs sm:tracking-[0.18em]"
+                className="mt-4 inline-flex text-[11px] uppercase tracking-[0.14em] text-white underline underline-offset-4 sm:text-xs sm:tracking-[0.18em]"
               >
                 Schedule a free consultation
               </Link>
@@ -443,7 +444,7 @@ export function EstimateBuilder({
               <div className="mb-6 flex flex-col justify-between gap-3 rounded-2xl bg-secondary p-5 sm:flex-row sm:items-center">
                 <div>
                   <p className="font-display text-xl">Want a little direction?</p>
-                  <p className="mt-1 text-sm text-ink/60">Start with one of Lydia’s precurated looks.</p>
+                  <p className="mt-1 text-sm text-ink/60">Start with one of our precurated looks.</p>
                 </div>
                 <Link href="/gatherings/collections" className="inline-flex h-10 shrink-0 items-center justify-center rounded-lg bg-fig px-5 text-xs uppercase tracking-[0.14em] text-limestone">
                   Shop By Collections
@@ -1056,10 +1057,10 @@ function Review({
             <ChevronLeft className="size-4" /> Keep shopping
           </button>
           <h2 className="mt-6 font-display text-4xl md:text-5xl">
-            A few details, then Lydia.
+            A few details, then a conversation.
           </h2>
           <p className="mt-4 max-w-xl leading-7 text-ink/65">
-            These details help shape the starting estimate. Lydia will confirm
+            These details help shape the starting estimate. We’ll confirm
             availability and final pricing with you.
           </p>
           <div className="mt-9 grid gap-5 sm:grid-cols-2">
@@ -1198,7 +1199,7 @@ function Review({
               instructions are shared after your reservation is confirmed.
             </p>
           )}
-          <Field label="Anything Lydia should know?" className="mt-6">
+          <Field label="Anything we should know?" className="mt-6">
             <Textarea
               rows={5}
               placeholder="Colors, venue details, special requests, questions—anything that will make your conversation more useful."
@@ -1281,19 +1282,6 @@ function Schedule({
   onBook: () => void;
   busy: boolean;
 }) {
-  const days = useMemo(() => {
-    const map = new Map<string, AvailabilitySlot[]>();
-    for (const slot of slots) {
-      const key = new Intl.DateTimeFormat("en-CA", {
-        timeZone: "America/New_York",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      }).format(new Date(slot.start));
-      map.set(key, [...(map.get(key) || []), slot]);
-    }
-    return [...map.entries()].slice(0, 8);
-  }, [slots]);
   return (
     <section className="px-6 py-12 md:px-16">
       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_390px]">
@@ -1307,58 +1295,28 @@ function Schedule({
           <p className="mt-8 text-xs uppercase tracking-[0.2em] text-fig">
             Complimentary · 30 minutes · Google Meet
           </p>
-          <h2 className="mt-3 font-display text-4xl md:text-5xl">
-            Choose time with Lydia
+          <h2 className="mt-3 font-display text-4xl text-aegean md:text-5xl">
+            Choose a time to meet
           </h2>
           <p className="mt-4 max-w-xl leading-7 text-ink/65">
             A personal review is where the estimate becomes yours. Talk through
             the pieces, questions, and bundle pricing together.
           </p>
-          {days.length ? (
-            <div className="mt-8 space-y-5">
-              {days.map(([date, dateSlots]) => (
-                <div key={date}>
-                  <h3 className="font-display text-xl">
-                    {new Intl.DateTimeFormat("en-US", {
-                      timeZone: "America/New_York",
-                      weekday: "long",
-                      month: "long",
-                      day: "numeric",
-                    }).format(new Date(dateSlots[0].start))}
-                  </h3>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {dateSlots.map((slot) => (
-                      <button
-                        key={slot.start}
-                        onClick={() => setSelected(slot.start)}
-                        className={cn(
-                          "rounded-full border px-4 py-2 text-sm",
-                          selected === slot.start
-                            ? "border-fig bg-fig text-limestone"
-                            : "border-ink/15 hover:border-fig",
-                        )}
-                      >
-                        {new Intl.DateTimeFormat("en-US", {
-                          timeZone: "America/New_York",
-                          hour: "numeric",
-                          minute: "2-digit",
-                        }).format(new Date(slot.start))}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="mt-8 rounded-xl bg-secondary p-6">
-              <p className="font-display text-xl">
-                No times are showing just yet.
-              </p>
-              <p className="mt-2 text-sm text-ink/65">
-                Save your estimate and Lydia can follow up personally.
-              </p>
-            </div>
-          )}
+          <SlotPicker
+            slots={slots}
+            selected={selected}
+            onSelect={setSelected}
+            empty={
+              <div className="mt-8 rounded-xl bg-secondary p-6">
+                <p className="font-display text-xl">
+                  No times are showing just yet.
+                </p>
+                <p className="mt-2 text-sm text-ink/65">
+                  Save your estimate and we’ll follow up personally.
+                </p>
+              </div>
+            }
+          />
         </div>
         <aside className="h-fit rounded-2xl bg-card p-6 shadow-sm">
           <CalendarDays className="size-5 text-fig" />
@@ -1400,7 +1358,7 @@ function Schedule({
           </div>
           <p className="mt-5 text-xs leading-5 text-ink/55">
             Your selections are a starting point and aren’t reserved just yet.
-            Lydia will confirm availability and final pricing with you.
+            We’ll confirm availability and final pricing with you.
           </p>
           <div className="mt-5 space-y-4 border-t border-ink/10 pt-5">
             <ConsentCheckbox
@@ -1477,13 +1435,18 @@ function Confirmation({
           <Check className="size-7" />
         </div>
         <p className="mt-7 text-xs uppercase tracking-[0.2em] text-fig">
-          You’re on Lydia’s calendar
+          Consultation confirmed
         </p>
         <h1 className="mt-3 font-display text-5xl md:text-6xl">
-          Let’s make it feel like you.
+          You’re on the Calendar!
         </h1>
         <p className="mt-5 text-lg leading-8 text-ink/65">
-          Your estimate and meeting details are headed to your inbox.
+          We can’t wait to hear what you’re planning.
+        </p>
+        <p className="mt-3 text-base leading-7 text-ink/65">
+          Keep an eye on your inbox for your confirmation and Google Meet
+          details. In the meantime, feel free to gather any inspiration you’d
+          like to share.
         </p>
         <div className="mt-8 rounded-2xl bg-card p-6 font-display text-2xl">
           {appointmentLabel}
@@ -1496,6 +1459,7 @@ function Confirmation({
             Join Google Meet
           </a>
         ) : null}
+        <p className="mt-7 font-display text-2xl">See you soon!</p>
         <Link
           href="/gatherings"
           className="mt-7 block text-sm text-ink/55 underline underline-offset-4"

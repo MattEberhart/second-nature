@@ -27,7 +27,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
           ))}
         </div>
       </section>
-      <EstimateBuilder products={collection.products} catalog={catalog} heading={collection.name} eyebrow="Lydia’s curated collection" intro={collection.description} />
+      <EstimateBuilder products={collection.products} catalog={catalog} heading={collection.name} eyebrow="A curated collection" intro={collection.description} />
     </div>
   );
 }

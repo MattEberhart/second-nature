@@ -75,6 +75,7 @@ export async function POST(request: Request) {
         customerName: parsed.data.name,
         customerEmail: parsed.data.email,
         appointmentLabel: label,
+        startsAt: slot.start,
         meetUrl: meeting.meetUrl,
         eventDate: parsed.data.dateUndecided ? null : parsed.data.eventDate || null,
         venueName: parsed.data.venueName || null,

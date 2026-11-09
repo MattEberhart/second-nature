@@ -4,7 +4,7 @@ import { getPublicCatalog } from "@/lib/estimator/data";
 
 export const metadata: Metadata = {
   title: "Build Your Estimate | Second Nature",
-  description: "Explore tabletop rentals, see starting prices, and book a personal review with Lydia.",
+  description: "Explore tabletop rentals, see starting prices, and book a personal review with our team.",
 };
 
 export default async function EstimatePage() {

@@ -94,7 +94,7 @@ async function googleBusy(timeMin: string, timeMax: string, calendarIds: string[
     headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
     body: JSON.stringify({ timeMin, timeMax, timeZone: "America/New_York", items: calendarIds.map((id) => ({ id })) }),
   });
-  if (!response.ok) throw new Error("Could not read Lydia’s calendar availability.");
+  if (!response.ok) throw new Error("Could not read calendar availability.");
   const payload = (await response.json()) as { calendars?: Record<string, { busy?: BusyPeriod[] }> };
   return Object.values(payload.calendars ?? {}).flatMap((calendar) => calendar.busy ?? []);
 }
@@ -148,6 +148,18 @@ export async function listAvailability() {
   return slots;
 }
 
+const INVITE_TITLE = "Let’s Talk Details | Second Nature Creative";
+
+// Google adds the Meet link to the invite itself; it isn't known until the event exists.
+const INVITE_MESSAGE = [
+  "We’re excited to connect!",
+  "Let’s chat about your event, explore your ideas, and see how Second Nature Creative can help bring your table to life.",
+  "Bring your questions, inspiration, and any details you’ve already gathered.",
+  "Join us on Google Meet using the link in this invitation.",
+  "See you there!",
+  "Lydia Eberhart at Second Nature Creative",
+].join("\n\n");
+
 export async function createCalendarMeeting(input: {
   appointmentId: string;
   customerName: string;
@@ -157,7 +169,7 @@ export async function createCalendarMeeting(input: {
   description: string;
 }) {
   const accessToken = await googleAccessToken();
-  if (!accessToken) throw new Error("Lydia’s Google Calendar is not connected yet.");
+  if (!accessToken) throw new Error("Online booking is not connected yet.");
   const calendarId = process.env.GOOGLE_BOOKING_CALENDAR_ID || "primary";
   const eventId = `sn${createHash("sha256").update(input.appointmentId).digest("hex").slice(0, 28)}`;
   const response = await fetch(
@@ -167,8 +179,8 @@ export async function createCalendarMeeting(input: {
       headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         id: eventId,
-        summary: `Second Nature consultation with ${input.customerName}`,
-        description: input.description,
+        summary: INVITE_TITLE,
+        description: `${INVITE_MESSAGE}\n\n—\nDetails you shared\n${input.description}`,
         start: { dateTime: input.startsAt, timeZone: "America/New_York" },
         end: { dateTime: input.endsAt, timeZone: "America/New_York" },
         attendees: [{ email: input.customerEmail }],

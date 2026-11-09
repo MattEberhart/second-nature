@@ -124,6 +124,7 @@ export async function POST(request: Request) {
         customerName: parsed.data.details.name,
         customerEmail: parsed.data.details.email,
         appointmentLabel: label,
+        startsAt: slot.start,
         meetUrl: meeting.meetUrl,
         resumeUrl: `${baseUrl}/estimate/${estimate.resumeToken}`,
         eventDate: parsed.data.details.dateUndecided ? null : parsed.data.details.eventDate,

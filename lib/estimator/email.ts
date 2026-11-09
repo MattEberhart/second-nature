@@ -114,6 +114,7 @@ export async function sendAppointmentEmails(input: {
   customerName: string;
   customerEmail: string;
   appointmentLabel: string;
+  startsAt?: string;
   meetUrl: string | null;
   resumeUrl?: string;
   eventDate: string | null;
@@ -135,10 +136,11 @@ export async function sendAppointmentEmails(input: {
       from: sender(),
       to: input.customerEmail,
       replyTo: lydiaEmail,
-      subject: "Your Second Nature consultation is confirmed",
+      subject: "You’re on the calendar | Second Nature Creative",
       react: CustomerConfirmationEmail({
         name: input.customerName,
         appointmentLabel: input.appointmentLabel,
+        startsAt: input.startsAt,
         meetUrl: input.meetUrl,
         resumeUrl: input.resumeUrl,
         items: input.items,

@@ -9,7 +9,7 @@ export function ResumeEstimateEmail({ name, resumeUrl }: { name: string; resumeU
       </Text>
       <Link href={resumeUrl} style={styles.button}>Continue your estimate</Link>
       <Text style={{ ...styles.text, fontSize: "13px", marginTop: "26px" }}>
-        When everything feels right, choose a complimentary Google Meet with Lydia to talk through the details and possible bundle pricing.
+        When everything feels right, choose a complimentary Google Meet with us to talk through the details and possible bundle pricing.
       </Text>
     </EmailShell>
   );
