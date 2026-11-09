@@ -22,6 +22,20 @@ controls estimate and appointment notifications. The generated
 The free Supabase plan can pause after inactivity. It is suitable for development;
 review the production plan before relying on it for uninterrupted lead capture.
 
+After pulling the curated-inventory update, apply
+`supabase/migrations/20261109170156_curated_inventory_collections.sql`. It adds
+Lydia-curated collections and option-level photo references. The application
+keeps serving the existing estimator until this migration is applied.
+
+## Cloudflare Images
+
+Dashboard uploads are stored in Cloudflare Images. Create a scoped Cloudflare API
+token with **Images Write**, then set `CLOUDFLARE_ACCOUNT_ID` and
+`CLOUDFLARE_IMAGES_API_TOKEN` in every Vercel environment. The token is used only
+by the authenticated server upload route and is never exposed to the browser.
+Supabase stores the resulting `imagedelivery.net` URL with the item, option, or
+collection record.
+
 ## 2. Google Workspace, Calendar, and Meet
 
 1. Create Lydia's business Google Workspace account.

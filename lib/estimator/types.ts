@@ -11,6 +11,7 @@ export type CatalogVariant = {
   label: string;
   size: string | null;
   color: string | null;
+  imagePath: string | null;
   unitPriceCents: number;
 };
 
@@ -25,6 +26,22 @@ export type CatalogProduct = {
   accent: string;
   pricePrefix?: string;
   variants: CatalogVariant[];
+};
+
+export type CuratedCollectionImage = {
+  id: string;
+  imagePath: string;
+  altText: string;
+};
+
+export type CuratedCollection = {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  headerImagePath: string | null;
+  images: CuratedCollectionImage[];
+  products: CatalogProduct[];
 };
 
 export type CartLine = {

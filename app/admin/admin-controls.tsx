@@ -1,24 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ChevronDown, Database, Save, SlidersHorizontal } from "lucide-react";
+import { Check, ChevronDown, Save, SlidersHorizontal } from "lucide-react";
 import type { AvailabilitySettings, DeliverySettings } from "@/lib/estimator/settings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-type Product = { id: string; public_name: string; category: string; tier: string; active: boolean; catalog_variants: Array<{ id: string; unit_price_cents: number }> };
-
-export function AdminControls({ availability: initialAvailability, delivery: initialDelivery, products: initialProducts, calendarEmail, calendarOwnerEmail, canConnectCalendar }: { availability: AvailabilitySettings; delivery: DeliverySettings; products: Product[]; calendarEmail: string | null; calendarOwnerEmail: string; canConnectCalendar: boolean }) {
+export function AdminControls({ availability: initialAvailability, delivery: initialDelivery, calendarEmail, calendarOwnerEmail, canConnectCalendar }: { availability: AvailabilitySettings; delivery: DeliverySettings; calendarEmail: string | null; calendarOwnerEmail: string; canConnectCalendar: boolean }) {
   const [availability, setAvailability] = useState(initialAvailability);
   const [delivery, setDelivery] = useState(initialDelivery);
-  const [products, setProducts] = useState(initialProducts);
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
 
-  async function seed() { setBusy(true); const response = await fetch("/api/admin/catalog/seed", { method: "POST" }); const payload = await response.json(); setBusy(false); if (!response.ok) return setNotice(payload.error); setNotice("Launch catalog loaded. Refresh to see it here."); }
   async function saveSettings() { setBusy(true); const response = await fetch("/api/admin/settings", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ availability, delivery }) }); const payload = await response.json(); setBusy(false); setNotice(response.ok ? "Settings saved." : payload.error); }
-  async function toggle(product: Product) { const next = !product.active; setProducts((items) => items.map((item) => item.id === product.id ? { ...item, active: next } : item)); const response = await fetch(`/api/admin/catalog/${product.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ active: next }) }); if (!response.ok) { setProducts((items) => items.map((item) => item.id === product.id ? product : item)); setNotice("That catalog item could not be updated."); } }
 
   return (
     <div className="mt-10 space-y-8">
@@ -28,31 +23,6 @@ export function AdminControls({ availability: initialAvailability, delivery: ini
           {notice}
         </button>
       ) : null}
-
-      <section className="rounded-2xl bg-card p-6">
-        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-          <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-fig">Catalog</p>
-            <h2 className="mt-2 font-display text-3xl">Public collections</h2>
-          </div>
-          {!products.length ? (
-            <Button disabled={busy} onClick={seed} className="w-fit bg-olive">
-              <Database className="size-4" /> Load launch catalog
-            </Button>
-          ) : null}
-        </div>
-        <div className="mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {products.map((product) => (
-            <label key={product.id} className="flex cursor-pointer items-center justify-between rounded-xl border border-ink/10 p-4">
-              <div>
-                <p className="font-display text-lg">{product.public_name}</p>
-                <p className="mt-1 text-xs text-ink/45">{product.tier} · {product.catalog_variants.length} variants</p>
-              </div>
-              <input type="checkbox" checked={product.active} onChange={() => toggle(product)} />
-            </label>
-          ))}
-        </div>
-      </section>
 
       <details className="group overflow-hidden rounded-2xl border border-ink/10 bg-card">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-6 marker:hidden">

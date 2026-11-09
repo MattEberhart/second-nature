@@ -6,7 +6,7 @@ const v = (
   price: number,
   size: string | null = null,
   color: string | null = null,
-) => ({ id, label, size, color, unitPriceCents: Math.round(price * 100) });
+) => ({ id, label, size, color, imagePath: null, unitPriceCents: Math.round(price * 100) });
 
 // Canonical launch catalog derived from Lydia's read-only research workbook.
 // Private sourcing fields live in Supabase and are intentionally not represented here.

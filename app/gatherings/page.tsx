@@ -17,8 +17,14 @@ export default function GatheringsPage() {
               Build Your Estimate
             </Link>
             <Link
-              href="/consultation"
+              href="/gatherings/collections"
               className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg border border-ink/20 px-8 font-display text-xs uppercase tracking-[0.2em] text-ink transition hover:border-ink/50"
+            >
+              Shop By Collections
+            </Link>
+            <Link
+              href="/consultation"
+              className="inline-flex h-12 items-center justify-center whitespace-nowrap px-8 font-display text-xs uppercase tracking-[0.2em] text-fig underline underline-offset-4"
             >
               Free Consultation
             </Link>
