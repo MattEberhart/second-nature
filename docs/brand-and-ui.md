@@ -85,7 +85,7 @@ Studio banner are as sharp as they can get until higher-res originals arrive. Ke
 originals in Drive, not the repo; export a crop with `sharp` at native size and quality 90.
 The home consulting tile used to be one flattened collage PNG; it is now four photos in a
 grid whose column widths match her original layout. Also in `public/`:
-`logo.png` and the `catalog/*.svg` category placeholders used as default product images.
+`logo.png` (square master), `logo-wordmark.png` (cropped copy used by `components/logo.tsx`), and the `catalog/*.svg` category placeholders used as default product images.
 When replacing a photo, give the file a new name: the Next.js image optimizer caches
 resized copies by URL, so it can keep serving the old image under a reused name. Leftover
 create-next-app SVGs (`next.svg`, `vercel.svg`, `file.svg`, `globe.svg`, `window.svg`) are

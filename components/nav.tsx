@@ -24,7 +24,7 @@ export function Nav() {
   return (
     <header className="relative z-50 border-b border-ink/5 bg-limestone text-ink">
       <div className="mx-auto flex min-h-[104px] max-w-7xl items-center justify-between px-6 py-3 md:min-h-[144px] md:px-16">
-        <Logo className="h-[80px] w-[80px] md:h-[128px] md:w-[128px]" />
+        <Logo className="w-[170px] md:w-[280px]" />
 
         <nav className="flex flex-wrap items-center justify-end gap-x-4 gap-y-1 md:gap-10">
           {links.slice(0, 2).map((link) => (

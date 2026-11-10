@@ -9,13 +9,13 @@ export function Logo({ className }: { className?: string }) {
       className="inline-block focus:outline-none"
       aria-label="Second Nature Creative Studio home"
     >
-      <div className={cn("relative", className)}>
+      <div className={cn("relative aspect-[1750/944]", className)}>
         <Image
-          src="/logo.png"
+          src="/logo-wordmark.png"
           alt="Second Nature Creative Studio"
           fill
           className="object-contain"
-          sizes="(max-width: 768px) 80px, 128px"
+          sizes="(max-width: 768px) 170px, 280px"
           priority
         />
       </div>
