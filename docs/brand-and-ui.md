@@ -78,11 +78,13 @@ native resolution (never upscaled) and stripped of EXIF:
 | `consulting-workshop.jpg` | `Bobby-event-me-1.jpg` | Studio banner |
 | `studio-phone.jpg` | `Bobby-event-me-2.jpg` | Studio gallery |
 | `studio-bookshelf.jpg` | `DSC02245.JPG` | Studio gallery |
+| `home-tablet.jpg`, `home-bridge.jpg`, `home-bookshelf.jpg`, `home-phone.jpg` | `Bobby-event-me-1.jpg`, `IMG_0528.JPG`, `DSC02245.JPG`, `Bobby-event-me-2.jpg` | Home consulting tile (four-up grid in `app/page.tsx`) |
 
 Most sources are only ~1000px wide (social or web downloads), so wide placements such as the
 Studio banner are as sharp as they can get until higher-res originals arrive. Keep the
 originals in Drive, not the repo; export a crop with `sharp` at native size and quality 90.
-`home-consulting.png` is still Lydia's flattened four-photo collage. Also in `public/`:
+The home consulting tile used to be one flattened collage PNG; it is now four photos in a
+grid whose column widths match her original layout. Also in `public/`:
 `logo.png` and the `catalog/*.svg` category placeholders used as default product images.
 When replacing a photo, give the file a new name: the Next.js image optimizer caches
 resized copies by URL, so it can keep serving the old image under a reused name. Leftover

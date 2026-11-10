@@ -1,6 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 
+const consultingCollage = [
+  "/photos/home-tablet.jpg",
+  "/photos/home-bridge.jpg",
+  "/photos/home-bookshelf.jpg",
+  "/photos/home-phone.jpg",
+];
+
 export default function HomePage() {
   return (
     <section className="min-h-screen bg-limestone px-6 pb-24 md:px-16 md:pb-32">
@@ -42,13 +49,18 @@ export default function HomePage() {
 
           <Link href="/studio" className="group block md:col-span-2">
             <div className="relative aspect-[1152/448] overflow-hidden rounded-2xl bg-secondary">
-              <Image
-                src="/home-consulting.png"
-                alt="Creative & Digital Consulting"
-                fill
-                sizes="100vw"
-                className="object-cover transition duration-500 group-hover:scale-105"
-              />
+              {/* Four separate photos, laid out like Lydia's original flattened collage (column widths match it). */}
+              <div
+                role="img"
+                aria-label="Creative & Digital Consulting"
+                className="grid h-full grid-cols-[596fr_556fr_562fr_590fr] transition duration-500 group-hover:scale-105"
+              >
+                {consultingCollage.map((src) => (
+                  <div key={src} className="relative">
+                    <Image src={src} alt="" fill sizes="(min-width: 1280px) 320px, 25vw" className="object-cover" />
+                  </div>
+                ))}
+              </div>
             </div>
             <h2 className="mt-6 font-display text-2xl text-ink">Creative & Digital Consulting</h2>
             <p className="mt-2 font-body text-ink/70">
