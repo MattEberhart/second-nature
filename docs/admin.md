@@ -2,14 +2,15 @@
 
 Server-rendered, `force-dynamic`. Access: Google sign-in through Supabase Auth, allowed only
 for emails in `ADMIN_EMAILS`. Dashboard sign-in requests identity only — it does **not**
-grant calendar or mail access. Sub-pages redirect to `/admin` when not signed in. There is
-no middleware/proxy; each page and route checks auth itself.
+grant calendar or mail access. Sub-pages redirect to `/admin` when not signed in. Each page and route still checks auth
+itself; `proxy.ts` (matcher `/admin/:path*`, `/api/admin/:path*`) only refreshes the Supabase
+session cookie so Lydia stays signed in past the ~1 hour access-token lifetime.
 
 ## Pages
 
 | Route | File | Shows |
 | --- | --- | --- |
-| `/admin` | `app/admin/page.tsx` | Stats (customers, upcoming calls, saved quotes, published collections), recent inquiries (with Lydia-email delivery status), `CatalogManager`, `AdminControls`, upcoming consultations (Meet links), recent estimates |
+| `/admin` | `app/admin/page.tsx` | Clickable stat cards (customers → `/admin/customers`, upcoming calls → `#consultations`, saved quotes → `/admin/estimates`, published collections → `#collections`, which switches `CatalogManager` to collections), recent inquiries (with Lydia-email delivery status), upcoming consultations (Meet links) + recent estimates, `CatalogManager`, then `AdminControls` (collapsed advanced settings) last. Header has only Sign out. |
 | `/admin/customers` | `app/admin/customers/page.tsx` | Latest 250 contacts by activity with inquiry/quote/call counts; `?q=` filters name/email/phone in memory |
 | `/admin/customers/[id]` | `app/admin/customers/[id]/page.tsx` + `customer-controls.tsx` | Profile, inquiries, estimates, appointments, notes, activity timeline; status select and add-note form |
 | `/admin/estimates` | `app/admin/estimates/page.tsx` | Latest 250 quotes, status + resume-email status |
@@ -31,7 +32,7 @@ phone; gaps between words match anything).
 Two modes:
 
 - **Items**: create/edit a product (public name, category, material, description,
-  image, hex accent, optional price prefix, active) and its variants (label, size, color,
+  image, optional price prefix, active) and its variants (label, size, color,
   optional image, price in dollars → cents, active). Saving an existing item sends the
   full variant list; variants omitted are **deleted**.
 - **Collections**: name, slug, description, header image, gallery images (≤ 20, with alt

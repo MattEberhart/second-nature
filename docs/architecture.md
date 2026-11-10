@@ -80,6 +80,7 @@ lib/
     email.ts               All Resend sends
     settings.ts            app_settings get/set with defaults
     validation.ts admin-schemas.ts   Zod schemas
+proxy.ts                   Refreshes the admin Supabase session cookie on /admin + /api/admin
 supabase/migrations/       SQL migrations (apply in filename order)
 public/                    Photography (PNG), logo, catalog category SVG placeholders
 ```

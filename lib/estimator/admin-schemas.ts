@@ -8,7 +8,6 @@ export const inventoryItemSchema = z.object({
   material: z.string().trim().max(160).default(""),
   description: z.string().trim().max(1000).default(""),
   imagePath: z.string().trim().min(1).max(1000),
-  accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
   pricePrefix: optionalText,
   active: z.boolean().default(true),
   variants: z.array(z.object({

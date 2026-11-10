@@ -12,7 +12,7 @@ export async function PATCH(request: Request, context: RouteContext<"/api/admin/
     const { error } = await supabase.from("catalog_products").update({
       public_name: input.publicName, category: input.category,
       material: input.material, description: input.description, image_path: input.imagePath,
-      accent: input.accent, price_prefix: input.pricePrefix || null, active: input.active,
+      price_prefix: input.pricePrefix || null, active: input.active,
       updated_at: new Date().toISOString(),
     }).eq("id", id);
     if (error) throw error;

@@ -11,7 +11,6 @@ type ProductRow = {
   material: string;
   description: string;
   image_path: string;
-  accent: string;
   price_prefix: string | null;
   catalog_variants: Array<{
     id: string;
@@ -33,7 +32,7 @@ export async function getPublicCatalog(): Promise<CatalogProduct[]> {
   const supabase = getAdminSupabase();
   let { data, error } = await supabase
     .from("catalog_products")
-    .select("id,public_name,category,material,description,image_path,accent,price_prefix,sort_order,catalog_variants(id,label,size,color,image_path,unit_price_cents,sort_order,active)")
+    .select("id,public_name,category,material,description,image_path,price_prefix,sort_order,catalog_variants(id,label,size,color,image_path,unit_price_cents,sort_order,active)")
     .eq("active", true)
     .order("sort_order");
 
@@ -42,7 +41,7 @@ export async function getPublicCatalog(): Promise<CatalogProduct[]> {
   if (["PGRST204", "42703"].includes(error?.code ?? "") && error?.message.includes("image_path")) {
     const legacy = await supabase
       .from("catalog_products")
-      .select("id,public_name,category,material,description,image_path,accent,price_prefix,sort_order,catalog_variants(id,label,size,color,unit_price_cents,sort_order,active)")
+      .select("id,public_name,category,material,description,image_path,price_prefix,sort_order,catalog_variants(id,label,size,color,unit_price_cents,sort_order,active)")
       .eq("active", true)
       .order("sort_order");
     data = legacy.data as typeof data;
@@ -61,7 +60,6 @@ export async function getPublicCatalog(): Promise<CatalogProduct[]> {
     material: product.material,
     description: product.description,
     imagePath: product.image_path,
-    accent: product.accent,
     pricePrefix: product.price_prefix ?? undefined,
     variants: product.catalog_variants
       .filter((variant) => variant.active)
@@ -167,7 +165,6 @@ export async function seedLaunchCatalog() {
       material: product.material,
       description: product.description,
       image_path: product.imagePath,
-      accent: product.accent,
       price_prefix: product.pricePrefix ?? null,
       internal_name: privateMetadata?.internalName ?? null,
       supplier: privateMetadata?.supplier ?? null,

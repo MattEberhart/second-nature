@@ -22,7 +22,6 @@ export type CatalogProduct = {
   material: string;
   description: string;
   imagePath: string;
-  accent: string;
   pricePrefix?: string;
   variants: CatalogVariant[];
 };

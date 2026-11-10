@@ -41,6 +41,11 @@
 consultation time" step, "Email my private link" and the admin add-note form until each got an
 explicit `type="submit"`. Any new form must set it.
 
+**Supabase SSR sessions need `proxy.ts`.** Server Components can't write cookies, so
+`getAuthSupabase()` alone can never persist a refreshed access token; once it expired (~1 hour)
+`getAdminUser()` returned null and Lydia had to sign in with Google again. `proxy.ts` refreshes
+the session before admin pages/routes render. Keep its matcher covering every admin path.
+
 Open (confirm before fixing):
 
 1. **Supabase free plan** can pause the project after inactivity (accepted for now;

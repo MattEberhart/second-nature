@@ -18,7 +18,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Polyester table linen",
     description: "A polished, versatile base for classic tablescapes.",
     imagePath: "/catalog/table-linens.svg",
-    accent: "#d8d0bf",
     variants: [
       ...["White", "Ivory", "Black"].flatMap((color) => [
         v(`foundation-${color.toLowerCase()}-90`, `${color} · 90\" round`, 11, '90" round', color),
@@ -34,7 +33,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Performance table linen",
     description: "A refined solid with an elevated drape and event-ready finish.",
     imagePath: "/catalog/table-linens.svg",
-    accent: "#b8b09a",
     variants: [
       ...["White", "Ivory", "Black"].flatMap((color) => [
         v(`heirloom-${color.toLowerCase()}-90`, `${color} · 90\" round`, 17, '90" round', color),
@@ -50,7 +48,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Spun polyester table linen",
     description: "A soft, seamless solid with a clean, tailored presence.",
     imagePath: "/catalog/table-linens.svg",
-    accent: "#e7dfd2",
     variants: [
       ...["White", "Black"].flatMap((color) => [
         v(`tailored-${color.toLowerCase()}-90`, `${color} · 90\" round`, 15, '90" round', color),
@@ -68,7 +65,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Matte woven table linen",
     description: "Grounded color and subtle texture for warm, layered tables.",
     imagePath: "/catalog/table-linens.svg",
-    accent: "#7f8768",
     variants: [
       ...["Chocolate", "Moss", "Light Blue"].flatMap((color) => [
         v(`meadow-${color.toLowerCase().replace(" ", "-")}-90`, `${color} · 90\" round`, 17, '90" round', color),
@@ -84,7 +80,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Cotton-blend table linen",
     description: "A rich burgundy textile with a soft, substantial hand.",
     imagePath: "/catalog/table-linens.svg",
-    accent: "#754153",
     variants: [
       v("bordeaux-90", 'Burgundy · 90" round', 22, '90" round', "Burgundy"),
       v("bordeaux-120", 'Burgundy · 120" round', 27, '120" round', "Burgundy"),
@@ -98,7 +93,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Statement woven table linen",
     description: "An expressive green designed to wake up the whole room.",
     imagePath: "/catalog/table-linens.svg",
-    accent: "#a9b949",
     variants: [
       v("garden-party-90", 'Acid Green · 90" round', 20, '90" round', "Acid Green"),
       v("garden-party-120", 'Acid Green · 120" round', 26, '120" round', "Acid Green"),
@@ -112,7 +106,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Cotton-blend table linen",
     description: "A muted slate blue with an easy, romantic softness.",
     imagePath: "/catalog/table-linens.svg",
-    accent: "#687d8f",
     variants: [
       v("blue-hour-90", 'Slate Blue · 90" round', 19.5, '90" round', "Slate Blue"),
       v("blue-hour-120", 'Slate Blue · 120" round', 26, '120" round', "Slate Blue"),
@@ -126,7 +119,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Polyester napkin",
     description: "A simple, polished napkin for an effortless place setting.",
     imagePath: "/catalog/napkins.svg",
-    accent: "#d9d3c5",
     variants: ["White", "Ivory", "Black", "Moss Green"].map((color) =>
       v(`foundation-napkin-${color.toLowerCase().replace(" ", "-")}`, `${color} · 20 × 20`, 0.6, "20 × 20", color),
     ),
@@ -138,7 +130,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Performance napkin",
     description: "A refined solid napkin with a beautifully finished feel.",
     imagePath: "/catalog/napkins.svg",
-    accent: "#b8b09a",
     variants: ["White", "Ivory", "Black"].map((color) =>
       v(`heirloom-napkin-${color.toLowerCase()}`, `${color} · 20 × 20`, 0.75, "20 × 20", color),
     ),
@@ -150,7 +141,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Patterned napkin",
     description: "A breezy stripe that brings pattern to the table without overpowering it.",
     imagePath: "/catalog/napkins.svg",
-    accent: "#91aebe",
     variants: [
       v("coastal-seersucker-blue", "Light Blue Seersucker · 20 × 20", 2.75, "20 × 20", "Light Blue Stripe"),
       v("coastal-lexington-sage", "Sage Stripe · 20 × 20", 2.5, "20 × 20", "Sage"),
@@ -158,19 +148,18 @@ export const launchCatalog: CatalogProduct[] = [
     ],
   },
   ...[
-    ["meadow-napkin", "The Meadow Napkin", "Matte woven napkin", "#7f8768", [["Chocolate", 2], ["Moss", 2], ["Light Blue", 2]]],
-    ["bordeaux-napkin", "Bordeaux Napkin", "Cotton-blend napkin", "#754153", [["Burgundy", 2.2]]],
-    ["garden-party-napkin", "Garden Party Napkin", "Statement woven napkin", "#a9b949", [["Acid Green", 2]]],
-    ["blue-hour-napkin", "Blue Hour Napkin", "Cotton-blend napkin", "#687d8f", [["Slate Blue", 2.25]]],
-    ["camel-napkin", "Desert Sand", "Spun polyester napkin", "#b29673", [["Camel", 1.5]]],
-  ].map(([id, publicName, material, accent, colors]) => ({
+    ["meadow-napkin", "The Meadow Napkin", "Matte woven napkin", [["Chocolate", 2], ["Moss", 2], ["Light Blue", 2]]],
+    ["bordeaux-napkin", "Bordeaux Napkin", "Cotton-blend napkin", [["Burgundy", 2.2]]],
+    ["garden-party-napkin", "Garden Party Napkin", "Statement woven napkin", [["Acid Green", 2]]],
+    ["blue-hour-napkin", "Blue Hour Napkin", "Cotton-blend napkin", [["Slate Blue", 2.25]]],
+    ["camel-napkin", "Desert Sand", "Spun polyester napkin", [["Camel", 1.5]]],
+  ].map(([id, publicName, material, colors]) => ({
     id: id as string,
     publicName: publicName as string,
     category: "napkins" as const,
     material: material as string,
     description: "A textural finishing touch designed to layer beautifully.",
     imagePath: "/catalog/napkins.svg",
-    accent: accent as string,
     variants: (colors as [string, number][]).map(([color, price]) =>
       v(`${id}-${color.toLowerCase().replace(" ", "-")}`, `${color} · 20 × 20`, price, "20 × 20", color),
     ),
@@ -182,7 +171,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Decorative charger",
     description: "A warm gold beaded rim for a little ceremony at every place.",
     imagePath: "/catalog/chargers.svg",
-    accent: "#b59950",
     variants: [v("golden-bead-gold", 'Gold · 13"', 1.25, '13"', "Gold")],
   },
   {
@@ -192,7 +180,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Decorative charger",
     description: "A clean silver rim that quietly frames the tableware.",
     imagePath: "/catalog/chargers.svg",
-    accent: "#a9adb0",
     variants: [v("silver-line-silver", 'Silver · 13"', 1.25, '13"', "Silver")],
   },
   {
@@ -202,7 +189,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Glass charger",
     description: "Clear glass and a delicate gold edge for luminous tables.",
     imagePath: "/catalog/chargers.svg",
-    accent: "#c2a767",
     variants: [v("gilded-glass-clear", 'Clear with Gold · 13"', 6, '13"', "Clear and Gold")],
   },
   {
@@ -212,7 +198,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Porcelain charger",
     description: "Crisp white porcelain traced with a fine gold line.",
     imagePath: "/catalog/chargers.svg",
-    accent: "#d7c99e",
     variants: [v("pearl-rim-white", 'White with Gold · 12"', 5, '12"', "White and Gold")],
   },
   {
@@ -222,7 +207,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Porcelain charger",
     description: "A cool silver porcelain charger with a modern glow.",
     imagePath: "/catalog/chargers.svg",
-    accent: "#939aa3",
     variants: [v("moonlight-silver", 'Silver · 12"', 5, '12"', "Silver")],
   },
   {
@@ -232,7 +216,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "White stoneware",
     description: "Bright white silhouettes that make every menu feel considered.",
     imagePath: "/catalog/plates.svg",
-    accent: "#dedbd2",
     variants: [
       v("porcelain-dinner", 'Dinner Plate · 10½"', 0.75, '10½"', "Bright White"),
       v("porcelain-salad", 'Salad Plate · 6¼"', 0.5, '6¼"', "Bright White"),
@@ -240,17 +223,16 @@ export const launchCatalog: CatalogProduct[] = [
     ],
   },
   ...[
-    ["classic-flatware", "The Classic", "Polished stainless flatware", "#aeb2b2", 0.6],
-    ["gilded-flatware", "The Gilded", "Gold-tone stainless flatware", "#b3944e", 1.4],
-    ["heirloom-flatware", "The Heirloom Scroll", "Scroll-pattern stainless flatware", "#929797", 1.1],
-  ].map(([id, publicName, material, accent, price]) => ({
+    ["classic-flatware", "The Classic", "Polished stainless flatware", 0.6],
+    ["gilded-flatware", "The Gilded", "Gold-tone stainless flatware", 1.4],
+    ["heirloom-flatware", "The Heirloom Scroll", "Scroll-pattern stainless flatware", 1.1],
+  ].map(([id, publicName, material, price]) => ({
     id: id as string,
     publicName: publicName as string,
     category: "flatware" as const,
     material: material as string,
     description: "A cohesive flatware collection, priced by the individual piece.",
     imagePath: "/catalog/flatware.svg",
-    accent: accent as string,
     variants: ["Dinner Fork", "Salad Fork", "Dinner Knife", "Spoon"].map((piece) =>
       v(`${id}-${piece.toLowerCase().replace(" ", "-")}`, piece, price as number, null, null),
     ),
@@ -262,7 +244,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Hand-painted wood",
     description: "A custom freestanding sign designed around the tone of your day.",
     imagePath: "/catalog/custom-details.svg",
-    accent: "#927561",
     pricePrefix: "Starting at",
     variants: [v("welcome-sign-custom", "Custom painted sign", 220)],
   },

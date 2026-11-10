@@ -724,16 +724,13 @@ function ProductCard({
   const selectedImage = variant?.imagePath || product.imagePath;
   return (
     <article className="min-w-0 overflow-hidden rounded-xl border border-ink/10 bg-card">
-      <div
-        className="relative aspect-[16/9] overflow-hidden"
-        style={{ backgroundColor: product.accent }}
-      >
+      <div className="relative aspect-[16/9] overflow-hidden bg-secondary">
         <Image
           src={selectedImage}
-          alt="Representative styling placeholder"
+          alt={variant ? `${product.publicName} — ${variant.label}` : product.publicName}
           fill
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-          className="object-cover mix-blend-soft-light opacity-90"
+          className="object-cover"
         />
       </div>
       <div className="p-4">

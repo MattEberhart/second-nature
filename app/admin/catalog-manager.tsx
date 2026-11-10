@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ImagePlus, Layers3, PackagePlus, Plus, Save, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,13 +9,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 export type AdminVariant = { id: string; label: string; size: string | null; color: string | null; image_path: string | null; unit_price_cents: number; active: boolean };
-export type AdminItem = { id: string; public_name: string; category: string; material: string; description: string; image_path: string; accent: string; price_prefix: string | null; active: boolean; catalog_variants: AdminVariant[] };
+export type AdminItem = { id: string; public_name: string; category: string; material: string; description: string; image_path: string; price_prefix: string | null; active: boolean; catalog_variants: AdminVariant[] };
 export type AdminCollection = { id: string; name: string; slug: string; description: string; header_image_path: string | null; active: boolean; curated_collection_members: Array<{ product_id: string; variant_id: string | null }>; curated_collection_images: Array<{ id: string; image_path: string; alt_text: string; sort_order: number }> };
 
-type ItemDraft = { id?: string; publicName: string; category: string; material: string; description: string; imagePath: string; accent: string; pricePrefix: string; active: boolean; variants: Array<{ id?: string; label: string; size: string; color: string; imagePath: string; unitPrice: string; active: boolean }> };
+type ItemDraft = { id?: string; publicName: string; category: string; material: string; description: string; imagePath: string; pricePrefix: string; active: boolean; variants: Array<{ id?: string; label: string; size: string; color: string; imagePath: string; unitPrice: string; active: boolean }> };
 type CollectionDraft = { id?: string; name: string; slug: string; description: string; headerImagePath: string; active: boolean; members: Array<{ productId: string; variantId: string | null }>; images: Array<{ id?: string; imagePath: string; altText: string }> };
 
-const emptyItem = (): ItemDraft => ({ publicName: "", category: "table-linens", material: "", description: "", imagePath: "/catalog/table-linens.svg", accent: "#9E9576", pricePrefix: "", active: true, variants: [{ label: "Standard", size: "", color: "", imagePath: "", unitPrice: "0.00", active: true }] });
+const emptyItem = (): ItemDraft => ({ publicName: "", category: "table-linens", material: "", description: "", imagePath: "/catalog/table-linens.svg", pricePrefix: "", active: true, variants: [{ label: "Standard", size: "", color: "", imagePath: "", unitPrice: "0.00", active: true }] });
 const emptyCollection = (): CollectionDraft => ({ name: "", slug: "", description: "", headerImagePath: "", active: true, members: [], images: [] });
 
 export function CatalogManager({ items, collections }: { items: AdminItem[]; collections: AdminCollection[] }) {
@@ -25,9 +25,17 @@ export function CatalogManager({ items, collections }: { items: AdminItem[]; col
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
 
+  // The dashboard's "Published collections" card links to #collections.
+  useEffect(() => {
+    const sync = () => { if (window.location.hash === "#collections") setMode("collections"); };
+    sync();
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, []);
+
   function editItem(source: AdminItem) {
     setMode("items");
-    setItem({ id: source.id, publicName: source.public_name, category: source.category, material: source.material, description: source.description, imagePath: source.image_path, accent: source.accent, pricePrefix: source.price_prefix || "", active: source.active, variants: source.catalog_variants.map((variant) => ({ id: variant.id, label: variant.label, size: variant.size || "", color: variant.color || "", imagePath: variant.image_path || "", unitPrice: (variant.unit_price_cents / 100).toFixed(2), active: variant.active })) });
+    setItem({ id: source.id, publicName: source.public_name, category: source.category, material: source.material, description: source.description, imagePath: source.image_path, pricePrefix: source.price_prefix || "", active: source.active, variants: source.catalog_variants.map((variant) => ({ id: variant.id, label: variant.label, size: variant.size || "", color: variant.color || "", imagePath: variant.image_path || "", unitPrice: (variant.unit_price_cents / 100).toFixed(2), active: variant.active })) });
   }
 
   function editCollection(source: AdminCollection) {
@@ -82,7 +90,7 @@ export function CatalogManager({ items, collections }: { items: AdminItem[]; col
   }
 
   return (
-    <section className="rounded-2xl bg-card p-6">
+    <section id="collections" className="scroll-mt-8 rounded-2xl bg-card p-6">
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div><p className="text-xs uppercase tracking-[0.18em] text-fig">Inventory studio</p><h2 className="mt-2 font-display text-3xl">Items, options & collections</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-ink/55">Items are reusable inventory. Options hold price and optional size/color. Curated collections can include an entire item or only selected options.</p></div>
         <div className="flex gap-2"><Button variant={mode === "items" ? "default" : "outline"} onClick={() => setMode("items")}><PackagePlus className="size-4" /> Items</Button><Button variant={mode === "collections" ? "default" : "outline"} onClick={() => setMode("collections")}><Layers3 className="size-4" /> Collections</Button></div>
@@ -94,7 +102,7 @@ export function CatalogManager({ items, collections }: { items: AdminItem[]; col
         <div className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-2"><Field label="Public name"><Input value={item.publicName} onChange={(e) => setItem({ ...item, publicName: e.target.value })} /></Field><Field label="Material / short type"><Input value={item.material} onChange={(e) => setItem({ ...item, material: e.target.value })} /></Field><Field label="Category"><select className="mt-2 h-10 w-full rounded-md border bg-transparent px-3" value={item.category} onChange={(e) => setItem({ ...item, category: e.target.value })}>{["table-linens", "napkins", "chargers", "plates", "flatware", "custom-details"].map((value) => <option key={value}>{value}</option>)}</select></Field></div>
           <Field label="Description"><Textarea value={item.description} onChange={(e) => setItem({ ...item, description: e.target.value })} /></Field>
-          <div className="grid gap-4 sm:grid-cols-3"><Field label="Accent color"><Input type="color" value={item.accent} onChange={(e) => setItem({ ...item, accent: e.target.value })} /></Field><Field label="Price prefix (optional)"><Input placeholder="From" value={item.pricePrefix} onChange={(e) => setItem({ ...item, pricePrefix: e.target.value })} /></Field><label className="flex items-center gap-3 pt-7 text-sm"><input type="checkbox" checked={item.active} onChange={(e) => setItem({ ...item, active: e.target.checked })} /> Visible to customers</label></div>
+          <div className="grid gap-4 sm:grid-cols-2"><Field label="Price prefix (optional)"><Input placeholder="From" value={item.pricePrefix} onChange={(e) => setItem({ ...item, pricePrefix: e.target.value })} /></Field><label className="flex items-center gap-3 pt-7 text-sm"><input type="checkbox" checked={item.active} onChange={(e) => setItem({ ...item, active: e.target.checked })} /> Visible to customers</label></div>
           <PhotoField label="Item photo" path={item.imagePath} busy={busy} onFile={(file) => upload(file, "item", item.publicName, (imagePath) => setItem({ ...item, imagePath }))} />
           <div><div className="flex items-center justify-between"><div><Label>Purchasable options</Label><p className="mt-1 text-xs text-ink/45">Size and color are optional. Use one “Standard” option when the item has no choices.</p></div><Button variant="outline" onClick={() => setItem({ ...item, variants: [...item.variants, { label: "", size: "", color: "", imagePath: "", unitPrice: "0.00", active: true }] })}><Plus className="size-4" /> Add option</Button></div><div className="mt-4 space-y-4">{item.variants.map((variant, index) => <div key={variant.id || index} className="rounded-xl border border-ink/10 p-4"><div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"><Field label="Label"><Input value={variant.label} onChange={(e) => setItem({ ...item, variants: item.variants.map((value, i) => i === index ? { ...value, label: e.target.value } : value) })} /></Field><Field label="Size (optional)"><Input value={variant.size} onChange={(e) => setItem({ ...item, variants: item.variants.map((value, i) => i === index ? { ...value, size: e.target.value } : value) })} /></Field><Field label="Color (optional)"><Input value={variant.color} onChange={(e) => setItem({ ...item, variants: item.variants.map((value, i) => i === index ? { ...value, color: e.target.value } : value) })} /></Field><Field label="Price each"><Input type="number" min="0" step="0.01" value={variant.unitPrice} onChange={(e) => setItem({ ...item, variants: item.variants.map((value, i) => i === index ? { ...value, unitPrice: e.target.value } : value) })} /></Field></div><div className="mt-3 flex flex-wrap items-center justify-between gap-3"><label className="text-sm"><input type="checkbox" checked={variant.active} onChange={(e) => setItem({ ...item, variants: item.variants.map((value, i) => i === index ? { ...value, active: e.target.checked } : value) })} /> <span className="ml-2">Available</span></label><div className="flex gap-2"><label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-xs"><ImagePlus className="size-4" /> {variant.imagePath ? "Replace option photo" : "Option photo"}<input type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="sr-only" disabled={busy} onChange={(e) => { const file = e.target.files?.[0]; if (file) upload(file, "variant", `${item.publicName} — ${variant.label}`, (imagePath) => setItem((current) => ({ ...current, variants: current.variants.map((value, i) => i === index ? { ...value, imagePath } : value) }))); }} /></label>{item.variants.length > 1 ? <Button variant="ghost" onClick={() => setItem({ ...item, variants: item.variants.filter((_, i) => i !== index) })}><Trash2 className="size-4" /></Button> : null}</div></div></div>)}</div></div>
           <div className="flex justify-between border-t border-ink/10 pt-5">{item.id ? <Button variant="ghost" className="text-destructive" onClick={() => remove("inventory", item.id!)}><Trash2 className="size-4" /> Delete item</Button> : <span />}<Button disabled={busy} onClick={saveItem} className="bg-fig"><Save className="size-4" /> Save item</Button></div>
