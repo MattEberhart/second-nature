@@ -1,10 +1,17 @@
 import "server-only";
 import { defaultDelivery, getSetting } from "./settings";
+import { PLACE_ID_PATTERN } from "./places";
 import type { DeliveryEstimate, FulfillmentType } from "./types";
 
+/**
+ * Server-side delivery quote. When the customer picked an autocomplete
+ * suggestion, `placeId` routes to that exact place; otherwise the free-text
+ * address is geocoded by the Routes API itself.
+ */
 export async function calculateDelivery(
   destination: string,
   fulfillment: FulfillmentType,
+  placeId?: string | null,
 ): Promise<DeliveryEstimate> {
   if (fulfillment === "pickup") {
     return { distanceMilesOneWay: 0, distanceMilesRoundTrip: 0, deliveryFeeCents: 0, fullServiceFeeCents: 0 };
@@ -23,7 +30,8 @@ export async function calculateDelivery(
     },
     body: JSON.stringify({
       origin: { address: origin },
-      destination: { address: destination },
+      destination:
+        placeId && PLACE_ID_PATTERN.test(placeId) ? { placeId } : { address: destination },
       travelMode: "DRIVE",
       routingPreference: "TRAFFIC_UNAWARE",
       units: "IMPERIAL",

@@ -67,6 +67,8 @@ export const saveEstimateSchema = z.object({
 export const scheduleSchema = z.object({
   cart: cartSchema,
   details: detailsSchema.and(consentSchema),
+  /** Google place ID of the picked venue-address suggestion, if any. */
+  venuePlaceId: z.string().regex(/^[A-Za-z0-9_-]{10,400}$/).optional(),
   slotStart: z.string().datetime(),
   resumeToken: z.string().min(20).max(200).optional(),
 });

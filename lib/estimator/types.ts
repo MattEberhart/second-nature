@@ -73,6 +73,17 @@ export type DeliveryEstimate = {
   fullServiceFeeCents: number;
 };
 
+/** One venue-address suggestion from `/api/places/autocomplete`. */
+export type AddressSuggestion = {
+  placeId: string;
+  /** Full single-line text, stored as the venue address when picked. */
+  text: string;
+  mainText: string;
+  secondaryText: string;
+  /** True for named places (venues, hotels, parks) rather than bare street addresses. */
+  isEstablishment: boolean;
+};
+
 export type AvailabilitySlot = {
   start: string;
   end: string;

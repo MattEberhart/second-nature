@@ -32,6 +32,7 @@ calendar owner). Business email: `hello@secondnaturecreative.com`.
 | Email | Resend + React Email templates in `emails/` |
 | Calendar | Google Calendar API (freeBusy + event insert with Meet) using an encrypted stored refresh token |
 | Distance | Google Routes API (`computeRoutes`, distance only) |
+| Address autocomplete | Google Places API (New) Autocomplete, proxied by `/api/places/autocomplete` |
 | Images | Static assets in `public/`; admin uploads to Cloudflare Images (`imagedelivery.net`, allowed in `next.config.ts`) |
 | Hosting | Vercel project `second-nature` |
 
@@ -74,6 +75,7 @@ lib/
     data.ts                getPublicCatalog / getPublicCollections / seedLaunchCatalog
     estimate-service.ts    priceCart / saveEstimate / getEstimateByToken
     delivery.ts            Google Routes distance → fee
+    places.ts              Places Autocomplete proxy (venue-address suggestions)
     calendar.ts            Availability slot generation + Google event creation
     email.ts               All Resend sends
     settings.ts            app_settings get/set with defaults
@@ -108,6 +110,7 @@ The site is designed to run with partial configuration:
 | `catalog_variants.image_path` column missing | Legacy select without it |
 | Google Calendar not connected | Availability ignores Google busy times; booking fails with "not connected yet" |
 | Routes API key / origin | Delivery estimate errors (pickup still works) |
+| Places API (New) not enabled on the key | No address suggestions; the field silently becomes plain text and delivery still quotes from typed text |
 | Resend | Saves still succeed; email status recorded as `failed`, user gets the resume link inline |
 
 ## Environment variables
@@ -123,7 +126,7 @@ The site is designed to run with partial configuration:
 | `APP_ENCRYPTION_KEY` | server | AES key material for the refresh token; HMAC key for IP/fingerprint hashes |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | server | Token refresh for Calendar |
 | `GOOGLE_BOOKING_CALENDAR_ID` | server | Calendar that receives consultation events (default `primary`) |
-| `GOOGLE_MAPS_API_KEY`, `DELIVERY_ORIGIN_ADDRESS` | server | Routes API; origin is private and never returned to the browser |
+| `GOOGLE_MAPS_API_KEY`, `DELIVERY_ORIGIN_ADDRESS` | server | Routes API + Places API (New) Autocomplete (same key, never sent to the browser); origin is private and never returned to the browser |
 | `RESEND_API_KEY`, `RESEND_FROM_EMAIL` | server | Email sending |
 | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_IMAGES_API_TOKEN` | server | Admin image uploads |
 

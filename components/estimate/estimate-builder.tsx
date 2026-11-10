@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CalendarDays,
   Check,
@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import type {
+  AddressSuggestion,
   AvailabilitySlot,
   CartLine,
   CatalogProduct,
@@ -24,6 +25,7 @@ import type {
 import { formatMoney } from "@/lib/estimator/money";
 import { cn } from "@/lib/utils";
 import { SlotPicker } from "@/components/booking/slot-picker";
+import { AddressAutocomplete } from "@/components/estimate/address-autocomplete";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/ui/phone-input";
@@ -95,6 +97,14 @@ export function EstimateBuilder({
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(Boolean(resumeToken));
   const [delivery, setDelivery] = useState<DeliveryEstimate | null>(null);
+  // Google place ID of the picked address suggestion ("" when typed by hand).
+  const [venuePlaceId, setVenuePlaceId] = useState("");
+  // Which address/fulfillment `delivery` was quoted for, so edits invalidate it.
+  const [quoteKey, setQuoteKey] = useState("");
+  const [quoteStatus, setQuoteStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [quoteError, setQuoteError] = useState("");
+  const quoteRequest = useRef(0);
+  const [suggestionsAvailable, setSuggestionsAvailable] = useState(true);
   const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
   const [slotStart, setSlotStart] = useState("");
   const [confirmation, setConfirmation] = useState<{
@@ -181,10 +191,22 @@ export function EstimateBuilder({
         .filter((row) => row.inCollection)
         .reduce((sum, row) => sum + row.lineTotal, 0)
     : undefined;
+  const keyFor = (
+    address: string,
+    placeId: string,
+    fulfillment: EstimateDetails["fulfillment"],
+  ) => `${fulfillment}|${placeId}|${address.trim()}`;
+  // Only a quote for the address and fulfillment currently on screen counts.
+  const activeDelivery =
+    details.fulfillment !== "pickup" &&
+    delivery &&
+    quoteKey === keyFor(details.venueAddress, venuePlaceId, details.fulfillment)
+      ? delivery
+      : null;
   const total =
     subtotal +
-    (delivery?.deliveryFeeCents || 0) +
-    (delivery?.fullServiceFeeCents || 0);
+    (activeDelivery?.deliveryFeeCents || 0) +
+    (activeDelivery?.fullServiceFeeCents || 0);
   const filtered = products.filter(
     (product) =>
       (activeCategory === "all" || product.category === activeCategory) &&
@@ -263,27 +285,87 @@ export function EstimateBuilder({
     }
   }
 
+  /**
+   * Fetches a server-side delivery quote for exactly these inputs. Display only:
+   * booking recomputes it on the server. Stale responses are dropped.
+   */
+  async function requestQuote(
+    address: string,
+    placeId: string,
+    fulfillment: EstimateDetails["fulfillment"],
+  ): Promise<DeliveryEstimate | null> {
+    if (fulfillment === "pickup" || address.trim().length < 5) return null;
+    const request = ++quoteRequest.current;
+    setQuoteStatus("loading");
+    setQuoteError("");
+    try {
+      const response = await fetch("/api/delivery/estimate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          address,
+          fulfillment,
+          placeId: placeId || undefined,
+        }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok)
+        throw new Error(payload.error || "Delivery could not be calculated.");
+      if (request === quoteRequest.current) {
+        setDelivery(payload);
+        setQuoteKey(keyFor(address, placeId, fulfillment));
+        setQuoteStatus("idle");
+      }
+      return payload as DeliveryEstimate;
+    } catch (reason) {
+      if (request === quoteRequest.current) {
+        setQuoteStatus("error");
+        setQuoteError(
+          reason instanceof Error ? reason.message : "Delivery could not be calculated.",
+        );
+      }
+      throw reason;
+    }
+  }
+
+  function changeVenueText(text: string) {
+    // Hand edits detach the picked place; the old quote no longer applies.
+    setVenuePlaceId("");
+    if (quoteStatus === "error") setQuoteStatus("idle");
+    setDetails({ ...details, venueAddress: text });
+  }
+
+  function selectVenue(suggestion: AddressSuggestion) {
+    setVenuePlaceId(suggestion.placeId);
+    setDetails({
+      ...details,
+      venueAddress: suggestion.text,
+      venueName:
+        details.venueName || (suggestion.isEstablishment ? suggestion.mainText : ""),
+    });
+    requestQuote(suggestion.text, suggestion.placeId, details.fulfillment).catch(() => {});
+  }
+
+  function changeFulfillment(fulfillment: EstimateDetails["fulfillment"]) {
+    setDetails({ ...details, fulfillment });
+    // Full service adds its own fee, so re-quote a picked address on switch.
+    if (
+      fulfillment !== "pickup" &&
+      venuePlaceId &&
+      quoteKey !== keyFor(details.venueAddress, venuePlaceId, fulfillment)
+    )
+      requestQuote(details.venueAddress, venuePlaceId, fulfillment).catch(() => {});
+  }
+
   async function continueToSchedule(event: React.FormEvent) {
     event.preventDefault();
     setBusy(true);
     setError("");
-    setDelivery(null);
     try {
       if (!details.dateUndecided && !details.eventDate)
         throw new Error("Choose an event date or select ‘Not sure yet’. ");
-      if (details.fulfillment !== "pickup") {
-        const deliveryResponse = await fetch("/api/delivery/estimate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            address: details.venueAddress,
-            fulfillment: details.fulfillment,
-          }),
-        });
-        const deliveryPayload = await deliveryResponse.json();
-        if (!deliveryResponse.ok) throw new Error(deliveryPayload.error);
-        setDelivery(deliveryPayload);
-      }
+      if (details.fulfillment !== "pickup" && !activeDelivery)
+        await requestQuote(details.venueAddress, venuePlaceId, details.fulfillment);
       const slotResponse = await fetch("/api/availability");
       const slotPayload = await slotResponse.json();
       if (!slotResponse.ok) throw new Error(slotPayload.error);
@@ -313,6 +395,7 @@ export function EstimateBuilder({
         body: JSON.stringify({
           cart,
           details,
+          venuePlaceId: venuePlaceId || undefined,
           slotStart,
           resumeToken: savedToken || undefined,
         }),
@@ -569,6 +652,21 @@ export function EstimateBuilder({
           onSubmit={continueToSchedule}
           busy={busy}
           onSave={() => setSaveOpen(true)}
+          venue={{
+            placeId: venuePlaceId,
+            delivery: activeDelivery,
+            quoteStatus,
+            quoteError,
+            onTextChange: changeVenueText,
+            onSelect: selectVenue,
+            onFulfillmentChange: changeFulfillment,
+            suggestionsAvailable,
+            onSuggestionsUnavailable: () => setSuggestionsAvailable(false),
+            onRequestQuote: () =>
+              requestQuote(details.venueAddress, venuePlaceId, details.fulfillment).catch(
+                () => {},
+              ),
+          }}
         />
       ) : null}
       {stage === "schedule" ? (
@@ -580,7 +678,7 @@ export function EstimateBuilder({
           setDetails={setDetails}
           rows={cartRows}
           subtotal={subtotal}
-          delivery={delivery}
+          delivery={activeDelivery}
           total={total}
           onBack={() => setStage("review")}
           onBook={book}
@@ -1032,6 +1130,7 @@ function Review({
   onSubmit,
   busy,
   onSave,
+  venue,
 }: {
   details: EstimateDetails;
   setDetails: (d: EstimateDetails) => void;
@@ -1043,6 +1142,7 @@ function Review({
   onSubmit: (e: React.FormEvent) => void;
   busy: boolean;
   onSave: () => void;
+  venue: VenueControls;
 }) {
   return (
     <section className="px-6 py-12 md:px-16">
@@ -1166,10 +1266,9 @@ function Review({
                     value={value}
                     checked={details.fulfillment === value}
                     onChange={() =>
-                      setDetails({
-                        ...details,
-                        fulfillment: value as EstimateDetails["fulfillment"],
-                      })
+                      venue.onFulfillmentChange(
+                        value as EstimateDetails["fulfillment"],
+                      )
                     }
                   />
                   <span className="font-display text-lg">{title}</span>
@@ -1179,17 +1278,24 @@ function Review({
             </div>
           </fieldset>
           {details.fulfillment !== "pickup" ? (
-            <div className="mt-5 grid gap-5 sm:grid-cols-2">
-              <Field label="Venue address">
-                <Input
+            <div className="mt-5 grid items-start gap-5 sm:grid-cols-2">
+              <Field label="Venue address" htmlFor="venue-address">
+                <AddressAutocomplete
+                  id="venue-address"
                   required
-                  placeholder="Street, city, state, ZIP"
+                  placeholder="Start typing the venue or street address"
                   value={details.venueAddress}
-                  onChange={(e) =>
-                    setDetails({ ...details, venueAddress: e.target.value })
-                  }
+                  onTextChange={venue.onTextChange}
+                  onSelect={venue.onSelect}
+                  onUnavailable={venue.onSuggestionsUnavailable}
+                  aria-describedby="delivery-quote"
                 />
               </Field>
+              <DeliveryQuote
+                fulfillment={details.fulfillment}
+                address={details.venueAddress}
+                venue={venue}
+              />
             </div>
           ) : (
             <p className="mt-5 rounded-xl bg-secondary p-4 text-sm leading-6 text-ink/65">
@@ -1237,18 +1343,116 @@ function Review({
   );
 }
 
+type VenueControls = {
+  placeId: string;
+  delivery: DeliveryEstimate | null;
+  quoteStatus: "idle" | "loading" | "error";
+  quoteError: string;
+  onTextChange: (text: string) => void;
+  onSelect: (suggestion: AddressSuggestion) => void;
+  onFulfillmentChange: (fulfillment: EstimateDetails["fulfillment"]) => void;
+  onRequestQuote: () => void;
+  suggestionsAvailable: boolean;
+  onSuggestionsUnavailable: () => void;
+};
+
+/** Live delivery estimate shown beside the venue address on the review step. */
+function DeliveryQuote({
+  fulfillment,
+  address,
+  venue,
+}: {
+  fulfillment: EstimateDetails["fulfillment"];
+  address: string;
+  venue: VenueControls;
+}) {
+  const { delivery, quoteStatus, quoteError } = venue;
+  let body: React.ReactNode;
+  if (quoteStatus === "loading") {
+    body = <p className="text-sm text-ink/60">Calculating delivery…</p>;
+  } else if (delivery) {
+    body = (
+      <dl className="space-y-1.5 text-sm">
+        <div className="flex justify-between gap-4">
+          <dt className="text-ink/65">
+            Delivery · {delivery.distanceMilesOneWay} mi away
+          </dt>
+          <dd>{formatMoney(delivery.deliveryFeeCents)}</dd>
+        </div>
+        {fulfillment === "full-service" && delivery.fullServiceFeeCents ? (
+          <div className="flex justify-between gap-4">
+            <dt className="text-ink/65">Full service, starting at</dt>
+            <dd>{formatMoney(delivery.fullServiceFeeCents)}</dd>
+          </div>
+        ) : null}
+        <p className="pt-1 text-xs leading-5 text-ink/50">
+          An estimate based on round-trip driving distance. We’ll confirm it
+          with you.
+        </p>
+      </dl>
+    );
+  } else if (quoteStatus === "error") {
+    body = (
+      <p className="text-sm leading-6 text-destructive">
+        {quoteError} Check the address and try again.
+      </p>
+    );
+  } else if (!venue.placeId && address.trim().length >= 8 && !venue.suggestionsAvailable) {
+    body = (
+      <button
+        type="button"
+        className="text-sm underline underline-offset-2 hover:text-fig"
+        onClick={venue.onRequestQuote}
+      >
+        Estimate delivery to this address
+      </button>
+    );
+  } else if (!venue.placeId && address.trim().length >= 8) {
+    body = (
+      <p className="text-sm leading-6 text-ink/60">
+        Pick your address from the list to see your delivery estimate, or{" "}
+        <button
+          type="button"
+          className="underline underline-offset-2 hover:text-fig"
+          onClick={venue.onRequestQuote}
+        >
+          estimate with this address
+        </button>
+        .
+      </p>
+    );
+  } else {
+    body = (
+      <p className="text-sm leading-6 text-ink/60">
+        Choose your venue address to see an estimated delivery fee.
+      </p>
+    );
+  }
+  return (
+    <div
+      id="delivery-quote"
+      aria-live="polite"
+      className="rounded-xl bg-secondary p-4 sm:mt-7"
+    >
+      {body}
+    </div>
+  );
+}
+
 function Field({
   label,
+  htmlFor,
   className,
   children,
 }: {
   label: string;
+  htmlFor?: string;
   className?: string;
   children: React.ReactNode;
 }) {
   return (
     <div className={className}>
-      <Label className="mb-2 block">{label}</Label>
+      <Label htmlFor={htmlFor} className="mb-2 block">{label}</Label>
       {children}
     </div>
   );

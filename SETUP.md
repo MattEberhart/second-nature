@@ -65,11 +65,12 @@ Appointments are created on the consultations calendar with a unique Google Meet
 link. The requester's email is added as an attendee, so Google sends the calendar
 invitation and keeps changes synchronized.
 
-## 3. Google delivery-distance estimates
+## 3. Google delivery-distance estimates and address autocomplete
 
-1. Enable **Routes API** in the Google Cloud project.
-2. Create a dedicated API key, restrict it to Routes API, set a quota, and add a
-   billing budget alert.
+1. Enable **Routes API** and **Places API (New)** in the Google Cloud project.
+2. Create a dedicated API key, restrict it to those two APIs, set quotas, and add a
+   billing budget alert. (The key is only used server-side, so no referrer
+   restriction is needed.)
 3. Put the key in `GOOGLE_MAPS_API_KEY`.
 4. Set `DELIVERY_ORIGIN_ADDRESS` privately in Vercel to the selected Enderly-area
    public landmark. The origin is used only in a server-side Routes request and is

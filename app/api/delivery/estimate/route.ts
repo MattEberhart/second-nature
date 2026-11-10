@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { calculateDelivery } from "@/lib/estimator/delivery";
+import { PLACE_ID_PATTERN } from "@/lib/estimator/places";
 import { isSupabaseConfigured } from "@/lib/supabase/admin";
 import {
   enforceSubmissionRateLimit,
@@ -9,6 +10,7 @@ import {
 const inputSchema = z.object({
   address: z.string().trim().min(5).max(300),
   fulfillment: z.enum(["delivery", "full-service"]),
+  placeId: z.string().regex(PLACE_ID_PATTERN).optional(),
 });
 
 export async function POST(request: Request) {
@@ -30,7 +32,7 @@ export async function POST(request: Request) {
   const parsed = inputSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return Response.json({ error: "Enter a complete venue address." }, { status: 400 });
   try {
-    return Response.json(await calculateDelivery(parsed.data.address, parsed.data.fulfillment));
+    return Response.json(await calculateDelivery(parsed.data.address, parsed.data.fulfillment, parsed.data.placeId));
   } catch (error) {
     return Response.json(
       { error: error instanceof Error ? error.message : "Delivery could not be calculated." },

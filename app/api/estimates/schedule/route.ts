@@ -48,7 +48,11 @@ export async function POST(request: Request) {
     const slot = available.find((candidate) => candidate.start === parsed.data.slotStart);
     if (!slot) return Response.json({ error: SLOT_TAKEN_MESSAGE }, { status: 409 });
 
-    const delivery = await calculateDelivery(parsed.data.details.venueAddress, parsed.data.details.fulfillment);
+    const delivery = await calculateDelivery(
+      parsed.data.details.venueAddress,
+      parsed.data.details.fulfillment,
+      parsed.data.venuePlaceId,
+    );
     const estimate = await saveEstimate({
       cart: parsed.data.cart,
       details: parsed.data.details,

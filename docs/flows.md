@@ -67,9 +67,16 @@ Client stages: `shop → review → schedule → confirmed`.
   `estimate-save`), emails a private link `/estimate/{token}`. If email fails the response includes the URL
   and a warning so the user can copy it.
 - **Review**: event details (date or "Not sure yet", guest count, venue, address,
-  fulfillment, notes, consent). On continue the client calls
-  `POST /api/delivery/estimate` (unless pickup) and `GET /api/availability`.
-- **Schedule**: pick a slot → `POST /api/estimates/schedule`.
+  fulfillment, notes, consent). The venue address is an `AddressAutocomplete` combobox
+  (`components/estimate/address-autocomplete.tsx`) fed by `POST /api/places/autocomplete`
+  (debounced 280 ms, ≥3 chars). Picking a suggestion stores its Google `placeId`, fills
+  an empty venue name for named places, and immediately calls `POST /api/delivery/estimate`;
+  the quote (miles + fee, plus full-service fee) shows beside the field. Switching
+  delivery ↔ full service re-quotes; editing the text clears the place ID and the quote.
+  Hand-typed addresses get an "estimate with this address" link. On continue the client
+  reuses a current quote or fetches one (unless pickup), then `GET /api/availability`.
+- **Schedule**: pick a slot → `POST /api/estimates/schedule` (sends `venuePlaceId` when one
+  was picked).
 - **Confirmed**: shows the Meet link and appointment label; cart is cleared.
 
 ### Schedule (server) — `app/api/estimates/schedule/route.ts`
@@ -98,7 +105,8 @@ the client re-derives prices from the current catalog).
 ## 4. Delivery pricing
 
 `lib/estimator/delivery.ts`: Google Routes `computeRoutes` (DRIVE, traffic-unaware) from
-the private `DELIVERY_ORIGIN_ADDRESS` to the venue. Fee =
+the private `DELIVERY_ORIGIN_ADDRESS` to the venue (by `placeId` when the customer picked an
+autocomplete suggestion, otherwise by address text). Fee =
 `baseFeeCents + roundTripMiles × roundTripPerMileCents`; full service adds
 `fullServiceStartingFeeCents`. Defaults: $75 base, $2 per round-trip mile, $250 full
 service — editable in `/admin` (`app_settings.delivery`).
