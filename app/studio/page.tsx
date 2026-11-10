@@ -1,56 +1,38 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const gallery = [
-  { src: "/photos/studio-phone.jpg", alt: "" },
-  { src: "/photos/studio-bookshelf.jpg", alt: "" },
-];
-
 export default function StudioPage() {
   return (
     <>
-      <section className="bg-limestone px-6 pt-20 pb-16 text-center md:px-16 md:pt-28 md:pb-20">
+      <section className="bg-limestone px-6 pt-10 pb-8 text-center md:px-16 md:pt-10 md:pb-10">
         <div className="mx-auto max-w-7xl">
-          <h1 className="font-display text-4xl uppercase tracking-[0.1em] text-ink md:text-6xl lg:text-7xl">
+          <h1 className="font-display text-4xl uppercase tracking-[0.1em] text-ink md:text-5xl">
             Digital Consulting
           </h1>
+          <p className="mx-auto mt-4 max-w-xl font-body text-lg text-ink/70">
+            Marketing that feels intentional, original, and unmistakably yours.
+          </p>
           <Link
             href="/contact"
-            className="mt-8 inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg bg-olive px-8 font-display text-xs uppercase tracking-[0.2em] text-limestone transition hover:bg-olive/90"
+            className="mt-6 inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg bg-olive px-8 font-display text-xs uppercase tracking-[0.2em] text-limestone transition hover:bg-olive/90"
           >
             Inquire About Services
           </Link>
         </div>
       </section>
 
-      <section className="bg-limestone px-6 pb-16 md:px-16">
+      <section className="bg-limestone px-6 pb-10 md:px-16">
         <div className="mx-auto max-w-7xl">
-          <div className="relative aspect-[1152/448] overflow-hidden rounded-2xl bg-secondary">
+          {/* Kept short so the Pricing heading shows on a laptop screen without scrolling. */}
+          <div className="relative mx-auto aspect-[2/1] max-w-4xl overflow-hidden rounded-2xl bg-secondary sm:aspect-auto sm:h-[min(260px,30vh)]">
             <Image
-              src="/photos/consulting-workshop.jpg"
+              src="/photos/studio-banner.jpg"
               alt=""
               fill
-              sizes="100vw"
-              className="object-cover"
+              sizes="(min-width: 896px) 896px, 100vw"
+              className="object-cover object-[50%_10%]"
               priority
             />
-          </div>
-          {/* Source photos are only ~400–780px wide here; past ~300px per tile they soften on retina screens. */}
-          <div className="mx-auto mt-6 grid max-w-[616px] grid-cols-2 gap-4">
-            {gallery.map((img) => (
-              <div
-                key={img.src + img.alt}
-                className="relative aspect-[280/376] overflow-hidden rounded-2xl bg-secondary"
-              >
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  sizes="300px"
-                  className="object-cover"
-                />
-              </div>
-            ))}
           </div>
         </div>
       </section>
