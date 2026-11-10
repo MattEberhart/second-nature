@@ -1,4 +1,5 @@
 import { requireAdmin } from "@/lib/admin-auth";
+import { revalidatePublicCatalog } from "@/lib/estimator/revalidate";
 import { inventoryItemSchema } from "@/lib/estimator/admin-schemas";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 
@@ -23,6 +24,7 @@ export async function POST(request: Request) {
       active: variant.active, sort_order: index,
     })));
     if (variantError) throw variantError;
+    revalidatePublicCatalog();
     return Response.json({ id }, { status: 201 });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "Item could not be created." }, { status: 400 });

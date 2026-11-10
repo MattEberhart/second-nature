@@ -20,6 +20,9 @@
   `enforceSubmissionRateLimit` with a new scope name, upsert the CRM contact, record consent
   if the form shows consent boxes, log a `contact_activities` row, and compensate on failure.
 - **Admin routes** start with `await requireAdmin()`; admin pages use `getAdminUser()` and redirect.
+  Any admin write to products, variants or collections must call `revalidatePublicCatalog()`
+  (`lib/estimator/revalidate.ts`) before returning: `/gatherings/*` pages are prerendered
+  snapshots of the catalog and otherwise only refresh on the next deploy.
 - **Emails**: add a template in `emails/` wrapped in `EmailShell`, send from
   `lib/estimator/email.ts`, always pass an `idempotencyKey`.
 - **Migrations**: new file `supabase/migrations/YYYYMMDDHHMMSS_name.sql`; enable RLS, revoke
