@@ -51,7 +51,10 @@ export async function getPublicCatalog(): Promise<CatalogProduct[]> {
   }
 
   if (error) throw error;
-  if (!data?.length) return launchCatalog;
+  // An empty table is a real, empty inventory — never fall back to the seed
+  // placeholders here, or deleting every item would resurrect them publicly
+  // (and priceCart would accept their prices).
+  if (!data?.length) return [];
   return (data as ProductRow[]).map((product) => ({
     id: product.id,
     publicName: product.public_name,

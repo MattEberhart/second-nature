@@ -113,7 +113,9 @@ All migrations listed above are applied to the production Supabase project.
 
 ## Seeding the catalog
 
-`lib/estimator/catalog-seed.ts` is the canonical launch catalog (21 products, derived from
-Lydia's read-only research workbook). `POST /api/admin/catalog/seed` (admin) upserts it plus
+`lib/estimator/catalog-seed.ts` is a placeholder launch catalog (derived from Lydia's
+read-only research workbook) used for local dev without Supabase. Production inventory is
+built by Lydia in `/admin`; an empty `catalog_products` table means an empty public catalog,
+not a fallback to the seed. `POST /api/admin/catalog/seed` (admin) upserts it plus
 private sourcing metadata from `catalog-private.ts`. Re-running it **overwrites** edits to
 those product/variant ids and re-activates them.

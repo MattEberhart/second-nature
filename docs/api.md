@@ -32,7 +32,7 @@ and `await context.params`.
 | --- | --- |
 | `PATCH /api/admin/settings` | `{availability:{durationMinutes,bufferMinutes,minimumNoticeHours,bookingHorizonDays,busyCalendarIds}, delivery:{baseFeeCents,roundTripPerMileCents,fullServiceStartingFeeCents}}`. Merged over the stored availability, so `weekly` hours and `timeZone` are preserved |
 | `PATCH /api/admin/catalog/[id]` | `{active}` toggle on a product (legacy) |
-| `POST /api/admin/catalog/seed` | Upsert `launchCatalog` + private metadata |
+| `POST /api/admin/catalog/seed` | Upsert `launchCatalog` + private metadata. **Don't run in prod** — the placeholder inventory was cleared 2026-11-09 so Lydia could start fresh; this would bring it back |
 | `POST /api/admin/inventory` | `inventoryItemSchema` → new product id `slug-xxxxxxxx`, variants inserted; 201 `{id}` |
 | `PATCH /api/admin/inventory/[id]` | Full replace: update product, upsert variants, **delete variants not in the payload** |
 | `DELETE /api/admin/inventory/[id]` | Deletes product (variants + collection members cascade; estimate snapshots survive) |

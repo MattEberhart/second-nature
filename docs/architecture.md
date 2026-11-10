@@ -69,7 +69,7 @@ lib/
   crm.ts                   upsertContact() / recordContactActivity()
   estimator/
     types.ts money.ts      Shared types; formatMoney(cents)
-    catalog-seed.ts        Canonical launch catalog (21 products) — fallback + seed source
+    catalog-seed.ts        Placeholder launch catalog — no-Supabase fallback + seed source
     catalog-private.ts     Supplier/internal names (server-only, never public)
     data.ts                getPublicCatalog / getPublicCollections / seedLaunchCatalog
     estimate-service.ts    priceCart / saveEstimate / getEstimateByToken
@@ -103,7 +103,7 @@ The site is designed to run with partial configuration:
 | Missing | Behaviour |
 | --- | --- |
 | Supabase env | Catalog falls back to `launchCatalog`; collections to a hard-coded "Summer Blues"; save/schedule/contact return 503; `/admin` shows a setup card |
-| Catalog table empty | `launchCatalog` is served |
+| Catalog table empty | An empty catalog is served (no seed fallback — empty means Lydia hasn't added inventory yet); the builder shows its empty state and save/schedule reject with `EmptyCartError` |
 | `curated_collections` table missing (`PGRST205`) | Fallback collections |
 | `catalog_variants.image_path` column missing | Legacy select without it |
 | Google Calendar not connected | Availability ignores Google busy times; booking fails with "not connected yet" |
