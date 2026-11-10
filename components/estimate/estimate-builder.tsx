@@ -1009,6 +1009,7 @@ function SaveModal({
           </div>
         </div>
         <Button
+          type="submit"
           disabled={busy || !details.communicationsConsent}
           className="mt-6 h-12 w-full bg-olive text-xs uppercase tracking-[0.17em]"
         >
@@ -1210,6 +1211,7 @@ function Review({
             />
           </Field>
           <Button
+            type="submit"
             disabled={busy}
             className="mt-7 h-12 bg-fig px-8 text-xs uppercase tracking-[0.17em]"
           >

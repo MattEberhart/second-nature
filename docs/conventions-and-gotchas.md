@@ -32,6 +32,12 @@
 
 ## Known sharp edges / TODO candidates
 
+**Form submit buttons need `type="submit"`.** `components/ui/button.tsx` wraps Base UI's
+`Button`, which renders `type="button"` by default, so a `<Button>` inside a `<form>` does
+**not** submit it. This silently broke consultation booking, the estimate "Choose a
+consultation time" step, "Email my private link" and the admin add-note form until each got an
+explicit `type="submit"`. Any new form must set it.
+
 Open (confirm before fixing):
 
 1. **Supabase free plan** can pause the project after inactivity (accepted for now;

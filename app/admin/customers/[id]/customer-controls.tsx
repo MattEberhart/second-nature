@@ -98,7 +98,7 @@ export function CustomerControls({
           placeholder="Conversation details, preferences, follow-up…"
           className="mt-2"
         />
-        <Button disabled={busy || !note.trim()} className="mt-3 bg-fig">
+        <Button type="submit" disabled={busy || !note.trim()} className="mt-3 bg-fig">
           {busy ? "Saving…" : "Add note"}
         </Button>
       </form>
