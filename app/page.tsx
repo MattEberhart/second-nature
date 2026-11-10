@@ -9,7 +9,7 @@ export default function HomePage() {
           <Link href="/about" className="group block">
             <div className="relative aspect-[388/348] overflow-hidden rounded-2xl bg-secondary">
               <Image
-                src="/about-us.png"
+                src="/photos/about-church.jpg"
                 alt="About Us"
                 fill
                 sizes="(min-width: 768px) 33vw, 100vw"
@@ -26,7 +26,7 @@ export default function HomePage() {
           <Link href="/gatherings" className="group block">
             <div className="relative aspect-[732/348] overflow-hidden rounded-2xl bg-secondary">
               <Image
-                src="/event-rentals-1.png"
+                src="/photos/rentals-tablescape.jpg"
                 alt="Event Rentals"
                 fill
                 sizes="(min-width: 768px) 67vw, 100vw"

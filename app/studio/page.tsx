@@ -2,8 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 const gallery = [
-  { src: "/studio-1.png", alt: "" },
-  { src: "/studio-2.png", alt: "" },
+  { src: "/photos/studio-phone.jpg", alt: "" },
+  { src: "/photos/studio-bookshelf.jpg", alt: "" },
 ];
 
 export default function StudioPage() {
@@ -27,7 +27,7 @@ export default function StudioPage() {
         <div className="mx-auto max-w-7xl">
           <div className="relative aspect-[1152/448] overflow-hidden rounded-2xl bg-secondary">
             <Image
-              src="/consulting-main.png"
+              src="/photos/consulting-workshop.jpg"
               alt=""
               fill
               sizes="100vw"
@@ -35,8 +35,8 @@ export default function StudioPage() {
               priority
             />
           </div>
-          {/* Source photos are only 200×275; keep them near native size so they stay sharp. */}
-          <div className="mx-auto mt-6 grid max-w-[496px] grid-cols-2 gap-4">
+          {/* Source photos are only ~400–780px wide here; past ~300px per tile they soften on retina screens. */}
+          <div className="mx-auto mt-6 grid max-w-[616px] grid-cols-2 gap-4">
             {gallery.map((img) => (
               <div
                 key={img.src + img.alt}
@@ -46,7 +46,7 @@ export default function StudioPage() {
                   src={img.src}
                   alt={img.alt}
                   fill
-                  sizes="240px"
+                  sizes="300px"
                   className="object-cover"
                 />
               </div>

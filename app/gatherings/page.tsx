@@ -67,7 +67,7 @@ export default function GatheringsPage() {
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <div className="relative aspect-[732/348] overflow-hidden rounded-2xl bg-secondary">
               <Image
-                src="/event-rentals-1.png"
+                src="/photos/rentals-tablescape.jpg"
                 alt=""
                 fill
                 sizes="(min-width: 768px) 25vw, 100vw"
@@ -76,7 +76,7 @@ export default function GatheringsPage() {
             </div>
             <div className="relative aspect-[732/348] overflow-hidden rounded-2xl bg-secondary">
               <Image
-                src="/event-rentals-2.png"
+                src="/photos/rentals-place-setting.jpg"
                 alt=""
                 fill
                 sizes="(min-width: 768px) 75vw, 100vw"

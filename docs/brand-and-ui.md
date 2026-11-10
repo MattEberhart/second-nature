@@ -67,7 +67,24 @@ Lydia; owner emails set Reply-To to the customer. Every send uses a Resend idemp
 
 ## Assets
 
-`public/`: photography PNGs (`about-us`, `event-rentals-1/2`, `home-consulting`,
-`consulting-main`, `studio-1/2`), `logo.png`, and `catalog/*.svg` category placeholders
-used as default product images. Leftover create-next-app SVGs (`next.svg`, `vercel.svg`,
-`file.svg`, `globe.svg`, `window.svg`) are unused.
+`public/photos/*.jpg`: one JPEG per placement, cropped from Lydia's original photos at
+native resolution (never upscaled) and stripped of EXIF:
+
+| File | Source in Drive | Used on |
+| --- | --- | --- |
+| `about-church.jpg` | `IMG_1711.JPG` | Home tile, About |
+| `rentals-tablescape.jpg` | `866598774_…_n.jpg` | Home tile, Event Rentals |
+| `rentals-place-setting.jpg` | `866730386_…_n.jpg` | Event Rentals |
+| `consulting-workshop.jpg` | `Bobby-event-me-1.jpg` | Studio banner |
+| `studio-phone.jpg` | `Bobby-event-me-2.jpg` | Studio gallery |
+| `studio-bookshelf.jpg` | `DSC02245.JPG` | Studio gallery |
+
+Most sources are only ~1000px wide (social or web downloads), so wide placements such as the
+Studio banner are as sharp as they can get until higher-res originals arrive. Keep the
+originals in Drive, not the repo; export a crop with `sharp` at native size and quality 90.
+`home-consulting.png` is still Lydia's flattened four-photo collage. Also in `public/`:
+`logo.png` and the `catalog/*.svg` category placeholders used as default product images.
+When replacing a photo, give the file a new name: the Next.js image optimizer caches
+resized copies by URL, so it can keep serving the old image under a reused name. Leftover
+create-next-app SVGs (`next.svg`, `vercel.svg`, `file.svg`, `globe.svg`, `window.svg`) are
+unused.
