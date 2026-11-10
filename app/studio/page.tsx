@@ -26,11 +26,11 @@ export default function StudioPage() {
           {/* Kept short so the Pricing heading shows on a laptop screen without scrolling. */}
           <div className="relative mx-auto aspect-[2/1] max-w-4xl overflow-hidden rounded-2xl bg-secondary sm:aspect-auto sm:h-[min(260px,30vh)]">
             <Image
-              src="/photos/studio-banner.jpg"
+              src="/photos/studio-banner-v2.jpg"
               alt=""
               fill
               sizes="(min-width: 896px) 896px, 100vw"
-              className="object-cover object-[50%_10%]"
+              className="object-cover object-top"
               priority
             />
           </div>

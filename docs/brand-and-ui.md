@@ -96,7 +96,7 @@ native resolution (never upscaled) and stripped of EXIF:
 | `about-church.jpg` | `IMG_1711.JPG` | Home tile, About |
 | `rentals-tablescape.jpg` | `866598774_…_n.jpg` | Home tile, Event Rentals |
 | `rentals-place-setting.jpg` | `866730386_…_n.jpg` | Event Rentals |
-| `studio-banner.jpg` | `Bobby-event-me-1.jpg` | Studio banner (taller crop; the page frames it with `object-position` so both faces show) |
+| `studio-banner-v2.jpg` | `Bobby-event-me-1.jpg` | Studio banner. Top edge matches Lydia's own crop (trimmed through the guest's face and the top of Lydia's head, on purpose); the page pins it with `object-top` |
 | `home-tablet.jpg`, `home-bridge.jpg`, `home-bookshelf.jpg`, `home-phone.jpg` | `Bobby-event-me-1.jpg`, `IMG_0528.JPG`, `DSC02245.JPG`, `Bobby-event-me-2.jpg` | Home consulting tile (four-up grid in `app/page.tsx`) |
 
 Most sources are only ~1000px wide (social or web downloads), so wide placements such as the
