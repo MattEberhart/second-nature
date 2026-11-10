@@ -10,7 +10,7 @@ const consultingCollage = [
 
 export default function HomePage() {
   return (
-    <section className="min-h-screen bg-limestone px-6 pb-24 md:px-16 md:pb-32">
+    <section className="page-top min-h-screen bg-limestone px-6 pb-24 md:px-16 md:pb-32">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-[388fr_732fr]">
           <Link href="/about" className="group block">

@@ -29,14 +29,35 @@ A `.dark` theme block exists (shadcn default) but is unused.
 - Display: **Le Jour Serif** (local `app/fonts/le-jour-serif.woff2`) → `--font-display`;
   all headings use it automatically, plus `.font-display`.
 - Body: **Inter** 300–600 via `next/font/google` → `--font-body`.
-- Pattern for labels/buttons: `font-display text-xs uppercase tracking-[0.2em]`.
+- Pattern for labels/buttons: `type-label` (serif, 12px, uppercase, `tracking-label` = 0.2em).
+
+### Type scale
+
+Defined as `@utility` classes at the bottom of `app/globals.css`. Use these instead of
+one-off `text-*` sizes so pages stay in proportion with each other and with the logo.
+
+| Class | Size (phone / desktop) | Use |
+| --- | --- | --- |
+| `type-title` | 40 / 60px serif | The one page title (`h1`) |
+| `type-section` | 30 / 36px serif | Section headings ("How It Works", "Pricing") |
+| `type-card` | 24px serif | Card and list-item headings |
+| `type-eyebrow` | 12px sans, caps, plum | Small line above a title (estimate pages) |
+| `type-lead` | 18px sans, 1.7 line height | Intro paragraph (keep `max-w-2xl`) |
+| `type-label` | 12px serif caps | Buttons, nav (14px on desktop), link labels |
+
+Body text is 16px with `leading-7`; small print 14px; fine print 12px. Nothing below 12px.
+Only one letter-spacing for caps: `tracking-label`.
 
 ## Layout conventions
 
 - Sections: `bg-limestone px-6 md:px-16`, inner `mx-auto max-w-7xl`.
+- Page tops: `page-top` gives the standard gap below the header (32px phone / 48px
+  desktop). Each page keeps its own alignment (some centred, some left-aligned).
+- Header: logo 160px wide on phones, 240px on desktop (`components/nav.tsx`); the cropped
+  `logo-wordmark.png` keeps its aspect ratio, so set only the width.
 - Panels: `rounded-2xl bg-card p-6`; list rows `rounded-xl border border-ink/10 p-4`.
 - Images: `next/image` with `fill` inside `relative aspect-[w/h] overflow-hidden rounded-2xl bg-secondary`.
-- Buttons as links: `inline-flex h-12 items-center rounded-lg bg-fig px-8 ... text-limestone`.
+- Buttons as links: `inline-flex h-12 items-center rounded-lg bg-fig px-8 type-label text-limestone`.
 - Use `cn()` from `lib/utils.ts` for conditional classes.
 
 ## Page inventory

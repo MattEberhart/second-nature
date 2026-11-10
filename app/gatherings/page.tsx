@@ -19,27 +19,27 @@ const steps = [
 export default function GatheringsPage() {
   return (
     <>
-      <section className="bg-limestone px-6 pt-20 pb-16 text-center md:px-16 md:pt-28 md:pb-20">
+      <section className="page-top bg-limestone px-6 pb-16 text-center md:px-16 md:pb-20">
         <div className="mx-auto max-w-7xl">
-          <h1 className="font-display text-4xl uppercase tracking-[0.1em] text-ink md:text-6xl lg:text-7xl">
+          <h1 className="type-title text-ink">
             Event Rentals
           </h1>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3">
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
             <Link
               href="/gatherings/estimate"
-              className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg bg-fig px-8 font-display text-xs uppercase tracking-[0.2em] text-limestone transition hover:bg-fig/90"
+              className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg bg-fig px-8 type-label text-limestone transition hover:bg-fig/90"
             >
               Build Your Estimate
             </Link>
             <Link
               href="/gatherings/collections"
-              className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg border border-ink/20 px-8 font-display text-xs uppercase tracking-[0.2em] text-ink transition hover:border-ink/50"
+              className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg border border-ink/20 px-8 type-label text-ink transition hover:border-ink/50"
             >
               Shop By Collections
             </Link>
             <Link
               href="/consultation"
-              className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg bg-deep-olive px-8 font-display text-xs uppercase tracking-[0.2em] text-limestone transition hover:bg-deep-olive/90"
+              className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg bg-deep-olive px-8 type-label text-limestone transition hover:bg-deep-olive/90"
             >
               Free Consultation
             </Link>
@@ -49,7 +49,7 @@ export default function GatheringsPage() {
 
       <section className="bg-limestone px-6 pb-24 md:px-16">
         <div className="mx-auto max-w-7xl">
-          <h2 className="font-display text-3xl uppercase tracking-[0.1em] text-ink md:text-4xl">How It Works</h2>
+          <h2 className="type-section text-ink">How It Works</h2>
           <ol className="mt-10 space-y-8 font-body text-lg text-ink/80">
             {steps.map((step) => (
               <li key={step.title}>
@@ -92,7 +92,7 @@ export default function GatheringsPage() {
           <blockquote className="font-display text-2xl leading-snug text-ink md:text-3xl">
             “Her ideas are not only thoughtful, but also beautifully brought to life.”
           </blockquote>
-          <figcaption className="mt-5 font-body text-xs uppercase tracking-[0.2em] text-ink/60">
+          <figcaption className="mt-5 font-body text-xs uppercase tracking-label text-ink/60">
             Lisa M.
           </figcaption>
         </figure>

@@ -18,7 +18,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
   const gallery = collection.images.length ? collection.images : collection.headerImagePath ? [{ id: "header", imagePath: collection.headerImagePath, altText: "" }] : [];
   return (
     <div className="bg-limestone">
-      <section className="px-6 pt-12 md:px-16 md:pt-16">
+      <section className="page-top px-6 md:px-16">
         <div className="mx-auto grid max-w-7xl gap-4 md:grid-cols-2">
           {gallery.slice(0, 3).map((image, index) => (
             <div key={image.id} className={`relative overflow-hidden rounded-2xl bg-secondary ${index === 0 ? "aspect-[16/10] md:col-span-2" : "aspect-[4/3]"}`}>

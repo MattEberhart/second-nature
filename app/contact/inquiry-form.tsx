@@ -67,7 +67,7 @@ export function InquiryForm({ defaultInterest }: { defaultInterest: string }) {
               <ConsentCheckbox checked={form.marketingConsent} onChange={(checked) => setForm({ ...form, marketingConsent: checked })} text={MARKETING_CONSENT_TEXT} />
               <p className="text-xs leading-5 text-ink/50">Marketing consent is optional and can be withdrawn at any time.</p>
             </div>
-            <Button disabled={busy} type="submit" className="h-12 w-full font-display text-xs uppercase tracking-[0.2em]">{busy ? "Sending…" : "Send Inquiry"}</Button>
+            <Button disabled={busy} type="submit" className="type-label h-12 w-full">{busy ? "Sending…" : "Send Inquiry"}</Button>
           </form>
         </div>
       </div>

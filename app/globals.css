@@ -153,3 +153,39 @@
     font-family: var(--font-body);
   }
 }
+/*
+ * Type and layout scale. Use these instead of one-off sizes so pages stay in proportion.
+ * See docs/brand-and-ui.md → "Type scale".
+ */
+@theme {
+  --tracking-label: 0.2em;
+}
+
+/* Small uppercase line above a page title ("About Us", "Complimentary · 30 minutes"). */
+@utility type-eyebrow {
+  @apply font-body text-xs uppercase tracking-label text-fig;
+}
+/* Page title (one per page). */
+@utility type-title {
+  @apply font-display text-[2.5rem] leading-[1.05] md:text-6xl md:leading-[1.02];
+}
+/* Section heading inside a page ("How It Works", "Pricing"). */
+@utility type-section {
+  @apply font-display text-3xl leading-tight md:text-4xl;
+}
+/* Card / item heading. */
+@utility type-card {
+  @apply font-display text-2xl leading-snug;
+}
+/* Intro paragraph under a title. */
+@utility type-lead {
+  @apply font-body text-lg leading-[1.7] text-ink/70;
+}
+/* Buttons, nav links and other uppercase serif labels. */
+@utility type-label {
+  @apply font-display text-xs uppercase tracking-label;
+}
+/* Gap between the header and the first thing on a page. */
+@utility page-top {
+  @apply pt-8 md:pt-12;
+}

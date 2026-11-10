@@ -4,9 +4,9 @@ import Link from "next/link";
 export default function StudioPage() {
   return (
     <>
-      <section className="bg-limestone px-6 pt-10 pb-8 text-center md:px-16 md:pt-10 md:pb-10">
+      <section className="page-top bg-limestone px-6 pb-8 text-center md:px-16 md:pb-10">
         <div className="mx-auto max-w-7xl">
-          <h1 className="font-display text-4xl uppercase tracking-[0.1em] text-ink md:text-5xl">
+          <h1 className="type-title text-ink">
             Digital Consulting
           </h1>
           <p className="mx-auto mt-4 max-w-xl font-body text-lg text-ink/70">
@@ -14,7 +14,7 @@ export default function StudioPage() {
           </p>
           <Link
             href="/contact"
-            className="mt-6 inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg bg-olive px-8 font-display text-xs uppercase tracking-[0.2em] text-limestone transition hover:bg-olive/90"
+            className="mt-6 inline-flex h-12 items-center justify-center whitespace-nowrap rounded-lg bg-olive px-8 type-label text-limestone transition hover:bg-olive/90"
           >
             Inquire About Services
           </Link>
@@ -39,8 +39,8 @@ export default function StudioPage() {
 
       <section className="bg-limestone px-6 pb-24 md:px-16">
         <div className="mx-auto max-w-7xl">
-          <h2 className="font-display text-3xl text-ink md:text-4xl">Pricing</h2>
-          <div className="mt-10 space-y-8 font-body text-lg text-ink/80">
+          <h2 className="type-section text-ink">Pricing</h2>
+          <div className="mt-10 max-w-3xl space-y-8 font-body text-lg text-ink/80">
             <p>
               <strong className="text-ink">Creative & Marketing Consulting — $175 per hour</strong>
               <br />

@@ -188,7 +188,7 @@ export function AddressAutocomplete({
             </span>
           </li>
         ))}
-        <li aria-hidden className="px-3 pt-1 pb-1.5 text-right text-[10px] text-ink/40">
+        <li aria-hidden className="px-3 pt-1 pb-1.5 text-right text-xs text-ink/40">
           Powered by Google
         </li>
       </ul>

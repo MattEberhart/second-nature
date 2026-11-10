@@ -11,9 +11,9 @@ export default async function ContactPage({
 
   return (
     <>
-      <section className="bg-limestone px-6 pb-6 pt-20 text-center md:px-16 md:pb-8 md:pt-28">
+      <section className="page-top bg-limestone px-6 pb-6 text-center md:px-16 md:pb-8">
         <div className="mx-auto max-w-7xl">
-          <h1 className="font-display text-4xl uppercase tracking-[0.1em] text-ink md:text-6xl lg:text-7xl">
+          <h1 className="type-title text-ink">
             Contact Us
           </h1>
         </div>

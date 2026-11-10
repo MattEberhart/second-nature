@@ -24,7 +24,7 @@ export function Nav() {
   return (
     <header className="relative z-50 border-b border-ink/5 bg-limestone text-ink">
       <div className="mx-auto flex min-h-[104px] max-w-7xl items-center justify-between px-6 py-3 md:min-h-[144px] md:px-16">
-        <Logo className="w-[170px] md:w-[280px]" />
+        <Logo className="w-[160px] md:w-[240px]" />
 
         <nav className="flex flex-wrap items-center justify-end gap-x-4 gap-y-1 md:gap-10">
           {links.slice(0, 2).map((link) => (
@@ -32,7 +32,7 @@ export function Nav() {
               key={link.href}
               href={link.href}
               className={cn(
-                "font-display text-sm uppercase tracking-[0.15em] transition-colors hover:text-olive md:text-xs md:tracking-[0.2em]",
+                "type-label transition-colors hover:text-olive md:text-sm",
                 pathname === link.href && "text-olive",
               )}
             >
@@ -43,7 +43,7 @@ export function Nav() {
             <Link
               href="/gatherings"
               className={cn(
-                "flex items-center gap-1 font-display text-sm uppercase tracking-[0.15em] transition-colors hover:text-olive md:text-xs md:tracking-[0.2em]",
+                "type-label flex items-center gap-1 transition-colors hover:text-olive md:text-sm",
                 pathname.startsWith("/gatherings") && "text-olive",
               )}
             >
@@ -64,7 +64,7 @@ export function Nav() {
               key={link.href}
               href={link.href}
               className={cn(
-                "font-display text-sm uppercase tracking-[0.15em] transition-colors hover:text-olive md:text-xs md:tracking-[0.2em]",
+                "type-label transition-colors hover:text-olive md:text-sm",
                 pathname === link.href && "text-olive",
               )}
             >

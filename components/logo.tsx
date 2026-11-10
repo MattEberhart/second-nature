@@ -15,7 +15,7 @@ export function Logo({ className }: { className?: string }) {
           alt="Second Nature Creative Studio"
           fill
           className="object-contain"
-          sizes="(max-width: 768px) 170px, 280px"
+          sizes="(max-width: 768px) 160px, 240px"
           priority
         />
       </div>

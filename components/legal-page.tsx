@@ -18,12 +18,12 @@ export function LegalPage({
   sections: LegalSection[];
 }) {
   return (
-    <section className="bg-limestone px-6 py-20 text-ink md:px-16 md:py-28">
+    <section className="page-top bg-limestone px-6 pb-24 text-ink md:px-16 md:pb-28">
       <article className="mx-auto max-w-3xl">
-        <p className="font-display text-sm uppercase tracking-[0.2em] text-olive">
+        <p className="font-display text-sm uppercase tracking-label text-olive">
           Legal
         </p>
-        <h1 className="mt-4 font-display text-4xl md:text-6xl">{title}</h1>
+        <h1 className="type-title mt-4">{title}</h1>
         {description ? (
           <p className="mt-6 text-base leading-7 text-ink/65">{description}</p>
         ) : null}
@@ -31,7 +31,7 @@ export function LegalPage({
           <dl className="mt-8 grid gap-3 border-y border-ink/10 py-6 text-sm sm:grid-cols-2">
             {details.map((detail) => (
               <div key={detail.label}>
-                <dt className="font-medium uppercase tracking-[0.12em] text-ink/50">
+                <dt className="font-medium uppercase tracking-label text-ink/50">
                   {detail.label}
                 </dt>
                 <dd className="mt-1 text-ink/75">{detail.value}</dd>
@@ -45,7 +45,7 @@ export function LegalPage({
         <div className="mt-10 space-y-10">
           {sections.map((section) => (
             <section key={section.heading}>
-              <h2 className="font-display text-2xl md:text-3xl">
+              <h2 className="type-card">
                 {section.heading}
               </h2>
               {section.paragraphs ? (

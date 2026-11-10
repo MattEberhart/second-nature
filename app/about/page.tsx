@@ -2,12 +2,12 @@ import Image from "next/image";
 
 export default function AboutPage() {
   return (
-    <section className="min-h-screen bg-limestone px-6 py-24 md:px-16">
+    <section className="page-top min-h-screen bg-limestone px-6 pb-24 md:px-16">
       <div className="mx-auto max-w-7xl">
-        <p className="font-display text-sm uppercase tracking-[0.2em] text-olive">
+        <p className="font-display text-sm uppercase tracking-label text-olive">
           About Us
         </p>
-        <h1 className="mt-4 max-w-4xl font-display text-4xl text-ink md:text-5xl lg:text-6xl">
+        <h1 className="type-title mt-4 max-w-4xl text-ink">
           Get to know Second Nature
         </h1>
         <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.8fr)] lg:items-start lg:gap-16">

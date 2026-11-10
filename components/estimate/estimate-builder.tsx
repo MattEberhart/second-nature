@@ -430,17 +430,17 @@ export function EstimateBuilder({
 
   return (
     <div className="min-h-screen bg-limestone text-ink">
-      <section className="border-b border-ink/10 px-4 py-8 sm:px-6 sm:py-10 md:px-16 md:py-12">
+      <section className="page-top border-b border-ink/10 px-4 pb-12 sm:px-6 md:px-16 md:pb-16">
         <div className="mx-auto max-w-7xl">
-          <p className="font-body text-xs uppercase tracking-[0.22em] text-fig">
+          <p className="type-eyebrow">
             {eyebrow}
           </p>
           <div className="mt-3 grid gap-6 lg:grid-cols-[1fr_340px] lg:items-end">
             <div>
-              <h1 className="max-w-4xl font-display text-4xl leading-[0.98] text-aegean sm:text-5xl md:text-6xl">
+              <h1 className="type-title max-w-4xl text-aegean">
                 {heading}
               </h1>
-              <p className="mt-4 max-w-2xl font-body text-base leading-7 text-ink/70">
+              <p className="type-lead mt-5 max-w-2xl">
                 {intro}
               </p>
             </div>
@@ -454,7 +454,7 @@ export function EstimateBuilder({
               </p>
               <Link
                 href="/consultation"
-                className="mt-4 inline-flex text-[11px] uppercase tracking-[0.14em] text-white underline underline-offset-4 sm:text-xs sm:tracking-[0.18em]"
+                className="mt-4 inline-flex text-xs uppercase tracking-label text-white underline underline-offset-4"
               >
                 Schedule a free consultation
               </Link>
@@ -490,13 +490,13 @@ export function EstimateBuilder({
           <div className="flex items-center gap-3">
             <a
               href={resumeFallbackUrl}
-              className="text-xs font-medium uppercase tracking-[0.12em] text-fig underline underline-offset-4"
+              className="text-xs font-medium uppercase tracking-label text-fig underline underline-offset-4"
             >
               Open link
             </a>
             <button
               type="button"
-              className="rounded-lg bg-fig px-4 py-2 text-xs uppercase tracking-[0.12em] text-limestone"
+              className="rounded-lg bg-fig px-4 py-2 text-xs uppercase tracking-label text-limestone"
               onClick={async () => {
                 try {
                   await navigator.clipboard.writeText(resumeFallbackUrl);
@@ -528,13 +528,13 @@ export function EstimateBuilder({
                   <p className="font-display text-xl">Want a little direction?</p>
                   <p className="mt-1 text-sm text-ink/60">Start with one of our precurated looks.</p>
                 </div>
-                <Link href="/gatherings/collections" className="inline-flex h-10 shrink-0 items-center justify-center rounded-lg bg-fig px-5 text-xs uppercase tracking-[0.14em] text-limestone">
+                <Link href="/gatherings/collections" className="inline-flex h-10 shrink-0 items-center justify-center rounded-lg bg-fig px-5 text-xs uppercase tracking-label text-limestone">
                   Shop By Collections
                 </Link>
               </div>
               <div className="sm:hidden">
                 <label className="min-w-0">
-                  <span className="mb-2 block text-[10px] uppercase tracking-[0.16em] text-ink/50">
+                  <span className="mb-2 block text-xs uppercase tracking-label text-ink/50">
                     Category
                   </span>
                   <select
@@ -742,7 +742,7 @@ function ProductCard({
             <h2 className="font-display text-xl leading-tight">
               {product.publicName}
             </h2>
-            <p className="mt-1 text-xs uppercase tracking-[0.16em] text-ink/50">
+            <p className="mt-1 text-xs uppercase tracking-label text-ink/50">
               {product.material}
             </p>
           </div>
@@ -755,7 +755,7 @@ function ProductCard({
         </p>
         {product.variants.length > 1 || product.variants[0]?.label !== "Standard" ? (
           <>
-            <Label htmlFor={`${product.id}-variant`} className="mt-4 block text-xs uppercase tracking-[0.15em]">Option</Label>
+            <Label htmlFor={`${product.id}-variant`} className="mt-4 block text-xs uppercase tracking-label">Option</Label>
             <select id={`${product.id}-variant`} value={variantId} onChange={(e) => setVariantId(e.target.value)} className="mt-2 h-10 w-full rounded-lg border bg-limestone px-3 text-sm">
               {product.variants.map((item) => (
                 <option key={item.id} value={item.id}>{item.label} · {formatMoney(item.unitPriceCents)} each</option>
@@ -798,7 +798,7 @@ function ProductCard({
             </button>
           </div>
           <Button
-            className="h-10 min-w-0 flex-1 overflow-hidden bg-olive px-2 text-[10px] uppercase tracking-[0.08em] sm:text-[11px] sm:tracking-[0.12em]"
+            className="h-10 min-w-0 flex-1 overflow-hidden bg-olive px-2 text-xs uppercase tracking-wide"
             onClick={() => add(variant.id, quantity)}
           >
             Add · {formatMoney(variant.unitPriceCents * quantity)}
@@ -890,7 +890,7 @@ function CartPanel({
                 {collectionSubtotal !== undefined &&
                 !row.inCollection &&
                 (index === 0 || rows[index - 1].inCollection) ? (
-                  <p className="mb-3 text-[11px] uppercase tracking-[0.16em] text-ink/45">
+                  <p className="mb-3 text-xs uppercase tracking-label text-ink/45">
                     Also in your estimate
                   </p>
                 ) : null}
@@ -953,7 +953,7 @@ function CartPanel({
             </div>
           ) : null}
           <div className="mt-5 flex items-end justify-between">
-            <span className="text-xs uppercase tracking-[0.16em] text-ink/55">
+            <span className="text-xs uppercase tracking-label text-ink/55">
               {collectionSubtotal !== undefined &&
               collectionSubtotal !== subtotal
                 ? "Estimate subtotal"
@@ -968,7 +968,7 @@ function CartPanel({
               <Button
                 type="button"
                 onClick={onReview}
-                className="mt-5 h-12 w-full bg-fig text-xs uppercase tracking-[0.17em]"
+                className="mt-5 h-12 w-full bg-fig text-xs uppercase tracking-label"
               >
                 Review estimate
               </Button>
@@ -1068,7 +1068,7 @@ function SaveModal({
         <Button
           type="submit"
           disabled={busy || !details.communicationsConsent}
-          className="mt-6 h-12 w-full bg-olive text-xs uppercase tracking-[0.17em]"
+          className="mt-6 h-12 w-full bg-olive text-xs uppercase tracking-label"
         >
           {busy ? "Saving…" : "Email my private link"}
         </Button>
@@ -1112,11 +1112,11 @@ function Review({
           <button
             type="button"
             onClick={onBack}
-            className="flex items-center gap-2 text-xs uppercase tracking-[0.15em] text-ink/60"
+            className="flex items-center gap-2 text-xs uppercase tracking-label text-ink/60"
           >
             <ChevronLeft className="size-4" /> Keep shopping
           </button>
-          <h2 className="mt-6 font-display text-4xl md:text-5xl">
+          <h2 className="type-section mt-6">
             A few details, then a conversation.
           </h2>
           <p className="mt-4 max-w-xl leading-7 text-ink/65">
@@ -1274,7 +1274,7 @@ function Review({
           <Button
             type="submit"
             disabled={busy}
-            className="mt-7 h-12 bg-fig px-8 text-xs uppercase tracking-[0.17em]"
+            className="mt-7 h-12 bg-fig px-8 text-xs uppercase tracking-label"
           >
             {busy ? "Preparing…" : "Choose a consultation time"}
           </Button>
@@ -1449,14 +1449,14 @@ function Schedule({
         <div>
           <button
             onClick={onBack}
-            className="flex items-center gap-2 text-xs uppercase tracking-[0.15em] text-ink/60"
+            className="flex items-center gap-2 text-xs uppercase tracking-label text-ink/60"
           >
             <ChevronLeft className="size-4" /> Edit details
           </button>
-          <p className="mt-8 text-xs uppercase tracking-[0.2em] text-fig">
+          <p className="type-eyebrow mt-8">
             Complimentary · 30 minutes · Google Meet
           </p>
-          <h2 className="mt-3 font-display text-4xl text-aegean md:text-5xl">
+          <h2 className="type-section mt-3 text-aegean">
             Choose a time to meet
           </h2>
           <p className="mt-4 max-w-xl leading-7 text-ink/65">
@@ -1537,18 +1537,18 @@ function Schedule({
               }
               text={MARKETING_CONSENT_TEXT}
             />
-            <p className="text-[11px] leading-5 text-ink/45">
+            <p className="text-xs leading-5 text-ink/45">
               Marketing consent is optional and can be withdrawn at any time.
             </p>
           </div>
           <Button
             disabled={busy || !selected || !details.communicationsConsent}
             onClick={onBook}
-            className="mt-5 h-12 w-full bg-fig text-xs uppercase tracking-[0.16em]"
+            className="mt-5 h-12 w-full bg-fig text-xs uppercase tracking-label"
           >
             {busy ? "Booking…" : "Book review & send estimate"}
           </Button>
-          <p className="mt-3 text-center text-[11px] text-ink/45">
+          <p className="mt-3 text-center text-xs text-ink/45">
             A Google Meet invitation will be emailed to {details.email}.
           </p>
         </aside>
@@ -1595,10 +1595,10 @@ function Confirmation({
         <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-fig text-limestone">
           <Check className="size-7" />
         </div>
-        <p className="mt-7 text-xs uppercase tracking-[0.2em] text-fig">
+        <p className="type-eyebrow mt-7">
           Consultation confirmed
         </p>
-        <h1 className="mt-3 font-display text-5xl md:text-6xl">
+        <h1 className="type-title mt-3">
           You’re on the Calendar!
         </h1>
         <p className="mt-5 text-lg leading-8 text-ink/65">
@@ -1615,7 +1615,7 @@ function Confirmation({
         {meetUrl ? (
           <a
             href={meetUrl}
-            className="mt-7 inline-flex h-12 items-center rounded-lg bg-fig px-7 text-xs uppercase tracking-[0.17em] text-limestone"
+            className="mt-7 inline-flex h-12 items-center rounded-lg bg-fig px-7 text-xs uppercase tracking-label text-limestone"
           >
             Join Google Meet
           </a>

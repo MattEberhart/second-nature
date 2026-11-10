@@ -108,7 +108,7 @@ export function SlotPicker({
         </div>
         <div className="mt-5 grid grid-cols-7 gap-1 text-center">
           {WEEKDAYS.map((weekday) => (
-            <span key={weekday} className="pb-2 text-[10px] uppercase tracking-wide text-ink/45 @md:text-[11px] @md:tracking-[0.14em]">{weekday}</span>
+            <span key={weekday} className="pb-2 text-xs uppercase tracking-wide text-ink/45">{weekday}</span>
           ))}
           {cells.map((key, index) => {
             if (!key) return <span key={`blank-${index}`} />;
