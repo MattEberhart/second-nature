@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { SlotPicker } from "@/components/booking/slot-picker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { COMMUNICATIONS_CONSENT_TEXT, MARKETING_CONSENT_TEXT } from "@/lib/consent-copy";
@@ -1085,14 +1086,10 @@ function Review({
               />
             </Field>
             <Field label="Phone">
-              <Input
+              <PhoneInput
                 required
-                type="tel"
-                autoComplete="tel"
                 value={details.phone}
-                onChange={(e) =>
-                  setDetails({ ...details, phone: e.target.value })
-                }
+                onValueChange={(phone) => setDetails({ ...details, phone })}
               />
             </Field>
             <Field label="Event date">

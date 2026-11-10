@@ -1,6 +1,13 @@
 import { z } from "zod";
 
-const phoneSchema = z.string().trim().min(7, "Enter a phone number.").max(40);
+import { formatPhone, isValidPhone } from "@/lib/phone";
+
+const phoneSchema = z
+  .string()
+  .trim()
+  .max(40)
+  .refine(isValidPhone, "Enter a 10-digit phone number.")
+  .transform(formatPhone);
 const consentSchema = z.object({
   communicationsConsent: z.literal(true, {
     error: "Agree to receive communications about your inquiry.",
@@ -42,7 +49,13 @@ export const detailsSchema = detailsBaseSchema.superRefine((details, ctx) => {
 const saveDetailsSchema = detailsBaseSchema.partial().extend({
   name: detailsBaseSchema.shape.name,
   email: detailsBaseSchema.shape.email,
-  phone: z.string().trim().max(40).optional(),
+  phone: z
+    .string()
+    .trim()
+    .max(40)
+    .refine((phone) => phone === "" || isValidPhone(phone), "Enter a 10-digit phone number.")
+    .transform(formatPhone)
+    .optional(),
 });
 
 export const saveEstimateSchema = z.object({

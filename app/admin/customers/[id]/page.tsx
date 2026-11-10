@@ -5,6 +5,7 @@ import { getAdminUser } from "@/lib/admin-auth";
 import { formatMoney } from "@/lib/estimator/money";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import { CustomerControls } from "./customer-controls";
+import { formatPhone, phoneHref } from "@/lib/phone";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +48,7 @@ export default async function CustomerPage({
             <h1 className="mt-3 font-display text-5xl md:text-6xl">{contact.name}</h1>
             <div className="mt-5 flex flex-wrap gap-4 text-sm text-ink/60">
               <a href={`mailto:${contact.email}`} className="flex items-center gap-2 hover:text-fig"><Mail className="size-4" />{contact.email}</a>
-              {contact.phone ? <a href={`tel:${contact.phone}`} className="flex items-center gap-2 hover:text-fig"><Phone className="size-4" />{contact.phone}</a> : null}
+              {contact.phone ? <a href={phoneHref(contact.phone)} className="flex items-center gap-2 hover:text-fig"><Phone className="size-4" />{formatPhone(contact.phone)}</a> : null}
             </div>
 
             <section className="mt-10 rounded-2xl bg-card p-6">

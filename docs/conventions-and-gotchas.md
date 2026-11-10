@@ -53,6 +53,11 @@ By design:
 - Saving an item replaces its full option list; options Lydia removes are deleted (and drop
   out of collections via cascade). Estimate snapshots are unaffected.
 - CRM contacts take the latest submission's name, and its phone when one is provided.
+- Phone fields use `components/ui/phone-input.tsx` (formats US numbers as "(704) 555-0123"
+  while typing). `lib/phone.ts` holds the shared helpers: the Zod `phoneSchema` requires 10 US
+  digits (or a `+` international number) and stores the formatted string; admin views run
+  `formatPhone()` so older raw rows display consistently. Admin customer search matches
+  digit-only queries against formatted phones.
 
 Fixed 2026-11-09: settings save no longer resets weekly hours/time zone; collection saves
 are a single transaction (`save_curated_collection`); `/api/delivery/estimate` is rate

@@ -1,5 +1,6 @@
 import { getEstimateByToken } from "@/lib/estimator/estimate-service";
 import { isSupabaseConfigured } from "@/lib/supabase/admin";
+import { formatPhone } from "@/lib/phone";
 
 export async function GET(_request: Request, context: RouteContext<"/api/estimates/resume/[token]">) {
   if (!isSupabaseConfigured()) return Response.json({ error: "Estimate storage is not configured." }, { status: 503 });
@@ -16,7 +17,7 @@ export async function GET(_request: Request, context: RouteContext<"/api/estimat
       details: {
         name: estimate.customer_name,
         email: estimate.customer_email,
-        phone: estimate.customer_phone || "",
+        phone: formatPhone(estimate.customer_phone),
         eventDate: estimate.event_date || "",
         dateUndecided: estimate.date_undecided,
         guestCount: estimate.guest_count ? String(estimate.guest_count) : "",

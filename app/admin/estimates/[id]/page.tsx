@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { getAdminUser } from "@/lib/admin-auth";
 import { formatMoney } from "@/lib/estimator/money";
 import { getAdminSupabase } from "@/lib/supabase/admin";
+import { formatPhone } from "@/lib/phone";
 
 export const dynamic = "force-dynamic";
 
@@ -50,7 +51,7 @@ export default async function EstimatePage({ params }: { params: Promise<{ id: s
           </section>
 
           <aside className="space-y-6">
-            <section className="rounded-2xl bg-card p-6"><h2 className="font-display text-2xl">Customer</h2><dl className="mt-4 space-y-4 text-sm"><Detail label="Email" value={estimate.customer_email} /><Detail label="Phone" value={estimate.customer_phone || "Not provided"} /><Detail label="Event date" value={estimate.event_date || "Undecided"} /><Detail label="Guest count" value={estimate.guest_count ? String(estimate.guest_count) : "Not provided"} /></dl></section>
+            <section className="rounded-2xl bg-card p-6"><h2 className="font-display text-2xl">Customer</h2><dl className="mt-4 space-y-4 text-sm"><Detail label="Email" value={estimate.customer_email} /><Detail label="Phone" value={formatPhone(estimate.customer_phone) || "Not provided"} /><Detail label="Event date" value={estimate.event_date || "Undecided"} /><Detail label="Guest count" value={estimate.guest_count ? String(estimate.guest_count) : "Not provided"} /></dl></section>
             <section className="rounded-2xl bg-card p-6"><h2 className="font-display text-2xl">Event</h2><dl className="mt-4 space-y-4 text-sm"><Detail label="Venue" value={estimate.venue_name || "Not provided"} /><Detail label="Address" value={estimate.venue_address || "Not provided"} /><Detail label="Fulfillment" value={estimate.fulfillment} /><Detail label="Resume email" value={estimate.resume_email_status} /></dl>{estimate.notes ? <p className="mt-5 whitespace-pre-wrap border-t border-ink/10 pt-5 text-sm leading-6 text-ink/65">{estimate.notes}</p> : null}</section>
           </aside>
         </div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -49,7 +50,7 @@ export function InquiryForm({ defaultInterest }: { defaultInterest: string }) {
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2"><Label htmlFor="name">Name</Label><Input id="name" autoComplete="name" required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} /></div>
               <div className="space-y-2"><Label htmlFor="email">Email</Label><Input id="email" type="email" autoComplete="email" required value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} /></div>
-              <div className="space-y-2 md:col-span-2"><Label htmlFor="phone">Phone</Label><Input id="phone" type="tel" autoComplete="tel" required value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} /></div>
+              <div className="space-y-2 md:col-span-2"><Label htmlFor="phone">Phone</Label><PhoneInput id="phone" required value={form.phone} onValueChange={(phone) => setForm({ ...form, phone })} /></div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="interest">What are you interested in?</Label>

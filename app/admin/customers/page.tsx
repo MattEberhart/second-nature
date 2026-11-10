@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Search, UserRound } from "lucide-react";
 import { getAdminUser } from "@/lib/admin-auth";
 import { getAdminSupabase } from "@/lib/supabase/admin";
+import { formatPhone } from "@/lib/phone";
 
 export const dynamic = "force-dynamic";
 
@@ -25,9 +26,14 @@ export default async function CustomersPage({
     )
     .order("last_activity_at", { ascending: false })
     .limit(250);
+  // Phone-looking queries match digits regardless of punctuation, so
+  // "7045550123" finds a stored "(704) 555-0123".
+  const queryDigits = /^[\d\s()+.-]+$/.test(q) ? q.replace(/\D/g, "") : "";
+  const phoneDigits = queryDigits.length >= 3 ? queryDigits.split("").join("*") : "";
   if (needle) {
     query = query.or(
-      `name.ilike.*${needle}*,email.ilike.*${needle}*,phone.ilike.*${needle}*`,
+      `name.ilike.*${needle}*,email.ilike.*${needle}*,phone.ilike.*${needle}*` +
+        (phoneDigits ? `,phone.ilike.*${phoneDigits}*` : ""),
     );
   }
   const { data, error } = await query;
@@ -71,7 +77,7 @@ export default async function CustomersPage({
                       <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary text-fig"><UserRound className="size-4" /></span>
                       <div>
                         <p className="font-display text-xl">{contact.name}</p>
-                        <p className="mt-1 text-xs text-ink/50">{contact.email}{contact.phone ? ` · ${contact.phone}` : ""}</p>
+                        <p className="mt-1 text-xs text-ink/50">{contact.email}{contact.phone ? ` · ${formatPhone(contact.phone)}` : ""}</p>
                       </div>
                     </div>
                     <p className="text-sm text-ink/60">
