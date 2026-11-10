@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     const id = `${slugify(input.publicName) || "item"}-${crypto.randomUUID().slice(0, 8)}`;
     const supabase = getAdminSupabase();
     const { error } = await supabase.from("catalog_products").insert({
-      id, public_name: input.publicName, category: input.category, tier: input.tier,
+      id, public_name: input.publicName, category: input.category,
       material: input.material, description: input.description, image_path: input.imagePath,
       accent: input.accent, price_prefix: input.pricePrefix || null, active: input.active,
     });

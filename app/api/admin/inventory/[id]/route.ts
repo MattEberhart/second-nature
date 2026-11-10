@@ -10,7 +10,7 @@ export async function PATCH(request: Request, context: RouteContext<"/api/admin/
     const input = inventoryItemSchema.parse(await request.json());
     const supabase = getAdminSupabase();
     const { error } = await supabase.from("catalog_products").update({
-      public_name: input.publicName, category: input.category, tier: input.tier,
+      public_name: input.publicName, category: input.category,
       material: input.material, description: input.description, image_path: input.imagePath,
       accent: input.accent, price_prefix: input.pricePrefix || null, active: input.active,
       updated_at: new Date().toISOString(),

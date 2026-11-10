@@ -86,7 +86,6 @@ export function EstimateBuilder({
   const [activeCategory, setActiveCategory] = useState<
     "all" | CatalogProduct["category"]
   >("all");
-  const [tier, setTier] = useState("all");
   const [stage, setStage] = useState<Stage>("shop");
   const [saveOpen, setSaveOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -209,8 +208,7 @@ export function EstimateBuilder({
     (activeDelivery?.fullServiceFeeCents || 0);
   const filtered = products.filter(
     (product) =>
-      (activeCategory === "all" || product.category === activeCategory) &&
-      (tier === "all" || product.tier === tier),
+      activeCategory === "all" || product.category === activeCategory,
   );
 
   function add(variantId: string, quantity: number) {
@@ -534,7 +532,7 @@ export function EstimateBuilder({
                   Shop By Collections
                 </Link>
               </div>
-              <div className="grid grid-cols-2 gap-3 sm:hidden">
+              <div className="sm:hidden">
                 <label className="min-w-0">
                   <span className="mb-2 block text-[10px] uppercase tracking-[0.16em] text-ink/50">
                     Category
@@ -559,26 +557,6 @@ export function EstimateBuilder({
                     ))}
                   </select>
                 </label>
-                <label className="min-w-0">
-                  <span className="mb-2 block text-[10px] uppercase tracking-[0.16em] text-ink/50">
-                    Price level
-                  </span>
-                  <select
-                    aria-label="Filter by price level"
-                    value={tier}
-                    onChange={(event) => setTier(event.target.value)}
-                    className="h-11 w-full min-w-0 rounded-lg border border-ink/15 bg-card px-3 text-sm text-ink"
-                  >
-                    <option value="all">All levels</option>
-                    {["Essential", "Premium", "Luxe", "Signature"].map(
-                      (value) => (
-                        <option key={value} value={value}>
-                          {value}
-                        </option>
-                      ),
-                    )}
-                  </select>
-                </label>
               </div>
               <div className="hidden gap-2 overflow-x-auto pb-3 sm:flex">
                 <FilterButton
@@ -598,23 +576,6 @@ export function EstimateBuilder({
                     {label}
                   </FilterButton>
                 ))}
-              </div>
-              <div className="mt-4 hidden flex-wrap items-center gap-2 sm:flex">
-                <span className="mr-2 text-xs uppercase tracking-[0.18em] text-ink/50">
-                  Price level
-                </span>
-                {["all", "Essential", "Premium", "Luxe", "Signature"].map(
-                  (value) => (
-                    <FilterButton
-                      key={value}
-                      small
-                      active={tier === value}
-                      onClick={() => setTier(value)}
-                    >
-                      {value === "all" ? "All" : value}
-                    </FilterButton>
-                  ),
-                )}
               </div>
               <div className="mt-6 grid min-w-0 gap-5 sm:mt-7 sm:grid-cols-2 lg:grid-cols-3">
                 {filtered.map((product) => (
@@ -774,9 +735,6 @@ function ProductCard({
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
           className="object-cover mix-blend-soft-light opacity-90"
         />
-        <div className="absolute left-4 top-4 rounded-full bg-limestone/90 px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] text-ink">
-          {product.tier}
-        </div>
       </div>
       <div className="p-4">
         <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-3">

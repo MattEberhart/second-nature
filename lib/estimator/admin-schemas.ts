@@ -5,7 +5,6 @@ const optionalText = z.string().trim().max(500).nullable().optional();
 export const inventoryItemSchema = z.object({
   publicName: z.string().trim().min(1).max(160),
   category: z.enum(["table-linens", "napkins", "chargers", "plates", "flatware", "custom-details"]),
-  tier: z.enum(["Essential", "Premium", "Luxe", "Signature"]),
   material: z.string().trim().max(160).default(""),
   description: z.string().trim().max(1000).default(""),
   imagePath: z.string().trim().min(1).max(1000),

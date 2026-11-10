@@ -19,7 +19,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   const [estimatesResult, appointmentsResult, productsResult, collectionsResult, contactsResult, inquiriesResult, availability, delivery, connectionResult] = await Promise.all([
     supabase.from("estimates").select("id,customer_name,customer_email,event_date,venue_name,fulfillment,total_cents,status,created_at").order("created_at", { ascending: false }).limit(50),
     supabase.from("appointments").select("id,customer_name,customer_email,starts_at,status,google_meet_url,estimate_id").order("starts_at", { ascending: true }).gte("starts_at", new Date().toISOString()).limit(50),
-    supabase.from("catalog_products").select("id,public_name,category,tier,material,description,image_path,accent,price_prefix,active,catalog_variants(id,label,size,color,image_path,unit_price_cents,active,sort_order)").order("sort_order"),
+    supabase.from("catalog_products").select("id,public_name,category,material,description,image_path,accent,price_prefix,active,catalog_variants(id,label,size,color,image_path,unit_price_cents,active,sort_order)").order("sort_order"),
     supabase.from("curated_collections").select("id,name,slug,description,header_image_path,active,curated_collection_members(product_id,variant_id),curated_collection_images(id,image_path,alt_text,sort_order)").order("sort_order"),
     supabase.from("contacts").select("id", { count: "exact", head: true }),
     supabase.from("contact_inquiries").select("id,contact_id,name,email,interest,event_date,status,owner_email_status,created_at", { count: "exact" }).order("created_at", { ascending: false }).limit(8),

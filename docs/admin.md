@@ -30,7 +30,7 @@ phone; gaps between words match anything).
 
 Two modes:
 
-- **Items**: create/edit a product (public name, category, tier, material, description,
+- **Items**: create/edit a product (public name, category, material, description,
   image, hex accent, optional price prefix, active) and its variants (label, size, color,
   optional image, price in dollars → cents, active). Saving an existing item sends the
   full variant list; variants omitted are **deleted**.

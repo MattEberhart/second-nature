@@ -19,7 +19,6 @@ export type CatalogProduct = {
   id: string;
   publicName: string;
   category: CatalogCategory;
-  tier: "Essential" | "Premium" | "Luxe" | "Signature";
   material: string;
   description: string;
   imagePath: string;

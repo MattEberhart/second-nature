@@ -57,7 +57,7 @@ Server:
 
 Client stages: `shop → review → schedule → confirmed`.
 
-- **Shop**: filter by category and tier, pick a variant + quantity, add to cart (max 10,000
+- **Shop**: filter by category, pick a variant + quantity, add to cart (max 10,000
   per line). Cart persists in `localStorage["second-nature-estimate-v1"]`; the last resume
   token in `localStorage["second-nature-estimate-token-v1"]`.
 - **Save for later** (modal, any stage): name, email, required communications consent,
