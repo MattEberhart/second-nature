@@ -99,7 +99,7 @@ Apply in filename order (Supabase CLI or SQL editor).
 | `20261109172159_customer_relationships_and_safe_submissions.sql` | CRM tables, contact_id backfill by email, email-status columns, `submission_attempts`, both RPCs |
 | `20261109174400_harden_submission_rate_limit.sql` | Rate limiter: advisory lock + pruning |
 | `20261109190000_atomic_collection_save_and_estimate_save_consent.sql` | `save_curated_collection` RPC; allows `consent_events.subject_type = 'estimate-save'`. Applied to production 2026-11-09 and recorded with `migration repair`. |
-| `20261109200000_drop_catalog_product_tier.sql` | Drops `catalog_products.tier` (price level removed). **Push only after the code that stops selecting `tier` is deployed.** Not yet applied. |
+| `20261109200000_drop_catalog_product_tier.sql` | Drops `catalog_products.tier` (price level removed). Applied to production 2026-11-09 after the code deploy. |
 
 **Applying migrations.** Production's migration history matches the repo version-for-version
 (reconciled 2026-11-09 with `supabase migration repair`). Keep it that way:
@@ -110,7 +110,7 @@ Apply in filename order (Supabase CLI or SQL editor).
    `apply_migration`) — that's what caused the earlier mismatch. If one is applied that way,
    rename the local file to the recorded version, or `migration repair` the history.
 
-All migrations listed above are applied to the production Supabase project, except where a row says otherwise.
+All migrations listed above are applied to the production Supabase project.
 
 ## Seeding the catalog
 
