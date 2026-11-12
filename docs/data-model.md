@@ -102,7 +102,7 @@ Apply in filename order (Supabase CLI or SQL editor).
 | `20261109200000_drop_catalog_product_tier.sql` | Drops `catalog_products.tier` (price level removed). Applied to production 2026-11-09 after the code deploy. |
 | `20261110120000_drop_catalog_product_accent.sql` | Drops `catalog_products.accent` (photo tint removed; photos render untinted on `bg-secondary`). Applied to production 2026-11-10 after the code deploy. |
 | `20261112120000_add_glasses_category.sql` | Widens `catalog_products.category` check to include `glasses`. Applied to production 2026-11-12. |
-| `20261112130000_drop_catalog_product_price_prefix.sql` | Drops `catalog_products.price_prefix` (the "From $X" card line was removed). **Not yet applied** — run `supabase db push --linked` only after the code that stops selecting `price_prefix` is deployed. |
+| `20261112130000_drop_catalog_product_price_prefix.sql` | Drops `catalog_products.price_prefix` (the "From $X" card line was removed). Applied to production 2026-11-12 after the code deploy. |
 
 **Applying migrations.** Production's migration history matches the repo version-for-version
 (reconciled 2026-11-09 with `supabase migration repair`). Keep it that way:
