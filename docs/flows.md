@@ -72,8 +72,13 @@ Client stages: `shop → review → schedule → confirmed`.
   (debounced 280 ms, ≥3 chars). Picking a suggestion stores its Google `placeId`, fills
   an empty venue name for named places, and immediately calls `POST /api/delivery/estimate`;
   the quote (miles + fee, plus full-service fee) shows beside the field. Switching
-  delivery ↔ full service re-quotes; editing the text clears the place ID and the quote.
-  Hand-typed addresses get an "estimate with this address" link. On continue the client
+  delivery ↔ full service re-quotes (picked addresses, and typed ones already quoted);
+  editing the text clears the place ID and the quote.
+  Hand-typed addresses get an "estimate with this address" link. The "Your Estimate"
+  sidebar (and the Schedule summary) use the shared `ChargesSummary`: Rentals + delivery
+  + full-service lines and an "Estimated total"; until a quote exists the fee lines read
+  "Add venue address" / "Pending" / "Calculating…" and the total is labelled "Total
+  before delivery". On continue the client
   reuses a current quote or fetches one (unless pickup), then `GET /api/availability`.
 - **Schedule**: pick a slot → `POST /api/estimates/schedule` (sends `venuePlaceId` when one
   was picked).

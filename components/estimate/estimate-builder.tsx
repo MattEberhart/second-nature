@@ -203,10 +203,6 @@ export function EstimateBuilder({
     quoteKey === keyFor(details.venueAddress, venuePlaceId, details.fulfillment)
       ? delivery
       : null;
-  const total =
-    subtotal +
-    (activeDelivery?.deliveryFeeCents || 0) +
-    (activeDelivery?.fullServiceFeeCents || 0);
   const filtered = products.filter(
     (product) =>
       activeCategory === "all" || product.category === activeCategory,
@@ -347,10 +343,14 @@ export function EstimateBuilder({
 
   function changeFulfillment(fulfillment: EstimateDetails["fulfillment"]) {
     setDetails({ ...details, fulfillment });
-    // Full service adds its own fee, so re-quote a picked address on switch.
+    // Full service adds its own fee, so re-quote on switch: always for a picked
+    // address, and for a typed one that was already quoted under another option.
+    const sameAddressQuoted =
+      delivery !== null &&
+      quoteKey.endsWith(`|${venuePlaceId}|${details.venueAddress.trim()}`);
     if (
       fulfillment !== "pickup" &&
-      venuePlaceId &&
+      (venuePlaceId || sameAddressQuoted) &&
       quoteKey !== keyFor(details.venueAddress, venuePlaceId, fulfillment)
     )
       requestQuote(details.venueAddress, venuePlaceId, fulfillment).catch(() => {});
@@ -641,7 +641,6 @@ export function EstimateBuilder({
           rows={cartRows}
           subtotal={subtotal}
           delivery={activeDelivery}
-          total={total}
           onBack={() => setStage("review")}
           onBook={book}
           busy={busy}
@@ -842,9 +841,12 @@ function CartPanel({
   onSave,
   mobile = false,
   summaryOnly = false,
+  charges,
 }: {
   rows: CartRow[];
   subtotal: number;
+  /** Review step: show rentals + delivery/full-service lines and the running total. */
+  charges?: ChargesInput;
   /** Set on collection pages: subtotal of lines that belong to this collection. */
   collectionSubtotal?: number;
   changeQuantity: (id: string, amount: number) => void;
@@ -942,17 +944,26 @@ function CartPanel({
               </div>
             </div>
           ) : null}
-          <div className="mt-5 flex items-end justify-between">
-            <span className="text-xs uppercase tracking-label text-ink/55">
-              {collectionSubtotal !== undefined &&
-              collectionSubtotal !== subtotal
-                ? "Estimate subtotal"
-                : "Starting subtotal"}
-            </span>
-            <span className="font-display text-2xl">
-              {formatMoney(subtotal)}
-            </span>
-          </div>
+          {charges ? (
+            <ChargesSummary
+              subtotal={subtotal}
+              {...charges}
+              // The last cart row already draws a divider.
+              className="border-t-0 pt-0"
+            />
+          ) : (
+            <div className="mt-5 flex items-end justify-between">
+              <span className="text-xs uppercase tracking-label text-ink/55">
+                {collectionSubtotal !== undefined &&
+                collectionSubtotal !== subtotal
+                  ? "Estimate subtotal"
+                  : "Starting subtotal"}
+              </span>
+              <span className="font-display text-2xl">
+                {formatMoney(subtotal)}
+              </span>
+            </div>
+          )}
           {!summaryOnly ? (
             <>
               <Button
@@ -1281,6 +1292,12 @@ function Review({
           summaryOnly
           rows={rows}
           subtotal={subtotal}
+          charges={{
+            fulfillment: details.fulfillment,
+            venueAddress: details.venueAddress,
+            delivery: venue.delivery,
+            quoteStatus: venue.quoteStatus,
+          }}
           changeQuantity={changeQuantity}
           setQuantity={setQuantity}
           onReview={() => {}}
@@ -1288,6 +1305,81 @@ function Review({
         />
       </form>
     </section>
+  );
+}
+
+type ChargesInput = {
+  fulfillment: EstimateDetails["fulfillment"];
+  venueAddress: string;
+  delivery: DeliveryEstimate | null;
+  quoteStatus: "idle" | "loading" | "error";
+};
+
+/**
+ * Rentals + delivery/full-service lines and the total. Display only: booking
+ * reprices the cart and recomputes delivery on the server. While delivery is
+ * still unquoted the total is labelled as excluding it rather than looking final.
+ */
+function ChargesSummary({
+  subtotal,
+  fulfillment,
+  venueAddress,
+  delivery,
+  quoteStatus,
+  className,
+}: ChargesInput & { subtotal: number; className?: string }) {
+  const needsQuote = fulfillment !== "pickup";
+  const quoted = needsQuote && delivery !== null;
+  const total =
+    subtotal +
+    (quoted ? delivery.deliveryFeeCents + delivery.fullServiceFeeCents : 0);
+  const pending = (
+    <span className="text-ink/45">
+      {quoteStatus === "loading"
+        ? "Calculating…"
+        : quoteStatus === "error"
+          ? "Check address"
+          : venueAddress.trim()
+            ? "Pending"
+            : "Add venue address"}
+    </span>
+  );
+  return (
+    <div
+      aria-live="polite"
+      className={cn("mt-5 space-y-2 border-t border-ink/10 pt-4 text-sm", className)}
+    >
+      <div className="flex justify-between gap-4">
+        <span className="text-ink/65">Rentals</span>
+        <span>{formatMoney(subtotal)}</span>
+      </div>
+      {needsQuote ? (
+        <div className="flex justify-between gap-4">
+          <span className="text-ink/65">
+            Estimated delivery
+            {quoted ? ` · ${delivery.distanceMilesOneWay} mi` : ""}
+          </span>
+          {quoted ? <span>{formatMoney(delivery.deliveryFeeCents)}</span> : pending}
+        </div>
+      ) : (
+        <div className="flex justify-between gap-4">
+          <span className="text-ink/65">Customer pickup</span>
+          <span>No charge</span>
+        </div>
+      )}
+      {fulfillment === "full-service" ? (
+        <div className="flex justify-between gap-4">
+          <span className="text-ink/65">Full service, starting at</span>
+          {quoted ? <span>{formatMoney(delivery.fullServiceFeeCents)}</span> : pending}
+        </div>
+      ) : null}
+      <div className="flex items-end justify-between gap-4 pt-2">
+        <span className="text-xs uppercase tracking-label text-ink/55">
+          {needsQuote && !quoted ? "Total before delivery" : "Estimated total"}
+        </span>
+        <span className="font-display text-2xl">{formatMoney(total)}</span>
+      </div>
+    </div>
   );
 }
 
@@ -1415,7 +1507,6 @@ function Schedule({
   rows,
   subtotal,
   delivery,
-  total,
   onBack,
   onBook,
   busy,
@@ -1428,7 +1519,6 @@ function Schedule({
   rows: CartRow[];
   subtotal: number;
   delivery: DeliveryEstimate | null;
-  total: number;
   onBack: () => void;
   onBook: () => void;
   busy: boolean;
@@ -1485,28 +1575,13 @@ function Schedule({
               </div>
             ))}
           </div>
-          <div className="mt-5 space-y-2 border-t border-ink/10 pt-4 text-sm">
-            <div className="flex justify-between">
-              <span>Rentals</span>
-              <span>{formatMoney(subtotal)}</span>
-            </div>
-            {delivery?.deliveryFeeCents ? (
-              <div className="flex justify-between">
-                <span>Estimated delivery</span>
-                <span>{formatMoney(delivery.deliveryFeeCents)}</span>
-              </div>
-            ) : null}
-            {delivery?.fullServiceFeeCents ? (
-              <div className="flex justify-between">
-                <span>Full service, starting at</span>
-                <span>{formatMoney(delivery.fullServiceFeeCents)}</span>
-              </div>
-            ) : null}
-            <div className="flex justify-between pt-2 font-display text-2xl">
-              <span>Total</span>
-              <span>{formatMoney(total)}</span>
-            </div>
-          </div>
+          <ChargesSummary
+            subtotal={subtotal}
+            fulfillment={details.fulfillment}
+            venueAddress={details.venueAddress}
+            delivery={delivery}
+            quoteStatus="idle"
+          />
           <p className="mt-5 text-xs leading-5 text-ink/55">
             Your selections are a starting point and aren’t reserved just yet.
             We’ll confirm availability and final pricing with you.
