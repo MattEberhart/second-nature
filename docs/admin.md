@@ -32,7 +32,7 @@ phone; gaps between words match anything).
 Two modes:
 
 - **Items**: create/edit a product (public name, category, material, description,
-  image, optional price prefix, active) and its variants (label, size, color,
+  image, active) and its variants (label, size, color,
   optional image, price in dollars → cents, active). Saving an existing item sends the
   full variant list; variants omitted are **deleted**.
 - **Collections**: name, slug, description, header image, gallery images (≤ 20, with alt
