@@ -41,6 +41,7 @@ const categoryLabels: Record<CatalogProduct["category"], string> = {
   chargers: "Chargers",
   plates: "Plates",
   flatware: "Flatware",
+  glasses: "Glasses",
   "custom-details": "Custom Details",
 };
 
@@ -718,9 +719,6 @@ function ProductCard({
   const variant =
     product.variants.find((item) => item.id === variantId) ||
     product.variants[0];
-  const lowest = Math.min(
-    ...product.variants.map((item) => item.unitPriceCents),
-  );
   const selectedImage = variant?.imagePath || product.imagePath;
   return (
     <article className="min-w-0 overflow-hidden rounded-xl border border-ink/10 bg-card">
@@ -734,17 +732,12 @@ function ProductCard({
         />
       </div>
       <div className="p-4">
-        <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
-          <div className="min-w-0">
-            <h2 className="font-display text-xl leading-tight">
-              {product.publicName}
-            </h2>
-            <p className="mt-1 text-xs uppercase tracking-label text-ink/50">
-              {product.material}
-            </p>
-          </div>
-          <p className="whitespace-nowrap text-right font-display text-base">
-            {product.pricePrefix || "From"} {formatMoney(lowest)}
+        <div className="min-w-0">
+          <h2 className="font-display text-xl leading-tight">
+            {product.publicName}
+          </h2>
+          <p className="mt-1 text-xs uppercase tracking-label text-ink/50">
+            {product.material}
           </p>
         </div>
         <p className="mt-3 line-clamp-2 min-h-10 text-sm leading-5 text-ink/65">

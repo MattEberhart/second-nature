@@ -4,6 +4,7 @@ export type CatalogCategory =
   | "chargers"
   | "plates"
   | "flatware"
+  | "glasses"
   | "custom-details";
 
 export type CatalogVariant = {
@@ -22,7 +23,6 @@ export type CatalogProduct = {
   material: string;
   description: string;
   imagePath: string;
-  pricePrefix?: string;
   variants: CatalogVariant[];
 };
 

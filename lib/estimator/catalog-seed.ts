@@ -244,7 +244,6 @@ export const launchCatalog: CatalogProduct[] = [
     material: "Hand-painted wood",
     description: "A custom freestanding sign designed around the tone of your day.",
     imagePath: "/catalog/custom-details.svg",
-    pricePrefix: "Starting at",
     variants: [v("welcome-sign-custom", "Custom painted sign", 220)],
   },
 ];
@@ -255,5 +254,6 @@ export const categoryLabels: Record<CatalogProduct["category"], string> = {
   chargers: "Chargers",
   plates: "Plates",
   flatware: "Flatware",
+  glasses: "Glasses",
   "custom-details": "Custom Details",
 };

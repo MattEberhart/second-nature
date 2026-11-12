@@ -4,11 +4,10 @@ const optionalText = z.string().trim().max(500).nullable().optional();
 
 export const inventoryItemSchema = z.object({
   publicName: z.string().trim().min(1).max(160),
-  category: z.enum(["table-linens", "napkins", "chargers", "plates", "flatware", "custom-details"]),
+  category: z.enum(["table-linens", "napkins", "chargers", "plates", "flatware", "glasses", "custom-details"]),
   material: z.string().trim().max(160).default(""),
   description: z.string().trim().max(1000).default(""),
   imagePath: z.string().trim().min(1).max(1000),
-  pricePrefix: optionalText,
   active: z.boolean().default(true),
   variants: z.array(z.object({
     id: z.string().min(1).max(180).optional(),
